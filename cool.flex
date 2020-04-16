@@ -75,7 +75,7 @@ OF           (?i:of)
   *  The multiple-character operators.
   */
 {DARROW}		{ return (DARROW); }
-
+{CLASS}			{ return (CLASS); }
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
