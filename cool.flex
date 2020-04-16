@@ -70,9 +70,9 @@ STR_CONST    "."
 INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
 
-TYPEID	     [A-Z][a-zA-Z0-9]*
-OBJECTID     [a-z][a-zA-Z0-9]*
-
+TYPEID 	     [A-Z][a-zA-Z0-9]+(?i:test)
+OBJECTID     [a-z][a-zA-Z0-9]+(?i:thisisalsoatest)
+COMMENT_START	\*
 %%
 
  /*
@@ -101,6 +101,8 @@ OBJECTID     [a-z][a-zA-Z0-9]*
 {ISVOID}		{ return (ISVOID); }
 {STR_CONST}		{ return (STR_CONST); }
 {INT_CONST}		{ return (INT_CONST); }
+{TYPEID}		{ return (TYPEID); }
+{OBJECTID}		{ return (OBJECTID); }
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
