@@ -64,11 +64,14 @@ CASE         (?i:case)
 ESAC         (?i:esac)
 OF           (?i:of)
 NEW 	     (?i:new)
+ISVOID	     (?i:isvoid)
 
 STR_CONST    "."
-INT_CONST    [0-9]
+INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
 
+TYPEID	     [A-Z][a-zA-Z0-9]*
+OBJECTID     [a-z][a-zA-Z0-9]*
 
 %%
 
@@ -76,12 +79,28 @@ BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
   *  Nested comments
   */
 
-
  /*
   *  The multiple-character operators.
   */
 {DARROW}		{ return (DARROW); }
 {CLASS}			{ return (CLASS); }
+{ELSE}			{ return (ELSE); }
+{FI}			{ return (FI); }
+{IF}			{ return (IF); }
+{IN}			{ return (IN); }
+{INHERITS}		{ return (INHERITS); }
+{LET}			{ return (LET); }
+{LOOP}			{ return (LOOP); }
+{POOL}			{ return (POOL); }
+{THEN} 			{ return (THEN); }
+{WHILE}			{ return (WHILE); }
+{CASE}			{ return (CASE); }
+{ESAC} 			{ return (ESAC); }
+{OF}			{ return (OF); }
+{NEW}			{ return (NEW); }
+{ISVOID}		{ return (ISVOID); }
+{STR_CONST}		{ return (STR_CONST); }
+{INT_CONST}		{ return (INT_CONST); }
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
