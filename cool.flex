@@ -40,7 +40,6 @@ extern int verbose_flag;
 extern YYSTYPE cool_yylval;
 
 
-
 %}
 
 /*
@@ -53,7 +52,7 @@ CLASS        (?i:class)
 ELSE         (?i:else)
 FI           (?i:fi)
 IF           (?i:fi)
-IN           (?i:in)
+IN           (?i:\ in)
 INHERITS     (?i:inherits)
 LET          (?i:let)
 LOOP         (?i:loop)
@@ -65,14 +64,12 @@ ESAC         (?i:esac)
 OF           (?i:of)
 NEW 	     (?i:new)
 ISVOID	     (?i:isvoid)
-
-STR_CONST    "."
+STR_CONST    \"[a-zA-Z0-9\ \_]*\"
 INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
-
-TYPEID 	     [A-Z][a-zA-Z0-9]+(?i:test)
-OBJECTID     [a-z][a-zA-Z0-9]+(?i:thisisalsoatest)
-COMMENT_START	\*
+TYPEID 	     [A-Z][a-zA-Z0-9\_]*
+OBJECTID     [a-z][a-zA-Z0-9\_]*
+%x COMMENT
 %%
 
  /*
@@ -82,27 +79,37 @@ COMMENT_START	\*
  /*
   *  The multiple-character operators.
   */
-{DARROW}		{ return (DARROW); }
-{CLASS}			{ return (CLASS); }
-{ELSE}			{ return (ELSE); }
-{FI}			{ return (FI); }
-{IF}			{ return (IF); }
-{IN}			{ return (IN); }
-{INHERITS}		{ return (INHERITS); }
-{LET}			{ return (LET); }
-{LOOP}			{ return (LOOP); }
-{POOL}			{ return (POOL); }
-{THEN} 			{ return (THEN); }
-{WHILE}			{ return (WHILE); }
-{CASE}			{ return (CASE); }
-{ESAC} 			{ return (ESAC); }
-{OF}			{ return (OF); }
-{NEW}			{ return (NEW); }
-{ISVOID}		{ return (ISVOID); }
-{STR_CONST}		{ return (STR_CONST); }
-{INT_CONST}		{ return (INT_CONST); }
-{TYPEID}		{ return (TYPEID); }
-{OBJECTID}		{ return (OBJECTID); }
+
+{DARROW} 		{ return(DARROW); }
+{CLASS}			{ return(CLASS); }
+{ELSE}			{ return(ELSE); }
+{FI}			{ return(FI); }
+{IF} 			{ return(IF); }
+{IN}			{ return(IN); }
+{INHERITS}		{ return(INHERITS); }
+{LET} 			{ return(LET); }
+{LOOP}			{ return(LOOP); }
+{POOL}			{ return(POOL); }
+{THEN}			{ return(THEN); }
+{WHILE}			{ return(WHILE); }
+{CASE}			{ return(CASE); }
+{ESAC}			{ return(ESAC); }
+{OF}			{ return(OF); }
+{NEW}			{ return(NEW); }
+{ISVOID}		{ return(ISVOID); }
+{STR_CONST}		{ yylval.symbol = inttable.add_string(yytext);
+				return(STR_CONST); }
+{INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
+				return(INT_CONST); }
+{TYPEID}		{ yylval.symbol = inttable.add_string(yytext); 
+				return(TYPEID); }
+{OBJECTID}		{ yylval.symbol = inttable.add_string(yytext);
+				return(OBJECTID); }
+"(*"			{ BEGIN(COMMENT); }
+<COMMENT>[^*\n]*	
+<COMMENT>"*)"		{ BEGIN(INITIAL);}
+[:;(){}]
+"\n"			{ ++curr_lineno; }		
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
