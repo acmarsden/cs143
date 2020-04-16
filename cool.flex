@@ -63,6 +63,12 @@ WHILE        (?i:while)
 CASE         (?i:case)
 ESAC         (?i:esac)
 OF           (?i:of)
+NEW 	     (?i:new)
+
+STR_CONST    "."
+INT_CONST    [0-9]
+BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
+
 
 %%
 

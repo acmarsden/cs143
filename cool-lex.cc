@@ -552,7 +552,7 @@ int yy_flex_debug = 1;
 
 static yyconst flex_int16_t yy_rule_linenum[3] =
     {   0,
-       77,   78
+       83,   84
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -894,7 +894,7 @@ YY_DECL
 
 	{
 /* %% [7.0] user's declarations go here */
-#line 67 "cool.flex"
+#line 73 "cool.flex"
 
 
  /*
@@ -987,12 +987,12 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 77 "cool.flex"
+#line 83 "cool.flex"
 { return (DARROW); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 78 "cool.flex"
+#line 84 "cool.flex"
 { return (CLASS); }
 	YY_BREAK
 /*
@@ -1007,7 +1007,7 @@ YY_RULE_SETUP
   */
 case 3:
 YY_RULE_SETUP
-#line 93 "cool.flex"
+#line 99 "cool.flex"
 ECHO;
 	YY_BREAK
 #line 1014 "cool-lex.cc"
@@ -2157,7 +2157,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 93 "cool.flex"
+#line 99 "cool.flex"
 
 
 
