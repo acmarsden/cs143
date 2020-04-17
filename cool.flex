@@ -51,8 +51,8 @@ DARROW          =>
 CLASS        (?i:class)
 ELSE         (?i:else)
 FI           (?i:fi)
-IF           (?i:fi)
-IN           (?i:\ in)
+IF           (?i:if)
+IN           (?i:\ in\ )
 INHERITS     (?i:inherits)
 LET          (?i:let)
 LOOP         (?i:loop)
@@ -69,6 +69,7 @@ INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
 TYPEID 	     [A-Z][a-zA-Z0-9\_]*
 OBJECTID     [a-z][a-zA-Z0-9\_]*
+ASSIGN	     <-
 %x COMMENT
 %%
 
@@ -105,11 +106,22 @@ OBJECTID     [a-z][a-zA-Z0-9\_]*
 				return(TYPEID); }
 {OBJECTID}		{ yylval.symbol = inttable.add_string(yytext);
 				return(OBJECTID); }
+{ASSIGN}		{ return(ASSIGN); }
 "(*"			{ BEGIN(COMMENT); }
 <COMMENT>[^*\n]*	
 <COMMENT>"*)"		{ BEGIN(INITIAL);}
-[:;(){}]
 "\n"			{ ++curr_lineno; }		
+:			{ return(':'); }
+;			{ return(';'); }
+[(]			{ return('('); }
+[)]			{ return(')'); }
+[{]			{ return('{'); }
+[}]			{ return('}'); }
+[.]			{ return('.'); }
+[<]			{ return('<'); }
+[>]			{ return('>'); }
+
+
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
