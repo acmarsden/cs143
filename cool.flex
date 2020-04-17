@@ -52,8 +52,8 @@ CLASS        (?i:class)
 ELSE         (?i:else)
 FI           (?i:fi)
 IF           (?i:if)
+INHERITS     (?i:\ inherits)
 IN           (?i:\ in\ )
-INHERITS     (?i:inherits)
 LET          (?i:let)
 LOOP         (?i:loop)
 POOL         (?i:pool)
@@ -64,7 +64,7 @@ ESAC         (?i:esac)
 OF           (?i:of)
 NEW 	     (?i:new)
 ISVOID	     (?i:isvoid)
-STR_CONST    \"[a-zA-Z0-9\ \_]*\"
+STR_CONST    \"[a-zA-Z0-9\ \_\\]*\"
 INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
 TYPEID 	     [A-Z][a-zA-Z0-9\_]*
@@ -110,6 +110,14 @@ ASSIGN	     <-
 "(*"			{ BEGIN(COMMENT); }
 <COMMENT>[^*\n]*	
 <COMMENT>"*)"		{ BEGIN(INITIAL);}
+ /*
+  *<COMMENT><<EOF>>	{ return(ERROR); }
+  */
+"*)"			{ return(ERROR); }
+[']			{ return(ERROR); }
+[[]			{ return(ERROR); }
+[]]			{ return(ERROR); }
+[>]			{ return(ERROR); }
 "\n"			{ ++curr_lineno; }		
 :			{ return(':'); }
 ;			{ return(';'); }
@@ -119,9 +127,10 @@ ASSIGN	     <-
 [}]			{ return('}'); }
 [.]			{ return('.'); }
 [<]			{ return('<'); }
-[>]			{ return('>'); }
-
-
+[=]			{ return('='); }
+[+]			{ return('+'); }
+[-]			{ return('-'); }
+[,]			{ return(','); }
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
