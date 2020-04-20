@@ -52,8 +52,8 @@ CLASS        (?i:class)
 ELSE         (?i:else)
 FI           (?i:fi)
 IF           (?i:if)
-INHERITS     (?i:\ inherits)
-IN           (?i:\ in\ )
+INHERITS     (?i:inherits)
+IN           (?i:in)
 LET          (?i:let)
 LOOP         (?i:loop)
 POOL         (?i:pool)
@@ -71,6 +71,8 @@ TYPEID 	     [A-Z][a-zA-Z0-9\_]*
 OBJECTID     [a-z][a-zA-Z0-9\_]*
 ASSIGN	     <-
 %x COMMENT
+WHITESPACE   [ \n\f\t\v\r]+
+
 %%
 
  /*
@@ -86,7 +88,7 @@ ASSIGN	     <-
 {ELSE}			{ return(ELSE); }
 {FI}			{ return(FI); }
 {IF} 			{ return(IF); }
-{IN}			{ return(IN); }
+{IN}/{WHITESPACE}	{ return(IN); }
 {INHERITS}		{ return(INHERITS); }
 {LET} 			{ return(LET); }
 {LOOP}			{ return(LOOP); }
