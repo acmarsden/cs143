@@ -108,11 +108,11 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  return(STR_CONST); }
 <ENDSTR>\"              { BEGIN(INITIAL); }
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
-				return(INT_CONST); }
+			  return(INT_CONST); }
 {TYPEID}		{ yylval.symbol = inttable.add_string(yytext); 
-				return(TYPEID); }
+			  return(TYPEID); }
 {OBJECTID}		{ yylval.symbol = inttable.add_string(yytext);
-				return(OBJECTID); }
+			  return(OBJECTID); }
 {ASSIGN}		{ return(ASSIGN); }
 "(*"			{ BEGIN(COMMENT); }
 <COMMENT>[^*\n]*	/* eat up comment content */
