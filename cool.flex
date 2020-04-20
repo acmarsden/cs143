@@ -117,13 +117,16 @@ WHITESPACE   [ \n\f\t\v\r]+
 "(*"			{ BEGIN(COMMENT); }
 <COMMENT>[^*\n]*	/* eat up comment content */
 <COMMENT>"*)"		{ BEGIN(INITIAL);}
- /*
-  *<COMMENT><<EOF>>	{ return(ERROR); }
-  */
+<COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
+			  BEGIN(INITIAL);
+			  return(ERROR); }
 "*)"			{ return(ERROR); }
-[']			{ return(ERROR); }
-[[]			{ return(ERROR); }
-[]]			{ return(ERROR); }
+[']			{ yylval.error_msg = yytext;
+			  return(ERROR); }
+[[]			{ yylval.error_msg = yytext;
+			  return(ERROR); }
+[]]			{ yylval.error_msg = yytext;
+			  return(ERROR); }
 [>]			{ yylval.error_msg = yytext;
 			  return(ERROR); }
 <INITIAL,COMMENT>"\n"	{ ++curr_lineno; }
