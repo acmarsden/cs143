@@ -115,7 +115,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 				return(OBJECTID); }
 {ASSIGN}		{ return(ASSIGN); }
 "(*"			{ BEGIN(COMMENT); }
-<COMMENT>[^*\n]*	
+<COMMENT>[^*\n]*	/* eat up comment content */
 <COMMENT>"*)"		{ BEGIN(INITIAL);}
  /*
   *<COMMENT><<EOF>>	{ return(ERROR); }
@@ -126,7 +126,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 []]			{ return(ERROR); }
 [>]			{ yylval.error_msg = yytext;
 			  return(ERROR); }
-"\n"			{ ++curr_lineno; }		
+<INITIAL,COMMENT>"\n"	{ ++curr_lineno; }
 :			{ return(':'); }
 ;			{ return(';'); }
 [(]			{ return('('); }
