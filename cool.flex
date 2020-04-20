@@ -119,7 +119,8 @@ WHITESPACE   [ \n\f\t\v\r]+
 [']			{ return(ERROR); }
 [[]			{ return(ERROR); }
 []]			{ return(ERROR); }
-[>]			{ return(ERROR); }
+[>]			{ yylval.error_msg = yytext;
+			  return(ERROR); }
 "\n"			{ ++curr_lineno; }		
 :			{ return(':'); }
 ;			{ return(';'); }
