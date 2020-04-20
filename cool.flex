@@ -64,14 +64,16 @@ ESAC         (?i:esac)
 OF           (?i:of)
 NEW 	     (?i:new)
 ISVOID	     (?i:isvoid)
-STR_CONST    \"[a-zA-Z0-9\ \_\\]*\"
+STR_CONST    [a-zA-Z0-9\ \_\\]*
 INT_CONST    [0-9]+
 BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
 TYPEID 	     [A-Z][a-zA-Z0-9\_]*
 OBJECTID     [a-z][a-zA-Z0-9\_]*
 ASSIGN	     <-
-%x COMMENT
 WHITESPACE   [ \n\f\t\v\r]+
+%x COMMENT
+%x STR
+%x ENDSTR
 
 %%
 
@@ -100,8 +102,11 @@ WHITESPACE   [ \n\f\t\v\r]+
 {OF}			{ return(OF); }
 {NEW}			{ return(NEW); }
 {ISVOID}		{ return(ISVOID); }
-{STR_CONST}		{ yylval.symbol = inttable.add_string(yytext);
-				return(STR_CONST); }
+\"                      { BEGIN(STR); }
+<STR>{STR_CONST}/\"	{ BEGIN(ENDSTR);
+                          yylval.symbol = inttable.add_string(yytext);
+			  return(STR_CONST); }
+<ENDSTR>\"              { BEGIN(INITIAL); }
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 				return(INT_CONST); }
 {TYPEID}		{ yylval.symbol = inttable.add_string(yytext); 
