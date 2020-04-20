@@ -131,6 +131,7 @@ ASSIGN	     <-
 [+]			{ return('+'); }
 [-]			{ return('-'); }
 [,]			{ return(','); }
+[ \f\t\r\v]+            /* eat up unused whitespace */ 
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
