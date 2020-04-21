@@ -103,17 +103,29 @@ WHITESPACE   [ \n\f\t\v\r]+
 {OF}			{ return(OF); }
 {NEW}			{ return(NEW); }
 {ISVOID}		{ return(ISVOID); }
-\"                      { BEGIN(STR); }
-<STR>{STR_CONST}/\"	{ BEGIN(ENDSTR);
-                          yylval.symbol = stringtable.add_string(yytext);
-			  return(STR_CONST); }
-<STR><<EOF>>	        { yylval.error_msg = "EOF in string";
+\"                      { /* Found string beginning character*/
+			  string_buf_ptr = string_buf;
+			  BEGIN(STR); }
+<STR>\"			{ /* Found string termination character*/
 			  BEGIN(INITIAL);
-			  return(ERROR); }
-<STR>\0	                { yylval.error_msg = "Null char in string";
-			  BEGIN(INITIAL);
-			  return(ERROR); }
-<ENDSTR>\"              { BEGIN(INITIAL); }
+			  *string_buf_ptr = '\0';
+			  yylval.symbol = stringtable.add_string(string_buf);
+			  return(STR_CONST);}
+<STR>\n			{ /* error - unterminated string constant */
+			  yylval.error_msg = "New line in string";
+			  return(ERROR);}
+<STR>\\n		{ *string_buf_ptr++ = '\n';}
+<STR>\\t		{ *string_buf_ptr++ = '\t';}
+<STR>\\r		{ *string_buf_ptr++ = '\r';}
+<STR>\\b		{ *string_buf_ptr++ = '\b';}
+<STR>\\f		{ *string_buf_ptr++ = '\f';}
+
+<STR>\\(.|\n)		{ *string_buf_ptr++ = yytext[1];}
+
+<STR>[^\\\n\"]+		{ char *yptr = yytext;
+			  while ( *yptr )
+				*string_buf_ptr++ = *yptr++;
+			}
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
 {TYPEID}		{ yylval.symbol = idtable.add_string(yytext);
