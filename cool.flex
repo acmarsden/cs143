@@ -71,7 +71,8 @@ TYPEID 	     [A-Z][a-zA-Z0-9\_]*
 OBJECTID     [a-z][a-zA-Z0-9\_]*
 ASSIGN	     <-
 WHITESPACE   [ \n\f\t\v\r]+
-%x COMMENT
+%x STAR_COMMENT
+%x DASH_COMMENT
 %x STR
 %x ENDSTR
 
@@ -106,6 +107,12 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STR>{STR_CONST}/\"	{ BEGIN(ENDSTR);
                           yylval.symbol = inttable.add_string(yytext);
 			  return(STR_CONST); }
+<STR><<EOF>>	        { yylval.error_msg = "EOF in string";
+			  BEGIN(INITIAL);
+			  return(ERROR); }
+<STR>\0	                { yylval.error_msg = "Null char in string";
+			  BEGIN(INITIAL);
+			  return(ERROR); }
 <ENDSTR>\"              { BEGIN(INITIAL); }
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
@@ -114,10 +121,14 @@ WHITESPACE   [ \n\f\t\v\r]+
 {OBJECTID}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(OBJECTID); }
 {ASSIGN}		{ return(ASSIGN); }
-"(*"			{ BEGIN(COMMENT); }
-<COMMENT>[^*\n]*	/* eat up comment content */
-<COMMENT>"*)"		{ BEGIN(INITIAL);}
-<COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
+"(*"			{ BEGIN(STAR_COMMENT); }
+"--"			{ BEGIN(DASH_COMMENT); }
+<STAR_COMMENT,DASH_COMMENT>[^*\n]*	/* eat up comment content */
+<STAR_COMMENT>"*)"		{ BEGIN(INITIAL);}
+<DASH_COMMENT>\n		{ ++curr_lineno; 
+                                  BEGIN(INITIAL);}
+<DASH_COMMENT><<EOF>>		{ BEGIN(INITIAL);}
+<STAR_COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
 			  BEGIN(INITIAL);
 			  return(ERROR); }
 "*)"			{ return(ERROR); }
@@ -129,7 +140,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  return(ERROR); }
 [>]			{ yylval.error_msg = yytext;
 			  return(ERROR); }
-<INITIAL,COMMENT>"\n"	{ ++curr_lineno; }
+<INITIAL,STAR_COMMENT,DASH_COMMENT>"\n"	{ ++curr_lineno; }
 :			{ return(':'); }
 ;			{ return(';'); }
 [(]			{ return('('); }
