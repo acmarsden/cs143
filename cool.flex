@@ -105,7 +105,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 {ISVOID}		{ return(ISVOID); }
 \"                      { BEGIN(STR); }
 <STR>{STR_CONST}/\"	{ BEGIN(ENDSTR);
-                          yylval.symbol = inttable.add_string(yytext);
+                          yylval.symbol = stringtable.add_string(yytext);
 			  return(STR_CONST); }
 <STR><<EOF>>	        { yylval.error_msg = "EOF in string";
 			  BEGIN(INITIAL);
@@ -116,9 +116,9 @@ WHITESPACE   [ \n\f\t\v\r]+
 <ENDSTR>\"              { BEGIN(INITIAL); }
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
-{TYPEID}		{ yylval.symbol = inttable.add_string(yytext); 
+{TYPEID}		{ yylval.symbol = idtable.add_string(yytext);
 			  return(TYPEID); }
-{OBJECTID}		{ yylval.symbol = inttable.add_string(yytext);
+{OBJECTID}		{ yylval.symbol = idtable.add_string(yytext);
 			  return(OBJECTID); }
 {ASSIGN}		{ return(ASSIGN); }
 "(*"			{ BEGIN(STAR_COMMENT); }
