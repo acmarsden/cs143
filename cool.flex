@@ -144,14 +144,6 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  BEGIN(INITIAL);
 			  return(ERROR); }
 "*)"			{ return(ERROR); }
-[']			{ yylval.error_msg = yytext;
-			  return(ERROR); }
-[[]			{ yylval.error_msg = yytext;
-			  return(ERROR); }
-[]]			{ yylval.error_msg = yytext;
-			  return(ERROR); }
-[>]			{ yylval.error_msg = yytext;
-			  return(ERROR); }
 <INITIAL,STAR_COMMENT,DASH_COMMENT>"\n"	{ ++curr_lineno; }
 :			{ return(':'); }
 ;			{ return(';'); }
@@ -166,6 +158,8 @@ WHITESPACE   [ \n\f\t\v\r]+
 [-]			{ return('-'); }
 [,]			{ return(','); }
 [ \f\t\r\v]+            /* eat up unused whitespace */ 
+.			{ yylval.error_msg = yytext;
+			  return(ERROR); }
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
