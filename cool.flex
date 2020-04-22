@@ -39,6 +39,10 @@ extern int verbose_flag;
 
 extern YYSTYPE cool_yylval;
 
+bool str_length_reached(){
+	//return string_buf_ptr - &string_buf[0] >= MAX_STR_CONST;
+	return false;
+}
 
 %}
 
@@ -124,6 +128,10 @@ WHITESPACE   [ \n\f\t\v\r]+
 
 <STR>[^\\\n\"]+		{ char *yptr = yytext;
 			  while ( *yptr )
+				if(str_length_reached()){
+					yylval.error_msg = "String constant too long";
+					return(ERROR);
+				}
 				*string_buf_ptr++ = *yptr++;
 			}
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
