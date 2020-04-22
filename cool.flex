@@ -114,39 +114,32 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  *string_buf_ptr = '\0';
 			  yylval.symbol = stringtable.add_string(string_buf);
 			  return(STR_CONST);}
-<ENDSTR>.*\"		/* Eat up rest of the string */
+<ENDSTR>.*\"		{ /* Eat up rest of the string */
+			  yylval.error_msg = "String constant too long";
+			  return(ERROR);
+			}
 <STR>\n			{ /* error - unterminated string constant */
 			  yylval.error_msg = "New line in string";
 			  BEGIN(INITIAL);
 			  return(ERROR);}
 <STR>\\n		{ if(str_length_reached()){
-				yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
-				return(ERROR);
 			  }
 			  *string_buf_ptr++ = '\n';}
 <STR>\\t		{ if(str_length_reached()){
-				yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
-				return(ERROR);
 			  }
 			  *string_buf_ptr++ = '\t';}
 <STR>\\r		{ if(str_length_reached()){
-				yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
-				return(ERROR);
 			  }
 			  *string_buf_ptr++ = '\r';}
 <STR>\\b		{ if(str_length_reached()){
-				yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
-				return(ERROR);
 			  }
 			  *string_buf_ptr++ = '\b';}
 <STR>\\f		{ if(str_length_reached()){
-				yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
-				return(ERROR);
 			  }
 			  *string_buf_ptr++ = '\f';}
 
@@ -155,9 +148,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STR>[^\\\n\"]+		{ char *yptr = yytext;
 			  while ( *yptr ){
 				if(str_length_reached()){
-					yylval.error_msg = "String constant too long";
 			  		BEGIN(ENDSTR);
-					return(ERROR);
 				}
 				*string_buf_ptr++ = *yptr++;
 			  }
