@@ -161,6 +161,10 @@ WHITESPACE   [ \n\f\t\v\r]+
 				*string_buf_ptr++ = *yptr++;
 			  }
 			}
+<STR><<EOF>>		{ yylval.error_msg = "EOF in string constant.";
+			  BEGIN(INITIAL);
+			  return(ERROR);
+			}
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
 {TYPEID}		{ yylval.symbol = idtable.add_string(yytext);
