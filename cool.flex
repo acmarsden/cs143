@@ -40,8 +40,7 @@ extern int verbose_flag;
 extern YYSTYPE cool_yylval;
 
 bool str_length_reached(){
-	//return string_buf_ptr - &string_buf[0] >= MAX_STR_CONST;
-	return false;
+	return string_buf_ptr - &string_buf[0] >= MAX_STR_CONST;
 }
 
 %}
@@ -118,21 +117,42 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STR>\n			{ /* error - unterminated string constant */
 			  yylval.error_msg = "New line in string";
 			  return(ERROR);}
-<STR>\\n		{ *string_buf_ptr++ = '\n';}
-<STR>\\t		{ *string_buf_ptr++ = '\t';}
-<STR>\\r		{ *string_buf_ptr++ = '\r';}
-<STR>\\b		{ *string_buf_ptr++ = '\b';}
-<STR>\\f		{ *string_buf_ptr++ = '\f';}
+<STR>\\n		{ if(str_length_reached()){
+				yylval.error_msg = "String constant too long";
+				return(ERROR);
+			  }
+			  *string_buf_ptr++ = '\n';}
+<STR>\\t		{ if(str_length_reached()){
+				yylval.error_msg = "String constant too long";
+				return(ERROR);
+			  }
+			  *string_buf_ptr++ = '\t';}
+<STR>\\r		{ if(str_length_reached()){
+				yylval.error_msg = "String constant too long";
+				return(ERROR);
+			  }
+			  *string_buf_ptr++ = '\r';}
+<STR>\\b		{ if(str_length_reached()){
+				yylval.error_msg = "String constant too long";
+				return(ERROR);
+			  }
+			  *string_buf_ptr++ = '\b';}
+<STR>\\f		{ if(str_length_reached()){
+				yylval.error_msg = "String constant too long";
+				return(ERROR);
+			  }
+			  *string_buf_ptr++ = '\f';}
 
 <STR>\\(.|\n)		{ *string_buf_ptr++ = yytext[1];}
 
 <STR>[^\\\n\"]+		{ char *yptr = yytext;
-			  while ( *yptr )
+			  while ( *yptr ){
 				if(str_length_reached()){
 					yylval.error_msg = "String constant too long";
 					return(ERROR);
 				}
 				*string_buf_ptr++ = *yptr++;
+			  }
 			}
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
