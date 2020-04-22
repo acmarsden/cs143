@@ -40,7 +40,7 @@ extern int verbose_flag;
 extern YYSTYPE cool_yylval;
 
 bool str_length_reached(){
-	return string_buf_ptr - &string_buf[0] >= MAX_STR_CONST;
+	return string_buf_ptr - &string_buf[0] >= MAX_STR_CONST-1;
 }
 
 %}
@@ -114,7 +114,8 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  *string_buf_ptr = '\0';
 			  yylval.symbol = stringtable.add_string(string_buf);
 			  return(STR_CONST);}
-<STR,ENDSTR>\n		{ /* error - unterminated string constant */
+<ENDSTR>.*\"		/* Eat up rest of the string */
+<STR>\n			{ /* error - unterminated string constant */
 			  yylval.error_msg = "New line in string";
 			  BEGIN(INITIAL);
 			  return(ERROR);}
