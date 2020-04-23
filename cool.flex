@@ -67,12 +67,14 @@ ESAC         (?i:esac)
 OF           (?i:of)
 NEW 	     (?i:new)
 ISVOID	     (?i:isvoid)
+NOT	     (?i:not)
 STR_CONST    [a-zA-Z0-9\ \_\\]*
 INT_CONST    [0-9]+
-BOOL_CONST   (T|t)/(?i:rue) | (F|f)/(?i:alse)
+BOOL_CONST   t(?i:rue)|f(?i:alse)
 TYPEID 	     [A-Z][a-zA-Z0-9\_]*
 OBJECTID     [a-z][a-zA-Z0-9\_]*
 ASSIGN	     <-
+LE	     <=
 WHITESPACE   [ \n\f\t\v\r]+
 %x STAR_COMMENT
 %x DASH_COMMENT
@@ -106,6 +108,9 @@ WHITESPACE   [ \n\f\t\v\r]+
 {OF}			{ return(OF); }
 {NEW}			{ return(NEW); }
 {ISVOID}		{ return(ISVOID); }
+{NOT}			{ return(NOT);}
+{BOOL_CONST}		{ yylval.boolean = true;
+				return(BOOL_CONST); }	
 \"                      { /* Found string beginning character*/
 			  string_buf_ptr = string_buf;
 			  BEGIN(STR); }
@@ -115,39 +120,50 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  yylval.symbol = stringtable.add_string(string_buf);
 			  return(STR_CONST);}
 <ENDSTR>.*\"		{ /* Eat up rest of the string */
-			  yylval.error_msg = "String constant too long";
+			  BEGIN(INITIAL);
 			  return(ERROR);
 			}
 <STR>\n			{ /* error - unterminated string constant */
-			  yylval.error_msg = "New line in string";
-			  BEGIN(INITIAL);
-			  return(ERROR);}
+			  yylval.error_msg = "Unterminatd string constant";
+			  BEGIN(ENDSTR);
+			}
 <STR>\\n		{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
 			  }
-			  *string_buf_ptr++ = '\n';}
+			  *string_buf_ptr++ = '\n';
+			}
 <STR>\\t		{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
 			  }
-			  *string_buf_ptr++ = '\t';}
+			  *string_buf_ptr++ = '\t';
+			}
 <STR>\\r		{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
 			  }
-			  *string_buf_ptr++ = '\r';}
+			  *string_buf_ptr++ = '\r';
+			}
 <STR>\\b		{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
 			  }
-			  *string_buf_ptr++ = '\b';}
+			  *string_buf_ptr++ = '\b';
+			}
 <STR>\\f		{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(ENDSTR);
 			  }
-			  *string_buf_ptr++ = '\f';}
+			  *string_buf_ptr++ = '\f';
+			}
 
 <STR>\\(.|\n)		{ *string_buf_ptr++ = yytext[1];}
 
 <STR>[^\\\n\"]+		{ char *yptr = yytext;
 			  while ( *yptr ){
 				if(str_length_reached()){
+			  		yylval.error_msg = "String constant too long";
 			  		BEGIN(ENDSTR);
 				}
 				*string_buf_ptr++ = *yptr++;
@@ -164,6 +180,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 {OBJECTID}		{ yylval.symbol = idtable.add_string(yytext);
 			  return(OBJECTID); }
 {ASSIGN}		{ return(ASSIGN); }
+{LE}			{ return(LE); }
 "(*"			{ BEGIN(STAR_COMMENT); }
 "--"			{ BEGIN(DASH_COMMENT); }
 <STAR_COMMENT,DASH_COMMENT>[^*\n]*	/* eat up comment content */
@@ -174,7 +191,8 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STAR_COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
 			  BEGIN(INITIAL);
 			  return(ERROR); }
-"*)"			{ return(ERROR); }
+"*)"			{ yylval.error_msg = "Unmatched *)";
+			  return(ERROR); }
 <INITIAL,STAR_COMMENT,DASH_COMMENT>"\n"	{ ++curr_lineno; }
 :			{ return(':'); }
 ;			{ return(';'); }

@@ -101,3 +101,50 @@ class Cell { -- this is an inline comment
         s: String <- "a string with a null ";
 };
 
+(* Test each keyword except STR_CONST*)
+
+ClAsS
+ElsE
+Fi
+iF
+iN
+iNhErItS
+lEt
+LoOp
+PoOl
+ThEn
+WHIle
+CaSe
+EsAc
+Of
+=>
+nEw
+isVOiD
+0918274
+trUE
+True
+fAlse
+Type
+object
+<-
+nOt
+<=
+
+
+(*Test STR_CONST with errors*)
+"ab\ncd"
+(*Test string contains null character*)
+"ab\0cd"
+(*Test new line in string error*)
+"
+This 
+should 
+not 
+be 
+printed 
+out 
+but only things on this line are not being printed out?"
+
+Class
+(*Test Comments*)
+*)
