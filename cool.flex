@@ -181,14 +181,20 @@ WHITESPACE   [ \n\f\t\v\r]+
 			}
 
 <STR>[^\\\n\"\0]+	{ char *yptr = yytext;
+			  bool error = false;
 			  while ( *yptr ){
 				if(str_length_reached()){
 			  		yylval.error_msg = "String constant too long";
-			  		BEGIN(STRERR);
+					error = true;
+					break;
 				}
 				*string_buf_ptr++ = *yptr++;
 			  }
-			  BEGIN(ENDSTR);
+			  if(error){
+			  	BEGIN(STRERR);
+			  }else{
+			  	BEGIN(ENDSTR);
+			  }
 			}
 <STR><<EOF>>		{ yylval.error_msg = "EOF in string constant.";
 			  BEGIN(INITIAL);
