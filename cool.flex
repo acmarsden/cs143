@@ -80,6 +80,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 %x DASH_COMMENT
 %x STR
 %x ENDSTR
+%x STRERR
 
 %%
 
@@ -109,65 +110,85 @@ WHITESPACE   [ \n\f\t\v\r]+
 {NEW}			{ return(NEW); }
 {ISVOID}		{ return(ISVOID); }
 {NOT}			{ return(NOT);}
-{BOOL_CONST}		{ yylval.boolean = true;
-				return(BOOL_CONST); }	
+{BOOL_CONST}		{ char* yytext_start = yytext;
+			  for ( ; *yytext; ++yytext) *yytext = tolower(*yytext);
+			  yytext = yytext_start;
+			  yylval.boolean = strcmp(yytext,"false");
+			  return(BOOL_CONST);
+			}
 \"                      { /* Found string beginning character*/
 			  string_buf_ptr = string_buf;
 			  BEGIN(STR); }
-<STR>\"			{ /* Found string termination character*/
+<STR,ENDSTR>\"		{ /* Found string termination character*/
 			  BEGIN(INITIAL);
 			  *string_buf_ptr = '\0';
 			  yylval.symbol = stringtable.add_string(string_buf);
 			  return(STR_CONST);}
-<ENDSTR>.*\"		{ /* Eat up rest of the string */
+<STRERR>[^\"\n]*\n	{ /* Eat up rest of the string */
+			  ++curr_lineno;
+			}
+<STRERR>.*\"		{ /* Eat up rest of the string */
 			  BEGIN(INITIAL);
 			  return(ERROR);
 			}
-<STR>\n			{ /* error - unterminated string constant */
-			  yylval.error_msg = "Unterminatd string constant";
-			  BEGIN(ENDSTR);
+<ENDSTR>\0	        { /* A null character was found */
+			  yylval.error_msg = "String contains null character.";
+			  BEGIN(STRERR);
 			}
-<STR>\\n		{ if(str_length_reached()){
+<STR>\n			{ /* error - unterminated string constant */
+			  ++curr_lineno;
+			  yylval.error_msg = "Unterminated string constant";
+			  BEGIN(STRERR);
+			}
+<STR,ENDSTR>\\n		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
-			  	BEGIN(ENDSTR);
+			  	BEGIN(STRERR);
 			  }
 			  *string_buf_ptr++ = '\n';
+			  BEGIN(STR);
 			}
-<STR>\\t		{ if(str_length_reached()){
+<STR,ENDSTR>\\t		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
-			  	BEGIN(ENDSTR);
+			  	BEGIN(STRERR);
 			  }
 			  *string_buf_ptr++ = '\t';
+			  BEGIN(STR);
 			}
-<STR>\\r		{ if(str_length_reached()){
+<STR,ENDSTR>\\r		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
-			  	BEGIN(ENDSTR);
+			  	BEGIN(STRERR);
 			  }
 			  *string_buf_ptr++ = '\r';
+			  BEGIN(STR);
 			}
-<STR>\\b		{ if(str_length_reached()){
+<STR,ENDSTR>\\b		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
-			  	BEGIN(ENDSTR);
+			  	BEGIN(STRERR);
 			  }
 			  *string_buf_ptr++ = '\b';
+			  BEGIN(STR);
 			}
-<STR>\\f		{ if(str_length_reached()){
+<STR,ENDSTR>\\f		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
-			  	BEGIN(ENDSTR);
+			  	BEGIN(STRERR);
 			  }
 			  *string_buf_ptr++ = '\f';
+			  BEGIN(STR);
 			}
 
-<STR>\\(.|\n)		{ *string_buf_ptr++ = yytext[1];}
+<STR,ENDSTR>\\(.|\n)	{ *string_buf_ptr++ = yytext[1];
+			  BEGIN(STR);
+			}
 
-<STR>[^\\\n\"]+		{ char *yptr = yytext;
+<STR>[^\\\n\"\0]+	{ char *yptr = yytext;
 			  while ( *yptr ){
 				if(str_length_reached()){
 			  		yylval.error_msg = "String constant too long";
-			  		BEGIN(ENDSTR);
+			  		BEGIN(STRERR);
 				}
 				*string_buf_ptr++ = *yptr++;
 			  }
+			  BEGIN(ENDSTR);
 			}
 <STR><<EOF>>		{ yylval.error_msg = "EOF in string constant.";
 			  BEGIN(INITIAL);
@@ -185,15 +206,14 @@ WHITESPACE   [ \n\f\t\v\r]+
 "--"			{ BEGIN(DASH_COMMENT); }
 <STAR_COMMENT,DASH_COMMENT>[^*\n]*	/* eat up comment content */
 <STAR_COMMENT>"*)"		{ BEGIN(INITIAL);}
-<DASH_COMMENT>\n		{ ++curr_lineno; 
-                                  BEGIN(INITIAL);}
+<DASH_COMMENT>.*/\n		{ BEGIN(INITIAL);}
 <DASH_COMMENT><<EOF>>		{ BEGIN(INITIAL);}
 <STAR_COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
 			  BEGIN(INITIAL);
 			  return(ERROR); }
 "*)"			{ yylval.error_msg = "Unmatched *)";
 			  return(ERROR); }
-<INITIAL,STAR_COMMENT,DASH_COMMENT>"\n"	{ ++curr_lineno; }
+<INITIAL,STAR_COMMENT,DASH_COMMENT>\n	{ ++curr_lineno; }
 :			{ return(':'); }
 ;			{ return(';'); }
 [(]			{ return('('); }
