@@ -206,9 +206,9 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  	BEGIN(ENDSTR);
 			  }
 			}
-<STR,ENDSTR><<EOF>>	{ yylval.error_msg = "EOF in string constant.";
-			  BEGIN(INITIAL);
-			  return(ERROR);
+<STRERR><<EOF>>		{ yylval.error_msg = "EOF in string constant.";
+			  	  BEGIN(INITIAL);
+			  	  return(ERROR);
 			}
 {INT_CONST}		{ yylval.symbol = inttable.add_string(yytext);
 			  return(INT_CONST); }
@@ -223,9 +223,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STAR_COMMENT,DASH_COMMENT>[^*\n]*	/* eat up comment content */
 <STAR_COMMENT>"*)"		{ BEGIN(INITIAL);}
 <DASH_COMMENT>.*/\n		{ BEGIN(INITIAL);}
-<DASH_COMMENT><<EOF>>		{ yylval.error_msg = "EOF in comment";
-				  BEGIN(INITIAL);
-				  return(ERROR);	}
+<DASH_COMMENT><<EOF>>		{ BEGIN(INITIAL);}
 <STAR_COMMENT><<EOF>>	{ yylval.error_msg = "EOF in comment";
 			  BEGIN(INITIAL);
 			  return(ERROR); }
