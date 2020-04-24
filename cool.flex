@@ -175,7 +175,13 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  *string_buf_ptr++ = '\f';
 			  BEGIN(STR);
 			}
-
+<STR,ENDSTR>\\\0	{ if(str_length_reached()){
+			  	yylval.error_msg = "String constant too long";
+			  	BEGIN(STRERR);
+			  }
+			  yylval.error_msg = "String contains escaped null character.";
+			  BEGIN(STRERR);
+			}
 <STR,ENDSTR>\\.		{ *string_buf_ptr++ = yytext[1];
 			  BEGIN(STR);
 			}
