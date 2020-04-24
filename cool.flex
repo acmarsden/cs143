@@ -176,7 +176,11 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  BEGIN(STR);
 			}
 
-<STR,ENDSTR>\\(.|\n)	{ *string_buf_ptr++ = yytext[1];
+<STR,ENDSTR>\\.		{ *string_buf_ptr++ = yytext[1];
+			  BEGIN(STR);
+			}
+<STR,ENDSTR>\\\n	{ *string_buf_ptr++ = yytext[1];
+			  ++curr_lineno;
 			  BEGIN(STR);
 			}
 
