@@ -135,7 +135,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  yylval.error_msg = "String contains null character.";
 			  BEGIN(STRERR);
 			}
-<STR>\n			{ /* error - unterminated string constant */
+<STR,ENDSTR>\n		{ /* error - unterminated string constant */
 			  ++curr_lineno;
 			  yylval.error_msg = "Unterminated string constant";
 			  BEGIN(STRERR);
