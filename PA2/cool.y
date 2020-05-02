@@ -136,11 +136,7 @@
     
     /* You will want to change the following line. */
     %type <features> dummy_feature_list
-    /* Annie below */
-    %type <formals> dummy_formal_list
-    %type <method> method
-    %type <attr> attr
-    %type <formal> formal
+    
     /* Precedence declarations go here. */
     
     
@@ -161,8 +157,7 @@
     ;
     
     /* If no parent is specified, the class inherits from the Object class. */
-    class	: 
-    CLASS TYPEID '{' dummy_feature_list '}' ';'
+    class	: CLASS TYPEID '{' dummy_feature_list '}' ';'
     { $$ = class_($2,idtable.add_string("Object"),$4,
     stringtable.add_string(curr_filename)); }
     | CLASS TYPEID INHERITS TYPEID '{' dummy_feature_list '}' ';'
@@ -173,43 +168,6 @@
     dummy_feature_list:		/* empty */
     {  $$ = nil_Features(); }
     
-    /* Annie below */
-    method :
-    OBJECTID '(' dummy_formal_list ')' ':' TYPEID '{' expr '}' ';'
-    { $$ = method($1,$3,$6,$8); }
-    ;
-
-    attr :
-    OBJECTID ':' TYPEID ';'
-    { $$ = attr($1, $3); }
-    | OBJECTID ':' TYPEID expr ';'
-    { $$ = attr($1, $3, $4); }
-    ;
-
-    dummy_formals_list 
-    : formal
-    { $$ = single_Formals($1);
-      parse_results = $$; }
-    | dummy_formals_list formal
-    { $$ = append_Formals($1, single_Formals($2));
-      parse_results = $$; }
-    ;
-    
-    formal :
-    OBJECTID ':' TYPEID
-    { $$ = formal($1, $3); }
-    ;
-
-    branch:
-    OBJECTID ':' TYPEID '=>' expr ';'
-    { $$ = branch($1, $3, $5); }
-    ; 
-
-    /* But wait how do I do any number of branches? There isn't a prototype for a branch list, but there is for a case list */
-    
-    case :
-    CASE expr OF branch ESAC
-    /* Not sure what action to take here since we have only the branch constructor...? */
     
     /* end of grammar */
     %%
