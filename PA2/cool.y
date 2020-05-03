@@ -184,11 +184,9 @@
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
       | feature ';'
-      { $$ = single_Features($1);
-        parse_results = $$; }
+      { $$ = single_Features($1); }
       | feature_list feature ';'
-      { $$ = append_Features($1, single_Features($2));
-        parse_results = $$; }
+      { $$ = append_Features($1, single_Features($2));}
     ;
 
     feature :
@@ -202,11 +200,9 @@
 
     formal_list :
       formal
-      { $$ = single_Formals($1);
-        parse_results = $$; }
+      { $$ = single_Formals($1);}
       | formal_list ',' formal
-      { $$ = append_Formals($1, single_Formals($3));
-        parse_results = $$; }
+      { $$ = append_Formals($1, single_Formals($3)); }
     ;
 
     formal :
