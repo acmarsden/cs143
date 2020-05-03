@@ -375,6 +375,8 @@
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = append_Expressions(single_Expressions($1), $3); }
+      | error ';' {}
+      | error ';' expression_block {}
     ;
 
     ulet :
