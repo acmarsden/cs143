@@ -153,6 +153,7 @@
     %type <expression> fn_call
 
     %type <expressions> expressions
+    %type <expressions> expression_list
     /* Precedence declarations go here. */
 
 
@@ -213,13 +214,13 @@
 
     expr :
       assign
-      | member_call   {}
-      | fn_call       {}
-      | cond          {}
-      | loop          {}
-      | expressions   {}
-      | let           {}
-      | case          {}
+      | member_call           {}
+      | fn_call               {}
+      | cond                  {}
+      | loop                  {}
+      | '{' expressions '}'   {}
+      | let                   {}
+      | case                  {}
       | NEW TYPEID    { @$ = @2;
                         SET_NODELOC(@2);
                         $$ = new_($2); }
@@ -271,14 +272,30 @@
       { $$ = assign($1, $3); }
     ;
 
-    member_call : // TODO
-      OBJECTID ASSIGN expr ';'
-      { $$ = assign($1, $3); }
+    member_call :
+      expr '.' OBJECTID '(' expression_list ')'
+      { $$ = dispatch($1, $3, $5); }
+      | expr '@' TYPEID '.' OBJECTID '(' expression_list ')'
+      { $$ = static_dispatch($1, $3, $5, $7); }
     ;
 
-    fn_call : // TODO
-      OBJECTID ASSIGN expr ';'
-      { $$ = assign($1, $3); }
+    fn_call :
+      OBJECTID '(' expression_list ')'
+      { $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
+    ;
+
+    expression_list :
+      expr
+      { $$ = single_Expressions($1);}
+      | expression_list ',' expr
+      { $$ = append_Expressions($1, single_Expressions($3));}
+    ;
+
+    cases :
+      branch
+      { $$ = single_Cases($1);}
+      | cases branch
+      { $$ = append_Cases($1, single_Cases($3)); }
     ;
 
     cond :
@@ -292,9 +309,11 @@
       { $$ = loop($2, $4); }
     ;
 
-    expressions : // TODO
-      '{' expr '}'
-      { }
+    expressions :
+      expr ';'
+      { $$ = single_Expressions($1); }
+      | expressions expr ';'
+      { $$ = append_Expressions($1, single_Expressions($2)); }
     ;
 
     let :
