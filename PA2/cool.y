@@ -206,35 +206,35 @@
       { @$ = @8;
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | CLASS error '{' feature_list '}' ';'
+      | CLASS error '{' feature_list '}' ';' {}
     ;
 
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
-      | feature ';'
+      | feature
       { @$ = @2;
         SET_NODELOC(@2);
         $$ = single_Features($1); }
-      | feature_list feature ';'
+      | feature_list feature
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = append_Features($1, single_Features($2));}
     ;
 
     feature :
-      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
+      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
       { @$ = @9;
         SET_NODELOC(@9);
         $$ = method($1,$3,$6,$8); }
-      | OBJECTID ':' TYPEID
+      | OBJECTID ':' TYPEID ';'
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = attr($1, $3, no_expr()); }
-      | OBJECTID ':' TYPEID ASSIGN expr
+      | OBJECTID ':' TYPEID ASSIGN expr ';'
       { @$ = @5;
         SET_NODELOC(@5);
-        $$ = attr($1, $3, $5); }
+        $$ = attr($1, $3, $5); } 
     ;
 
     formal_list : /* empty formals list*/
