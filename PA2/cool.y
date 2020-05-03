@@ -162,7 +162,7 @@
     %type <expression> member_call
     %type <expression> fn_call
 
-    %type <expressions> expressions
+    %type <expressions> expression_block
     %type <expressions> expression_list
     /* Precedence declarations go here. */
     %left ASSIGN
@@ -232,13 +232,13 @@
 
     expr :
       assign
-      | member_call           {}
-      | fn_call               {}
-      | cond                  {}
-      | loop                  {}
-      | '{' expressions '}'   {}
-      | let                   {}
-      | case                  {}
+      | member_call               {}
+      | fn_call                   {}
+      | cond                      {}
+      | loop                      {}
+      | '{' expression_block '}'  { $$ = block($2); }
+      | let                       {}
+      | case                      {}
       | NEW TYPEID    { @$ = @2;
                         SET_NODELOC(@2);
                         $$ = new_($2); }
@@ -314,18 +314,17 @@
       IF expr THEN expr ELSE expr FI ';'
       { $$ = cond($2, $4, $6); }
     ;
-    /* What if we don't have an else statement? */
 
     loop :
       WHILE expr LOOP expr POOL ';'
       { $$ = loop($2, $4); }
     ;
 
-    expressions :
+    expression_block :
       expr ';'
       { $$ = single_Expressions($1); }
-      | expressions expr ';'
-      { $$ = append_Expressions($1, single_Expressions($2)); }
+      | expr ';' expression_block
+      { $$ = single_Expressions($1, append_Expressions($3)); }
     ;
 
     ulet :
@@ -349,8 +348,6 @@
       | LET OBJECTID ':' TYPEID ',' ulet
       { $$ = let($2, $4, no_expr(), $6); }
     ;
-    /* Need to transform into nested lets with single identifiers */
-    /* Do we need to do block? How do we match on any number of expressions? */
 
     branch :
       OBJECTID ':' TYPEID DARROW  expr ';'
