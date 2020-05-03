@@ -206,6 +206,7 @@
       { @$ = @8;
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
+      | CLASS error '{' feature_list '}' ';'
     ;
 
     /* Feature list may be empty, but no empty features in list. */
