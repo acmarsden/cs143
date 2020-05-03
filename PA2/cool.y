@@ -201,7 +201,7 @@
     ;
 
     branch:
-    OBJECTID ':' TYPEID '=>' expr ';'
+    OBJECTID ':' TYPEID DARROW  expr ';'
     { $$ = branch($1, $3, $5); }
     ; 
 
@@ -209,8 +209,9 @@
     
     case :
     CASE expr OF branch ESAC
-    /* Not sure what action to take here since we have only the branch constructor...? */
-    
+    { $$ = typcase($2, $4); }
+    /* The above isn't quite right, how do we do any number of branches? */
+
     assign : 
     OBJECTID ASSIGN expr ';'
     { $$ = assign($1, $3); }
@@ -224,9 +225,29 @@
     WHILE expr LOOP expr POOL ';'
     { $$ = loop($2, $4); }
     
+    let :
+    LET OBJECTID ':' TYPEID '[' '<-' expr ']' IN expr
+    { $$ = let($2, $4, $7, $10); } 
+    /* Need to transform into nested lets with single identifiers */
     /* Do we need to do block? How do we match on any number of expressions? */
+     
+    plus :
+    expr '+'  expr
+    { $$ = plus($1, $3); }
 
+    sub :
+    expr '+' expr
+    { $$ = sub($1, $3); }
 
+    mul :
+    expr '*' expr
+    { $$ = mul($1, $3); }
+
+    divide :
+    expr '/' expr
+    { $$ = divide($1, $3); }
+
+    
     /* end of grammar */
     %%
     
