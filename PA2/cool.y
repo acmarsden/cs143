@@ -292,12 +292,6 @@
       { $$ = append_Expressions($1, single_Expressions($3));}
     ;
 
-    cases :
-      branch
-      { $$ = single_Cases($1);}
-      | cases branch
-      { $$ = append_Cases($1, single_Cases($2)); }
-    ;
 
     cond :
       IF expr THEN expr ELSE expr FI ';'
