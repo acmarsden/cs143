@@ -149,6 +149,7 @@
     %type <expression> cond
     %type <expression> loop
     %type <expression> let
+    %type <expression> ulet
     %type <expression> member_call
     %type <expression> fn_call
 
@@ -316,10 +317,25 @@
       { $$ = append_Expressions($1, single_Expressions($2)); }
     ;
 
-    let :
+    ulet :
+      OBJECTID ':' TYPEID ASSIGN expr IN expr
+      { $$ = let($1, $3, $5, $7); }
+      | OBJECTID ':' TYPEID IN expr
+      { $$ = let($1, $3, no_expr(), $5); }
+      | OBJECTID ':' TYPEID ASSIGN expr ',' ulet
+      { $$ = let($1, $3, $5, $7); }
+      | OBJECTID ':' TYPEID ',' ulet
+      { $$ = let($1, $3, no_expr(), $5); }
+    ;
+
+    let:
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
       { $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID IN expr
+      { $$ = let($2, $4, no_expr(), $6); }
+      | LET OBJECTID ':' TYPEID ASSIGN expr ',' ulet
+      { $$ = let($2, $4, $6, $8); }
+      | LET OBJECTID ':' TYPEID ',' ulet
       { $$ = let($2, $4, no_expr(), $6); }
     ;
     /* Need to transform into nested lets with single identifiers */
