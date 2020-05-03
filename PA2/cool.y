@@ -315,14 +315,7 @@
       branch
       { $$ = single_Cases($1);}
       | cases branch
-      { $$ = append_Cases($1, single_Cases($3)); }
-    ;
-
-    formal_list :
-      formal
-      { $$ = single_Formals($1);}
-      | formal_list ',' formal
-      { $$ = append_Formals($1, single_Formals($3)); }
+      { $$ = append_Cases($1, single_Cases($2)); }
     ;
 
     case :
