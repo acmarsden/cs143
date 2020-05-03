@@ -152,6 +152,8 @@
     %type <expression> cond
     %type <expression> loop
     %type <expression> let
+    %type <expression> member_call
+    %type <expression> fn_call
 
     %type <expressions> expressions
     /* Precedence declarations go here. */
