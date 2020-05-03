@@ -236,15 +236,16 @@
         $$ = attr($1, $3, $5); }
     ;
 
-    formal_list :
-      formal
+    formal_list : /* empty formals list*/
+      {  $$ = nil_Formals(); }
+      | formal
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Formals($1);}
-      | formal_list ',' formal
+      | formal ',' formal_list
       { @$ = @3;
         SET_NODELOC(@3);
-        $$ = append_Formals($1, single_Formals($3)); }
+        $$ = append_Formals(single_Formals($1), $3); }
     ;
 
     formal :
