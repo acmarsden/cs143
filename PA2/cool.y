@@ -167,9 +167,9 @@
     /* Precedence declarations go here. */
     %left ASSIGN
     %left NOT
-    %left LE, '<', '='
-    %left '+', '-'
-    %left '*', '/'
+    %left LE '<' '='
+    %left '+' '-'
+    %left '*' '/'
     %left ISVOID
     %left '~'
     %left '@'
