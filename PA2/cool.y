@@ -193,7 +193,7 @@
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
       { $$ = method($1,$3,$6,$8); }
       | OBJECTID ':' TYPEID ';'
-      { $$ = attr($1, $3); }
+      { $$ = attr($1, $3, no_expr()); }
       | OBJECTID ':' TYPEID ASSIGN expr
       { $$ = attr($1, $3, $5); }
     ;
@@ -299,8 +299,8 @@
     let :
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
       { $$ = let($2, $4, $6, $8); }
-      //| LET OBJECTID ':' TYPEID IN expr /* How to send NULL when there is no init?*/
-      //{ $$ = let($2, $4, NULL, $6); }
+      | LET OBJECTID ':' TYPEID IN expr
+      { $$ = let($2, $4, no_expr(), $6); }
     ;
     /* Need to transform into nested lets with single identifiers */
     /* Do we need to do block? How do we match on any number of expressions? */
