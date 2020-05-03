@@ -184,50 +184,74 @@
 
     class_list :
       class     /* single class */
-      { $$ = single_Classes($1);
+      { @$ = @1;
+        SET_NODELOC(@1);
+        $$ = single_Classes($1);
         parse_results = $$; }
       | class_list class  /* several classes */
-      { $$ = append_Classes($1,single_Classes($2));
+      { @$ = @2;
+        SET_NODELOC(@2);
+        $$ = append_Classes($1,single_Classes($2));
         parse_results = $$; }
     ;
 
     /* If no parent is specified, the class inherits from the Object class. */
     class :
       CLASS TYPEID '{' feature_list '}' ';'
-      { $$ = class_($2, idtable.add_string("Object"), $4,
+      { @$ = @6;
+        SET_NODELOC(@6);
+        $$ = class_($2, idtable.add_string("Object"), $4,
                     stringtable.add_string(curr_filename)); }
       | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-      { $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
+      { @$ = @8;
+        SET_NODELOC(@8);
+        $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
     ;
 
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
       | feature ';'
-      { $$ = single_Features($1); }
+      { @$ = @2;
+        SET_NODELOC(@2);
+        $$ = single_Features($1); }
       | feature_list feature ';'
-      { $$ = append_Features($1, single_Features($2));}
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = append_Features($1, single_Features($2));}
     ;
 
     feature :
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
-      { $$ = method($1,$3,$6,$8); }
-      | OBJECTID ':' TYPEID ';'
-      { $$ = attr($1, $3, no_expr()); }
+      { @$ = @9;
+        SET_NODELOC(@9);
+	$$ = method($1,$3,$6,$8); }
+      | OBJECTID ':' TYPEID
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = attr($1, $3, no_expr()); }
       | OBJECTID ':' TYPEID ASSIGN expr
-      { $$ = attr($1, $3, $5); }
+      { @$ = @5;
+        SET_NODELOC(@5);
+        $$ = attr($1, $3, $5); }
     ;
 
     formal_list :
       formal
-      { $$ = single_Formals($1);}
+      { @$ = @1;
+        SET_NODELOC(@1);
+        $$ = single_Formals($1);}
       | formal_list ',' formal
-      { $$ = append_Formals($1, single_Formals($3)); }
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = append_Formals($1, single_Formals($3)); }
     ;
 
     formal :
       OBJECTID ':' TYPEID
-      { $$ = formal($1, $3); }
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = formal($1, $3); }
     ;
 
     expr :
@@ -236,7 +260,9 @@
       | fn_call                   {}
       | cond                      {}
       | loop                      {}
-      | '{' expression_block '}'  { $$ = block($2); }
+      | '{' expression_block '}'  { @$ = @3;
+                                    SET_NODELOC(@3);
+                                    $$ = block($2); }
       | let                       {}
       | case                      {}
       | NEW TYPEID    { @$ = @2;
@@ -286,84 +312,128 @@
                         $$ = bool_const($1); }
 
     assign :
-      OBJECTID ASSIGN expr ';'
-      { $$ = assign($1, $3); }
+      OBJECTID ASSIGN expr
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = assign($1, $3); }
     ;
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
-      { $$ = dispatch($1, $3, $5); }
+      { @$ = @6;
+        SET_NODELOC(@6);
+        $$ = dispatch($1, $3, $5); }
       | expr '@' TYPEID '.' OBJECTID '(' expression_list ')'
-      { $$ = static_dispatch($1, $3, $5, $7); }
+      { @$ = @8;
+        SET_NODELOC(@8);
+        $$ = static_dispatch($1, $3, $5, $7); }
     ;
 
     fn_call :
       OBJECTID '(' expression_list ')'
-      { $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
+      { @$ = @4;
+        SET_NODELOC(@4);
+        $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
     expression_list :
       expr
-      { $$ = single_Expressions($1);}
+      { @$ = @1;
+        SET_NODELOC(@1);
+        $$ = single_Expressions($1);}
       | expression_list ',' expr
-      { $$ = append_Expressions($1, single_Expressions($3));}
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = append_Expressions($1, single_Expressions($3));}
     ;
 
 
     cond :
-      IF expr THEN expr ELSE expr FI ';'
-      { $$ = cond($2, $4, $6); }
+      IF expr THEN expr ELSE expr FI
+      { @$ = @7;
+        SET_NODELOC(@7);
+        $$ = cond($2, $4, $6); }
     ;
 
     loop :
-      WHILE expr LOOP expr POOL ';'
-      { $$ = loop($2, $4); }
+      WHILE expr LOOP expr POOL
+      { @$ = @5;
+        SET_NODELOC(@5);
+        $$ = loop($2, $4); }
     ;
 
     expression_block :
       expr ';'
-      { $$ = single_Expressions($1); }
+      { @$ = @2;
+        SET_NODELOC(@2);
+        $$ = single_Expressions($1); }
       | expr ';' expression_block
-      { $$ = append_Expressions(single_Expressions($1), $3); }
+      { @$ = @3;
+        SET_NODELOC(@3);
+        $$ = append_Expressions(single_Expressions($1), $3); }
     ;
 
     ulet :
       OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { $$ = let($1, $3, $5, $7); }
+      { @$ = @7;
+        SET_NODELOC(@7);
+        $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID IN expr
-      { $$ = let($1, $3, no_expr(), $5); }
+      { @$ = @5;
+        SET_NODELOC(@5);
+        $$ = let($1, $3, no_expr(), $5); }
       | OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { $$ = let($1, $3, $5, $7); }
+      { @$ = @7;
+        SET_NODELOC(@7);
+        $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID ',' ulet
-      { $$ = let($1, $3, no_expr(), $5); }
+      { @$ = @5;
+        SET_NODELOC(@5);
+        $$ = let($1, $3, no_expr(), $5); }
     ;
 
     let:
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { $$ = let($2, $4, $6, $8); }
+      { @$ = @8;
+        SET_NODELOC(@8);
+        $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID IN expr
-      { $$ = let($2, $4, no_expr(), $6); }
+      { @$ = @6;
+        SET_NODELOC(@6);
+        $$ = let($2, $4, no_expr(), $6); }
       | LET OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { $$ = let($2, $4, $6, $8); }
+      { @$ = @8;
+        SET_NODELOC(@8);
+        $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID ',' ulet
-      { $$ = let($2, $4, no_expr(), $6); }
+      { @$ = @6;
+        SET_NODELOC(@6);
+        $$ = let($2, $4, no_expr(), $6); }
     ;
 
     branch :
       OBJECTID ':' TYPEID DARROW  expr ';'
-      { $$ = branch($1, $3, $5); }
+      { @$ = @6;
+        SET_NODELOC(@6);
+        $$ = branch($1, $3, $5); }
     ;
 
     cases :
       branch
-      { $$ = single_Cases($1);}
+      { @$ = @1;
+        SET_NODELOC(@1);
+        $$ = single_Cases($1);}
       | cases branch
-      { $$ = append_Cases($1, single_Cases($2)); }
+      { @$ = @2;
+        SET_NODELOC(@2);
+        $$ = append_Cases($1, single_Cases($2)); }
     ;
 
     case :
       CASE expr OF cases ESAC
-      { $$ = typcase($2, $4); }
+      { @$ = @5;
+        SET_NODELOC(@5);
+        $$ = typcase($2, $4); }
     ;
 
     /* end of grammar */
