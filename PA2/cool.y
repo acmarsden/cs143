@@ -225,7 +225,7 @@
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
       { @$ = @9;
         SET_NODELOC(@9);
-	$$ = method($1,$3,$6,$8); }
+        $$ = method($1,$3,$6,$8); }
       | OBJECTID ':' TYPEID
       { @$ = @3;
         SET_NODELOC(@3);
@@ -298,10 +298,10 @@
                         $$ = eq($1, $3); }
       | NOT expr      { @$ = @2;
                         SET_NODELOC(@2);
-                        $$ = neg($2); }
+                        $$ = comp($2); }
       | '(' expr ')'  { @$ = @3;
                         SET_NODELOC(@3);
-                        $$ = comp($2); }
+                        $$ = $2; }
       | STR_CONST     { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = string_const($1); }
