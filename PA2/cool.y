@@ -142,7 +142,8 @@
     %type <formal> formal
 
     %type <expression> expr
-    %type <expression> branch
+    %type <case_> branch
+    %type <cases> cases
     %type <expression> case
     %type <expression> assign
     %type <expression> cond
@@ -305,17 +306,27 @@
     /* Need to transform into nested lets with single identifiers */
     /* Do we need to do block? How do we match on any number of expressions? */
 
-    branch:
+    branch :
       OBJECTID ':' TYPEID DARROW  expr ';'
       { $$ = branch($1, $3, $5); }
     ;
 
-    /* But wait how do I do any number of branches?
-    There isn't a prototype for a branch list, but there is for a case list
-    */
+    cases :
+      branch
+      { $$ = single_Cases($1);}
+      | cases branch
+      { $$ = append_Cases($1, single_Cases($3)); }
+    ;
+
+    formal_list :
+      formal
+      { $$ = single_Formals($1);}
+      | formal_list ',' formal
+      { $$ = append_Formals($1, single_Formals($3)); }
+    ;
 
     case :
-      CASE expr OF branch ESAC
+      CASE expr OF cases ESAC
       { $$ = typcase($2, $4); }
     ;
     /* The above isn't quite right, how do we do any number of branches? */
