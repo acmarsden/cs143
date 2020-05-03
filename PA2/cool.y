@@ -213,12 +213,12 @@
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
       | feature
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = single_Features($1); }
       | feature_list feature
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @2;
+        SET_NODELOC(@2);
         $$ = append_Features($1, single_Features($2));}
     ;
 
@@ -235,6 +235,8 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = attr($1, $3, $5); } 
+      | OBJECTID ':'  error ';' {}
+      | OBJECTID '(' error '{' expr '}' ';' {}
     ;
 
     formal_list : /* empty formals list*/
