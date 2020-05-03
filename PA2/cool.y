@@ -125,6 +125,15 @@
     /*  DON'T CHANGE ANYTHING ABOVE THIS LINE, OR YOUR PARSER WONT WORK       */
     /**************************************************************************/
 
+    /* TODO:
+        - [ ] Check the grammar is complete
+        - [ ] Precedence declarations: to fix shift-reduce  and reduce-reduce conflicts
+        - [ ] Maybe rewrite the grammar: to fix remaining shift-reduce / reduce-reduce conflicts
+        - [ ] Line Numbers for every expression
+        - [ ] Error handling
+        - [ ] Write tests
+     */
+
     /* Complete the nonterminal list below, giving a type for the semantic
     value of each non terminal. (See section 3.6 in the bison
     documentation for details). */
