@@ -149,6 +149,8 @@
     %type <expression> cond
     %type <expression> loop
     %type <expression> let
+
+    %type <expressions> expressions
     /* Precedence declarations go here. */
 
 
@@ -229,6 +231,16 @@
       { $$ = assign($1, $3); }
     ;
 
+    member_call : // TODO
+      OBJECTID ASSIGN expr ';'
+      { $$ = assign($1, $3); }
+    ;
+
+    fn_call : // TODO
+      OBJECTID ASSIGN expr ';'
+      { $$ = assign($1, $3); }
+    ;
+
     cond :
       IF expr THEN expr ELSE expr FI ';'
       { $$ = cond($2, $4, $6); }
@@ -238,6 +250,11 @@
     loop :
       WHILE expr LOOP expr POOL ';'
       { $$ = loop($2, $4); }
+    ;
+
+    expressions : // TODO
+      '{' expr '}'
+      { }
     ;
 
     let :
@@ -251,13 +268,13 @@
 
     expr :
       assign
-      | member_call
-      | fn_call
-      | cond
-      | loop
-      | expressions
-      | let
-      | case
+      | member_call   {}
+      | fn_call       {}
+      | cond          {}
+      | loop          {}
+      | expressions   {}
+      | let           {}
+      | case          {}
       | NEW TYPEID    { $$ = new_($2); }
       | ISVOID expr   { $$ = isvoid($2); }
       | expr '+' expr { $$ = plus($1, $3); }
