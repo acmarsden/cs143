@@ -295,7 +295,7 @@
       branch
       { $$ = single_Cases($1);}
       | cases branch
-      { $$ = append_Cases($1, single_Cases($3)); }
+      { $$ = append_Cases($1, single_Cases($2)); }
     ;
 
     cond :
@@ -341,7 +341,6 @@
       CASE expr OF cases ESAC
       { $$ = typcase($2, $4); }
     ;
-    /* The above isn't quite right, how do we do any number of branches? */
 
     /* end of grammar */
     %%
