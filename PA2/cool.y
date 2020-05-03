@@ -135,12 +135,15 @@
     %type <class_> class
 
     /* You will want to change the following line. */
-    %type <features> dummy_feature_list
-    %type <formals> dummy_formal_list
-    %type <method> method
-    %type <attr> attr
+    %type <features> feature_list
+    %type <feature> feature
 
+    %type <formals> formal_list
     %type <formal> formal
+
+    %type <method> method
+
+    %type <attr> attr
 
     %type <expression> expr
     %type <expression> branch
@@ -164,45 +167,55 @@
     class_list :
       class     /* single class */
       { $$ = single_Classes($1);
-      parse_results = $$; }
+        parse_results = $$; }
       | class_list class  /* several classes */
       { $$ = append_Classes($1,single_Classes($2));
-      parse_results = $$; }
+        parse_results = $$; }
     ;
 
     /* If no parent is specified, the class inherits from the Object class. */
     class :
-      CLASS TYPEID '{' dummy_feature_list '}' ';'
-      { $$ = class_($2,idtable.add_string("Object"),$4,
-      stringtable.add_string(curr_filename)); }
-      | CLASS TYPEID INHERITS TYPEID '{' dummy_feature_list '}' ';'
-      { $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
+      CLASS TYPEID '{' feature_list '}' ';'
+      { $$ = class_($2, idtable.add_string("Object"), $4,
+                    stringtable.add_string(curr_filename)); }
+      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
+      { $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
     ;
 
     /* Feature list may be empty, but no empty features in list. */
-    dummy_feature_list:   /* empty */
-    {  $$ = nil_Features(); }
+    feature_list :   /* empty */
+      {  $$ = nil_Features(); }
+      | feature ';'
+      { $$ = single_Features($1);
+        parse_results = $$; }
+      | feature_list feature ';'
+      { $$ = append_Features($1, single_Features($2));
+        parse_results = $$; }
     ;
 
-    /* Annie below */
+    feature :
+      method {}
+      | attr {}
+    ;
+
     method :
-      OBJECTID '(' dummy_formal_list ')' ':' TYPEID '{' expr '}' ';'
+      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
       { $$ = method($1,$3,$6,$8); }
     ;
 
     attr :
-      OBJECTID ':' TYPEID ';'
+      | OBJECTID ':' TYPEID ';'
       { $$ = attr($1, $3); }
-      | OBJECTID ':' TYPEID expr ';'
+      | OBJECTID ':' TYPEID ASSIGN expr
       { $$ = attr($1, $3, $4); }
     ;
 
-    dummy_formal_list :
+    formal_list :
       formal
       { $$ = single_Formals($1);
         parse_results = $$; }
-      | dummy_formal_list formal
-      { $$ = append_Formals($1, single_Formals($2));
+      | formal_list ',' formal
+      { $$ = append_Formals($1, single_Formals($3));
         parse_results = $$; }
     ;
 
@@ -211,20 +224,60 @@
       { $$ = formal($1, $3); }
     ;
 
-    branch:
-      OBJECTID ':' TYPEID DARROW  expr ';'
-      { $$ = branch($1, $3, $5); }
-    ;
-
-    /* But wait how do I do any number of branches?
-    There isn't a prototype for a branch list, but there is for a case list
-    */
-
-    case :
-      CASE expr OF branch ESAC
-      { $$ = typcase($2, $4); }
-    ;
-    /* The above isn't quite right, how do we do any number of branches? */
+    expr :
+      assign
+      | member_call   {}
+      | fn_call       {}
+      | cond          {}
+      | loop          {}
+      | expressions   {}
+      | let           {}
+      | case          {}
+      | NEW TYPEID    { @$ = @2;
+                        SET_NODELOC(@2);
+                        $$ = new_($2); }
+      | ISVOID expr   { @$ = @2;
+                        SET_NODELOC(@2);
+                        $$ = isvoid($2); }
+      | expr '+' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = plus($1, $3); }
+      | expr '-' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = sub($1, $3); }
+      | expr '*' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = mul($1, $3); }
+      | expr '/' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = divide($1, $3); }
+      | '~' expr      { @$ = @2;
+                        SET_NODELOC(@2);
+                        $$ = neg($2); }
+      | expr '<' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = lt($1, $3); }
+      | expr LE expr  { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = leq($1, $3); }
+      | expr '=' expr { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = eq($1, $3); }
+      | NOT expr      { @$ = @2;
+                        SET_NODELOC(@2);
+                        $$ = neg($2); }
+      | '(' expr ')'  { @$ = @3;
+                        SET_NODELOC(@3);
+                        $$ = comp($2); }
+      | STR_CONST     { @$ = @1;
+                        SET_NODELOC(@1);
+                        $$ = string_const($1); }
+      | INT_CONST     { @$ = @1;
+                        SET_NODELOC(@1);
+                        $$ = int_const($1); }
+      | BOOL_CONST    { @$ = @1;
+                        SET_NODELOC(@1);
+                        $$ = bool_const($1); }
 
     assign :
       OBJECTID ASSIGN expr ';'
@@ -266,31 +319,20 @@
     /* Need to transform into nested lets with single identifiers */
     /* Do we need to do block? How do we match on any number of expressions? */
 
-    expr :
-      assign
-      | member_call   {}
-      | fn_call       {}
-      | cond          {}
-      | loop          {}
-      | expressions   {}
-      | let           {}
-      | case          {}
-      | NEW TYPEID    { $$ = new_($2); }
-      | ISVOID expr   { $$ = isvoid($2); }
-      | expr '+' expr { $$ = plus($1, $3); }
-      | expr '-' expr { $$ = sub($1, $3); }
-      | expr '*' expr { $$ = mul($1, $3); }
-      | expr '/' expr { $$ = divide($1, $3); }
-      | '~' expr      { $$ = neg($2); }
-      | expr '<' expr { $$ = lt($1, $3); }
-      | expr LE expr  { $$ = leq($1, $3); }
-      | expr '=' expr { $$ = eq($1, $3); }
-      | NOT expr      { $$ = neg($2); }
-      | '(' expr ')'  { $$ = comp($2); }
-      | STR_CONST     { $$ = string_const($1); }
-      | INT_CONST     { $$ = int_const($1); }
-      | BOOL_CONST    { $$ = bool_const($1); }
+    branch:
+      OBJECTID ':' TYPEID DARROW  expr ';'
+      { $$ = branch($1, $3, $5); }
+    ;
 
+    /* But wait how do I do any number of branches?
+    There isn't a prototype for a branch list, but there is for a case list
+    */
+
+    case :
+      CASE expr OF branch ESAC
+      { $$ = typcase($2, $4); }
+    ;
+    /* The above isn't quite right, how do we do any number of branches? */
 
     /* end of grammar */
     %%
