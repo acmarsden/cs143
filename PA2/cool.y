@@ -394,6 +394,8 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = let($1, $3, no_expr(), $5); }
+      | error ',' IN expr {}
+      | error ',' ulet {}
     ;
 
     let:
@@ -413,6 +415,8 @@
       { @$ = @6;
         SET_NODELOC(@6);
         $$ = let($2, $4, no_expr(), $6); }
+      | LET error IN expr {}
+      | LET error ',' ulet {}
     ;
 
     branch :
