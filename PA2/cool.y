@@ -165,7 +165,15 @@
     %type <expressions> expressions
     %type <expressions> expression_list
     /* Precedence declarations go here. */
-
+    %left ASSIGN
+    %left NOT
+    %left LE, '<', '='
+    %left '+', '-'
+    %left '*', '/'
+    %left ISVOID
+    %left '~'
+    %left '@'
+    %left '.'
 
     %%
     /*
