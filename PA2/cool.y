@@ -209,7 +209,7 @@
       | OBJECTID ':' TYPEID ';'
       { $$ = attr($1, $3); }
       | OBJECTID ':' TYPEID ASSIGN expr
-      { $$ = attr($1, $3, $4); }
+      { $$ = attr($1, $3, $5); }
     ;
 
     formal_list :
