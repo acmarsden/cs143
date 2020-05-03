@@ -211,6 +211,22 @@
     CASE expr OF branch ESAC
     /* Not sure what action to take here since we have only the branch constructor...? */
     
+    assign : 
+    OBJECTID ASSIGN expr ';'
+    { $$ = assign($1, $3); }
+
+    cond : 
+    IF expr THEN expr ELSE expr FI ';'
+    { $$ = cond($2, $4, $6); }
+    /* What if we don't have an else statement? */
+
+    loop :
+    WHILE expr LOOP expr POOL ';'
+    { $$ = loop($2, $4); }
+    
+    /* Do we need to do block? How do we match on any number of expressions? */
+
+
     /* end of grammar */
     %%
     
