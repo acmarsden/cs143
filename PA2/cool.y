@@ -324,7 +324,7 @@
       expr ';'
       { $$ = single_Expressions($1); }
       | expr ';' expression_block
-      { $$ = single_Expressions($1, append_Expressions($3)); }
+      { $$ = append_Expressions(single_Expressions($1), $3); }
     ;
 
     ulet :
