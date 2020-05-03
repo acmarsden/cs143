@@ -141,10 +141,6 @@
     %type <formals> formal_list
     %type <formal> formal
 
-    %type <method> method
-
-    %type <attr> attr
-
     %type <expression> expr
     %type <expression> branch
     %type <expression> case
@@ -196,16 +192,8 @@
     ;
 
     feature :
-      method {}
-      | attr {}
-    ;
-
-    method :
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
       { $$ = method($1,$3,$6,$8); }
-    ;
-
-    attr :
       | OBJECTID ':' TYPEID ';'
       { $$ = attr($1, $3); }
       | OBJECTID ':' TYPEID ASSIGN expr
