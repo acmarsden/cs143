@@ -142,17 +142,13 @@
 
     %type <formal> formal
 
+    %type <expression> expr
     %type <expression> branch
     %type <expression> case
     %type <expression> assign
     %type <expression> cond
     %type <expression> loop
     %type <expression> let
-
-    %type <symbol> plus
-    %type <symbol> sub
-    %type <symbol> mul
-    %type <symbol> divide
     /* Precedence declarations go here. */
 
 
@@ -253,25 +249,30 @@
     /* Need to transform into nested lets with single identifiers */
     /* Do we need to do block? How do we match on any number of expressions? */
 
-    plus :
-      expr '+'  expr
-      { $$ = plus($1, $3); }
-    ;
-
-    sub :
-      expr '+' expr
-      { $$ = sub($1, $3); }
-    ;
-
-    mul :
-      expr '*' expr
-      { $$ = mul($1, $3); }
-    ;
-
-    divide :
-      expr '/' expr
-      { $$ = divide($1, $3); }
-    ;
+    expr :
+      assign
+      | member_call
+      | fn_call
+      | cond
+      | loop
+      | expressions
+      | let
+      | case
+      | NEW TYPEID    { $$ = new_($2); }
+      | ISVOID expr   { $$ = isvoid($2); }
+      | expr '+' expr { $$ = plus($1, $3); }
+      | expr '-' expr { $$ = sub($1, $3); }
+      | expr '*' expr { $$ = mul($1, $3); }
+      | expr '/' expr { $$ = divide($1, $3); }
+      | '~' expr      { $$ = neg($2); }
+      | expr '<' expr { $$ = lt($1, $3); }
+      | expr LE expr  { $$ = leq($1, $3); }
+      | expr '=' expr { $$ = eq($1, $3); }
+      | NOT expr      { $$ = neg($2); }
+      | '(' expr ')'  { $$ = comp($2); }
+      | STR_CONST     { $$ = string_const($1); }
+      | INT_CONST     { $$ = int_const($1); }
+      | BOOL_CONST    { $$ = bool_const($1); }
 
 
     /* end of grammar */
