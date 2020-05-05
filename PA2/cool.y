@@ -253,11 +253,11 @@
       {printf("\b : was feature error 4\n");}
       | error ':' TYPEID ASSIGN expr ';'
       {printf("\b : was feature error 5\n");}
-      | OBJECTID error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+      | OBJECTID error formal_list ')' ':' TYPEID '{' expr '}' ';'
       {printf("\b : was feature error 6\n");}
-      | OBJECTID error ':' TYPEID ';'
+      | OBJECTID error TYPEID ';'
       {printf("\b : was feature error 7\n");}
-      | OBJECTID error ':' TYPEID ASSIGN expr ';'
+      | OBJECTID error TYPEID ASSIGN expr ';'
       {printf("\b : was feature error 8\n");}
       | OBJECTID '(' error formal_list ')' ':' TYPEID '{' expr '}' ';'
       {printf("\b : was feature error 9\n");}
