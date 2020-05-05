@@ -209,7 +209,8 @@
       { @$ = @8;
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | CLASS error '{' feature_list '}' ';' {printf("class error 1");}
+      | CLASS error '{' feature_list '}' ';'
+      {printf("\b : was class error 1\n");}
     ;
 
     /* Feature list may be empty, but no empty features in list. */
@@ -242,17 +243,28 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = attr($1, $3, $5); }
-      | OBJECTID ':'  error ';' {printf("feature error 1");}
-      | OBJECTID '(' error '{' expr '}' ';' {printf("feature error 2");}
-      | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' {printf("feature error 3");}
-      | error ':' TYPEID ';' {printf("feature error 4");}
-      | error ':' TYPEID ASSIGN expr ';' {printf("feature error 5");}
-      | OBJECTID error '(' formal_list ')' ':' TYPEID '{' expr '}' ';' {printf("feature error 6");}
-      | OBJECTID error ':' TYPEID ';' {printf("feature error 7");}
-      | OBJECTID error ':' TYPEID ASSIGN expr ';' {printf("feature error 8");}
-      | OBJECTID '(' error formal_list ')' ':' TYPEID '{' expr '}' ';' {printf("feature error 9");}
-      | OBJECTID ':' error TYPEID ';' {printf("feature error 10");}
-      | OBJECTID ':' error TYPEID ASSIGN expr ';' {printf("feature error 11");}
+      | OBJECTID ':'  error ';'
+      {printf("\b : was feature error 1\n");}
+      | OBJECTID '(' error '{' expr '}' ';'
+      {printf("\b : was feature error 2\n");}
+      | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 3\n");}
+      | error ':' TYPEID ';'
+      {printf("\b : was feature error 4\n");}
+      | error ':' TYPEID ASSIGN expr ';'
+      {printf("\b : was feature error 5\n");}
+      | OBJECTID error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 6\n");}
+      | OBJECTID error ':' TYPEID ';'
+      {printf("\b : was feature error 7\n");}
+      | OBJECTID error ':' TYPEID ASSIGN expr ';'
+      {printf("\b : was feature error 8\n");}
+      | OBJECTID '(' error formal_list ')' ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 9\n");}
+      | OBJECTID ':' error TYPEID ';'
+      {printf("\b : was feature error 10\n");}
+      | OBJECTID ':' error TYPEID ASSIGN expr ';'
+      {printf("\b : was feature error 11\n");}
     ;
 
     formal_list : /* empty formals list*/
@@ -404,8 +416,10 @@
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = append_Expressions(single_Expressions($1), $3); }
-      | error ';' {printf("expr error 1");}
-      | error ';' expression_block {printf("expr error 4");}
+      | error ';'
+      {printf("\b : was expr error 1\n");}
+      | error ';' expression_block
+      {printf("\b : was expr error 2\n");}
     ;
 
     ulet :
@@ -425,8 +439,10 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = let($1, $3, no_expr(), $5); }
-      | error ',' IN expr {printf("ulet error 1");}
-      | error ',' ulet {printf("ulet error 2");}
+      | error ',' IN expr
+      {printf("\b : was ulet error 1\n");}
+      | error ',' ulet
+      {printf("\b : was ulet error 2\n");}
     ;
 
     let:
@@ -446,8 +462,10 @@
       { @$ = @6;
         SET_NODELOC(@6);
         $$ = let($2, $4, no_expr(), $6); }
-      | LET error IN expr {printf("let error 1");}
-      | LET error ',' ulet {printf("let error 2");}
+      | LET error IN expr
+      {printf("\b : was let error 1\n");}
+      | LET error ',' ulet
+      {printf("\b : was let error 2\n");}
     ;
 
     branch :
