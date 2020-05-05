@@ -260,7 +260,7 @@
       | formal_list_ ','  formal
       { @$ = @3;
         SET_NODELOC(@3);
-        $$ = append_Formals($3, single_Formals($1)); }
+        $$ = append_Formals($1, single_Formals($3)); }
     ;
 
     formal :
