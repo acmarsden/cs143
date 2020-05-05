@@ -5,4 +5,5 @@ PA1/lexer
 PA2/parser
 PA2/cool.output
 PA2/cool.tab.h
+PA2/test_parser_out
 
