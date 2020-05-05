@@ -161,13 +161,13 @@
     %type <expression> ulet
     %type <expression> member_call
     %type <expression> fn_call
-
+    %type <expression> noexpression
     %type <expressions> expression_block
     %type <expressions> expression_list
     /* Precedence declarations go here. */
-    %left ASSIGN
+    %right ASSIGN
     %left NOT
-    %left LE '<' '='
+    %precedence  LE '<' '='
     %left '+' '-'
     %left '*' '/'
     %left ISVOID
@@ -259,7 +259,7 @@
     ;
 
     expr :
-      assign
+	assign
       | member_call               {}
       | fn_call                   {}
       | cond                      {}
@@ -321,6 +321,7 @@
         SET_NODELOC(@3);
         $$ = assign($1, $3); }
     ;
+ 
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
@@ -340,7 +341,7 @@
         $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
-    expression_list :
+    expression_list : /* do we need to implement  empty expression list*/
       expr
       { @$ = @1;
         SET_NODELOC(@1);
