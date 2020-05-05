@@ -209,10 +209,35 @@
       { @$ = @8;
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | CLASS error '{' feature_list '}' ';'
+      | error TYPEID '{' feature_list '}' ';'
       {printf("\b : was class error 1\n");}
+      | CLASS error '{' feature_list '}' ';'
+      { printf("\b : was class error 2\n"); }
+      | CLASS TYPEID error feature_list '}' ';'
+      { printf("\b : was class error 3\n"); }
+      | CLASS TYPEID '{' error '}' ';' 
+      { printf("\b : was class error 4\n"); }
+      | CLASS TYPEID '{' feature_list error ';'
+      { printf("\b : was class error 5\n"); }
+      | CLASS TYPEID '{' feature_list '}' error
+      { printf("\b : was class error 6\n"); }
+      | error TYPEID INHERITS TYPEID '{' feature_list '}' ';'
+      { printf("\b : was class error 7\n"); }
+      | CLASS error INHERITS TYPEID '{' feature_list '}' ';'
+      { printf("\b : was class error 8\n"); }
+      | CLASS TYPEID error TYPEID '{' feature_list '}' ';'
+      { printf("\b : was class error 9\n"); }
+      | CLASS TYPEID INHERITS error '{' feature_list '}' ';'
+      { printf("\b : was class error 10\n"); }
+      | CLASS TYPEID INHERITS TYPEID error feature_list '}' ';'
+      { printf("\b : was class error 11\n"); }
+      | CLASS TYPEID INHERITS TYPEID '{' error '}' ';'
+      { printf("\b : was class error 12\n"); }
+      | CLASS TYPEID INHERITS TYPEID '{' feature_list error ';'
+      { printf("\b : was class error 13\n"); }
+      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' error
+      { printf("\b : was class error 14\n"); }
     ;
-
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
@@ -466,6 +491,8 @@
       {printf("\b : was let error 1\n");}
       | LET error ',' ulet
       {printf("\b : was let error 2\n");}
+      | LET error
+      {printf("\b : was let error 3\n");}
     ;
 
     branch :
