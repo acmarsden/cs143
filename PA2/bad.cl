@@ -24,6 +24,31 @@ Class D inherts A {
 };
 
 (* error:  closing brace is missing *)
-Class E inherits A {
-;
+(* Class E inherits A {
+; *)
 
+
+(* Feature Errors *)
+
+(* no error *)
+class A {
+featuretest( a : Int) : Int { a } ;
+featuretest : Int; 
+featuretest : Int <- x;
+featuretest() : Int { a };
+};
+
+(* error: b is not a type identifier *)
+class A {
+featuretest( a : b) : B { a } ;
+featuretest : b;
+featuretest : b <- x;
+featuretest() : b { a };
+};
+
+class A {
+Featuretest( a : B) : B { a };
+Featuretest : B;
+Featuretest : B <- x;
+Featuretest() : B { a };
+};
