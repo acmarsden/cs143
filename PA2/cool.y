@@ -165,7 +165,6 @@
     %type <expression> fn_call
 
     %type <expressions> expression_block
-    %type <expressions> expression_block_
     %type <expressions> expression_list
     %type <expressions> expression_list_
     /* Precedence declarations go here. */
@@ -210,7 +209,7 @@
       { @$ = @8;
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | CLASS error '{' feature_list '}' ';' {}
+      | CLASS error '{' feature_list '}' ';' {printf("class err5");}
     ;
 
     /* Feature list may be empty, but no empty features in list. */
@@ -243,8 +242,8 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = attr($1, $3, $5); }
-      | OBJECTID ':'  error ';' {}
-      | OBJECTID '(' error '{' expr '}' ';' {}
+      | OBJECTID ':'  error ';' {printf("feature err 1");}
+      | OBJECTID '(' error '{' expr '}' ';' {printf("feature error 2");}
     ;
 
     formal_list : /* empty formals list*/
@@ -317,6 +316,9 @@
       | '(' expr ')'  { @$ = @3;
                         SET_NODELOC(@3);
                         $$ = $2; }
+      | OBJECTID      { @$ = @1;
+                        SET_NODELOC(@1);
+                        $$ = object($1); }
       | STR_CONST     { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = string_const($1); }
@@ -393,8 +395,8 @@
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = append_Expressions(single_Expressions($1), $3); }
-      | error ';' {}
-      | error ';' expression_block {}
+      | error ';' {printf("expr error3");}
+      | error ';' expression_block {printf("expr error4");}
     ;
 
     ulet :
@@ -414,8 +416,8 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = let($1, $3, no_expr(), $5); }
-      | error ',' IN expr {}
-      | error ',' ulet {}
+      | error ',' IN expr {printf("ulet err1");}
+      | error ',' ulet {printf("ulet err2");}
     ;
 
     let:
@@ -435,8 +437,8 @@
       { @$ = @6;
         SET_NODELOC(@6);
         $$ = let($2, $4, no_expr(), $6); }
-      | LET error IN expr {}
-      | LET error ',' ulet {}
+      | LET error IN expr {printf("let err1");}
+      | LET error ',' ulet {printf("let err 2");}
     ;
 
     branch :
