@@ -145,9 +145,11 @@
 
     /* You will want to change the following line. */
     %type <features> feature_list
+    %type <features> feature_list_
     %type <feature> feature
 
     %type <formals> formal_list
+    %type <formals> formal_list_
     %type <formal> formal
 
     %type <expression> expr
@@ -161,9 +163,11 @@
     %type <expression> ulet
     %type <expression> member_call
     %type <expression> fn_call
-    %type <expression> noexpression
+
     %type <expressions> expression_block
+    %type <expressions> expression_block_
     %type <expressions> expression_list
+    %type <expressions> expression_list_
     /* Precedence declarations go here. */
     %right ASSIGN
     %left NOT
@@ -212,11 +216,15 @@
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
-      | feature
+      | feature_list_ {}
+    ;
+
+    feature_list_ :
+      feature
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Features($1); }
-      | feature_list feature
+      | feature_list_ feature
       { @$ = @2;
         SET_NODELOC(@2);
         $$ = append_Features($1, single_Features($2));}
@@ -234,21 +242,25 @@
       | OBJECTID ':' TYPEID ASSIGN expr ';'
       { @$ = @5;
         SET_NODELOC(@5);
-        $$ = attr($1, $3, $5); } 
+        $$ = attr($1, $3, $5); }
       | OBJECTID ':'  error ';' {}
       | OBJECTID '(' error '{' expr '}' ';' {}
     ;
 
     formal_list : /* empty formals list*/
       {  $$ = nil_Formals(); }
-      | formal
+      | formal_list_ {}
+    ;
+
+    formal_list_ :
+      formal
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Formals($1);}
-      | formal ',' formal_list
+      | formal_list_ ','  formal
       { @$ = @3;
         SET_NODELOC(@3);
-        $$ = append_Formals(single_Formals($1), $3); }
+        $$ = append_Formals($3, single_Formals($1)); }
     ;
 
     formal :
@@ -321,7 +333,6 @@
         SET_NODELOC(@3);
         $$ = assign($1, $3); }
     ;
- 
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
@@ -341,12 +352,18 @@
         $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
-    expression_list : /* do we need to implement  empty expression list*/
+    expression_list :
+      /* empty expression list*/
+      {  $$ = nil_Expressions(); }
+      | expression_list_ {}
+    ;
+
+    expression_list_ :
       expr
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Expressions($1);}
-      | expression_list ',' expr
+      | expression_list_ ',' expr
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = append_Expressions($1, single_Expressions($3));}
