@@ -46,9 +46,26 @@ featuretest : b <- x;
 featuretest() : b { a };
 };
 
+(* error: Featuretest is not an objectid *)
 class A {
 Featuretest( a : B) : B { a };
 Featuretest : B;
 Featuretest : B <- x;
 Featuretest() : B { a };
 };
+
+(* error: typos with '(' or ':' or ';' *)
+class A {
+featuretest{a : B) : B { a };
+featuretest :: B;
+featuretest ; B <- x; 
+featuretest() : B { a ) ;
+};
+
+
+(* Let Errors *)
+(* no error *)
+let a : B in x
+
+
+
