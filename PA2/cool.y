@@ -215,7 +215,7 @@
       { printf("\b : was class error 2\n"); }
       | CLASS TYPEID error feature_list '}' ';'
       { printf("\b : was class error 3\n"); }
-      | CLASS TYPEID '{' error '}' ';' 
+      | CLASS TYPEID '{' error '}' ';'
       { printf("\b : was class error 4\n"); }
       | CLASS TYPEID '{' feature_list error ';'
       { printf("\b : was class error 5\n"); }
@@ -268,28 +268,46 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = attr($1, $3, $5); }
-      | OBJECTID ':'  error ';'
-      {printf("\b : was feature error 1\n");}
-      | OBJECTID '(' error '{' expr '}' ';'
-      {printf("\b : was feature error 2\n");}
       | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 3\n");}
-      | error ':' TYPEID ';'
-      {printf("\b : was feature error 4\n");}
-      | error ':' TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 5\n");}
+      {printf("\b : was feature error 1\n");}
       | OBJECTID error formal_list ')' ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 2\n");}
+      | OBJECTID '(' error ')' ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 3\n");}
+      | OBJECTID '(' formal_list error ':' TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 4\n");}
+      | OBJECTID '(' formal_list ')' error TYPEID '{' expr '}' ';'
+      {printf("\b : was feature error 5\n");}
+      | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'
       {printf("\b : was feature error 6\n");}
-      | OBJECTID error TYPEID ';'
+      | OBJECTID '(' formal_list ')' ':' TYPEID error expr '}' ';'
       {printf("\b : was feature error 7\n");}
-      | OBJECTID error TYPEID ASSIGN expr ';'
+      | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'
       {printf("\b : was feature error 8\n");}
-      | OBJECTID '(' error formal_list ')' ':' TYPEID '{' expr '}' ';'
+      | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr error ';'
       {printf("\b : was feature error 9\n");}
-      | OBJECTID ':' error TYPEID ';'
+      | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error
       {printf("\b : was feature error 10\n");}
-      | OBJECTID ':' error TYPEID ASSIGN expr ';'
+      | error ':' TYPEID ';'
       {printf("\b : was feature error 11\n");}
+      | OBJECTID error TYPEID ';'
+      {printf("\b : was feature error 12\n");}
+      | OBJECTID ':' error ';'
+      {printf("\b : was feature error 13\n");}
+      | OBJECTID ':' TYPEID error
+      {printf("\b : was feature error 14\n");}
+      | error ':' TYPEID ASSIGN expr ';'
+      {printf("\b : was feature error 15\n");}
+      | OBJECTID error TYPEID ASSIGN expr ';'
+      {printf("\b : was feature error 16\n");}
+      | OBJECTID ':' error ASSIGN expr ';'
+      {printf("\b : was feature error 17\n");}
+      | OBJECTID ':' TYPEID error expr ';'
+      {printf("\b : was feature error 18\n");}
+      | OBJECTID ':' TYPEID ASSIGN error ';'
+      {printf("\b : was feature error 19\n");}
+      | OBJECTID ':' TYPEID ASSIGN expr error
+      {printf("\b : was feature error 20\n");}
     ;
 
     formal_list : /* empty formals list*/
@@ -443,8 +461,12 @@
         $$ = append_Expressions(single_Expressions($1), $3); }
       | error ';'
       {printf("\b : was expr error 1\n");}
-      | error ';' expression_block
+      | expr error
       {printf("\b : was expr error 2\n");}
+      | error ';' expression_block
+      {printf("\b : was expr error 3\n");}
+      | expr error expression_block
+      {printf("\b : was expr error 4\n");}
     ;
 
     ulet :
@@ -464,10 +486,50 @@
       { @$ = @5;
         SET_NODELOC(@5);
         $$ = let($1, $3, no_expr(), $5); }
-      | error ',' IN expr
+      | error ':' TYPEID ASSIGN expr IN expr
       {printf("\b : was ulet error 1\n");}
-      | error ',' ulet
+      | OBJECTID error TYPEID ASSIGN expr IN expr
       {printf("\b : was ulet error 2\n");}
+      | OBJECTID ':' error ASSIGN expr IN expr
+      {printf("\b : was ulet error 3\n");}
+      | OBJECTID ':' TYPEID error expr IN expr
+      {printf("\b : was ulet error 4\n");}
+      | OBJECTID ':' TYPEID ASSIGN error IN expr
+      {printf("\b : was ulet error 5\n");}
+      | OBJECTID ':' TYPEID ASSIGN expr error expr
+      {printf("\b : was ulet error 6\n");}
+      | OBJECTID ':' TYPEID ASSIGN expr IN error
+      {printf("\b : was ulet error 7\n");}
+      | error ':' TYPEID IN expr
+      {printf("\b : was ulet error 8\n");}
+      | OBJECTID error TYPEID IN expr
+      {printf("\b : was ulet error 9\n");}
+      | OBJECTID ':' error IN expr
+      {printf("\b : was ulet error 10\n");}
+      | OBJECTID ':' TYPEID error expr
+      {printf("\b : was ulet error 11\n");}
+      | OBJECTID ':' TYPEID IN error
+      {printf("\b : was ulet error 12\n");}
+      | error ':' TYPEID ASSIGN expr ',' ulet
+      {printf("\b : was ulet error 13\n");}
+      | OBJECTID error TYPEID ASSIGN expr ',' ulet
+      {printf("\b : was ulet error 14\n");}
+      | OBJECTID ':' error ASSIGN expr ',' ulet
+      {printf("\b : was ulet error 15\n");}
+      | OBJECTID ':' TYPEID error expr ',' ulet
+      {printf("\b : was ulet error 16\n");}
+      | OBJECTID ':' TYPEID ASSIGN error ',' ulet
+      {printf("\b : was ulet error 17\n");}
+      | OBJECTID ':' TYPEID ASSIGN expr error ulet
+      {printf("\b : was ulet error 18\n");}
+      | error ':' TYPEID ',' ulet
+      {printf("\b : was ulet error 19\n");}
+      | OBJECTID error TYPEID ',' ulet
+      {printf("\b : was ulet error 20\n");}
+      | OBJECTID ':' error ',' ulet
+      {printf("\b : was ulet error 21\n");}
+      | OBJECTID ':' TYPEID error ulet
+      {printf("\b : was ulet error 22\n");}
     ;
 
     let:
@@ -487,12 +549,58 @@
       { @$ = @6;
         SET_NODELOC(@6);
         $$ = let($2, $4, no_expr(), $6); }
-      | LET error IN expr
+      | error OBJECTID ':' TYPEID ASSIGN expr IN expr
       {printf("\b : was let error 1\n");}
-      | LET error ',' ulet
+      | LET error ':' TYPEID ASSIGN expr IN expr
       {printf("\b : was let error 2\n");}
-      | LET error
+      | LET OBJECTID error TYPEID ASSIGN expr IN expr
       {printf("\b : was let error 3\n");}
+      | LET OBJECTID ':' error ASSIGN expr IN expr
+      {printf("\b : was let error 4\n");}
+      | LET OBJECTID ':' TYPEID error expr IN expr
+      {printf("\b : was let error 5\n");}
+      | LET OBJECTID ':' TYPEID ASSIGN error IN expr
+      {printf("\b : was let error 6\n");}
+      | LET OBJECTID ':' TYPEID ASSIGN expr error expr
+      {printf("\b : was let error 7\n");}
+      | LET OBJECTID ':' TYPEID ASSIGN expr IN error
+      {printf("\b : was let error 8\n");}
+      | error OBJECTID ':' TYPEID IN expr
+      {printf("\b : was let error 9\n");}
+      | LET error ':' TYPEID IN expr
+      {printf("\b : was let error 10\n");}
+      | LET OBJECTID error TYPEID IN expr
+      {printf("\b : was let error 11\n");}
+      | LET OBJECTID ':' error IN expr
+      {printf("\b : was let error 12\n");}
+      | LET OBJECTID ':' TYPEID error expr
+      {printf("\b : was let error 13\n");}
+      | LET OBJECTID ':' TYPEID IN error
+      {printf("\b : was let error 14\n");}
+      | error OBJECTID ':' TYPEID ASSIGN expr ',' ulet
+      {printf("\b : was let error 15\n");}
+      | LET error ':' TYPEID ASSIGN expr ',' ulet
+      {printf("\b : was let error 16\n");}
+      | LET OBJECTID error TYPEID ASSIGN expr ',' ulet
+      {printf("\b : was let error 17\n");}
+      | LET OBJECTID ':' error ASSIGN expr ',' ulet
+      {printf("\b : was let error 18\n");}
+      | LET OBJECTID ':' TYPEID error expr ',' ulet
+      {printf("\b : was let error 19\n");}
+      | LET OBJECTID ':' TYPEID ASSIGN error ',' ulet
+      {printf("\b : was let error 20\n");}
+      | LET OBJECTID ':' TYPEID ASSIGN expr error ulet
+      {printf("\b : was let error 21\n");}
+      | error OBJECTID ':' TYPEID ',' ulet
+      {printf("\b : was let error 22\n");}
+      | LET error ':' TYPEID ',' ulet
+      {printf("\b : was let error 23\n");}
+      | LET OBJECTID error TYPEID ',' ulet
+      {printf("\b : was let error 24\n");}
+      | LET OBJECTID ':' error ',' ulet
+      {printf("\b : was let error 25\n");}
+      | LET OBJECTID ':' TYPEID error ulet
+      {printf("\b : was let error 26\n");}
     ;
 
     branch :
