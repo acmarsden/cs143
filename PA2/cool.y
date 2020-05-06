@@ -185,58 +185,34 @@
     program : class_list  { @$ = @1; ast_root = program($1); }
     ;
 
-    class_list :
-      class     /* single class */
+    class_list : /* empty class */
+      { $$ = nil_Classes();
+        parse_results = $$; }
+      | class ';'     /* single class */
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Classes($1);
         parse_results = $$; }
-      | class_list class  /* several classes */
-      { @$ = @2;
-        SET_NODELOC(@2);
+      | class_list class ';' /* several classes */
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Classes($1,single_Classes($2));
         parse_results = $$; }
+      | error ';' {yyerrok;}
+      | class_list error ';' {yyerrok;}
     ;
 
     /* If no parent is specified, the class inherits from the Object class. */
     class :
-      CLASS TYPEID '{' feature_list '}' ';'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      CLASS TYPEID '{' feature_list '}'
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = class_($2, idtable.add_string("Object"), $4,
                     stringtable.add_string(curr_filename)); }
-      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-      { @$ = @8;
-        SET_NODELOC(@8);
+      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}'
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | error TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 1\n");yyerrok;}
-      | CLASS error '{' feature_list '}' ';'
-      { printf("\b : was class error 2\n"); yyerrok;}
-      | CLASS TYPEID error feature_list '}' ';'
-      { printf("\b : was class error 3\n"); yyerrok;}
-      | CLASS TYPEID '{' error '}' ';'
-      { printf("\b : was class error 4\n"); yyerrok;}
-      | CLASS TYPEID '{' feature_list error ';'
-      { printf("\b : was class error 5\n"); yyerrok;}
-      | CLASS TYPEID '{' feature_list '}' error
-      { printf("\b : was class error 6\n"); yyerrok;}
-      | error TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 7\n"); yyerrok;}
-      | CLASS error INHERITS TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 8\n"); yyerrok;}
-      | CLASS TYPEID error TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 9\n"); yyerrok;}
-      | CLASS TYPEID INHERITS error '{' feature_list '}' ';'
-      { printf("\b : was class error 10\n"); yyerrok;}
-      | CLASS TYPEID INHERITS TYPEID error feature_list '}' ';'
-      { printf("\b : was class error 11\n"); yyerrok;}
-      | CLASS TYPEID INHERITS TYPEID '{' error '}' ';'
-      { printf("\b : was class error 12\n"); yyerrok;}
-      | CLASS TYPEID INHERITS TYPEID '{' feature_list error ';'
-      { printf("\b : was class error 13\n"); yyerrok;}
-      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' error
-      { printf("\b : was class error 14\n"); yyerrok;}
     ;
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
@@ -245,69 +221,31 @@
     ;
 
     feature_list_ :
-      feature
+      feature ';'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Features($1); }
-      | feature_list_ feature
-      { @$ = @2;
-        SET_NODELOC(@2);
+      | feature_list_ feature ';'
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Features($1, single_Features($2));}
+      | error ';' {yyerrok;}
+      | feature_list_ error ';' {yyerrok;}
     ;
 
     feature :
-      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      { @$ = @9;
-        SET_NODELOC(@9);
+      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = method($1,$3,$6,$8); }
-      | OBJECTID ':' TYPEID ';'
-      { @$ = @3;
-        SET_NODELOC(@3);
+      | OBJECTID ':' TYPEID
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = attr($1, $3, no_expr()); }
-      | OBJECTID ':' TYPEID ASSIGN expr ';'
-      { @$ = @5;
-        SET_NODELOC(@5);
+      | OBJECTID ':' TYPEID ASSIGN expr
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = attr($1, $3, $5); }
-      | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 1\n");yyerrok;}
-      | OBJECTID error formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 2\n");yyerrok;}
-      | OBJECTID '(' error ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 3\n");yyerrok;}
-      | OBJECTID '(' formal_list error ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 4\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' error TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 5\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'
-      {printf("\b : was feature error 6\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' ':' TYPEID error expr '}' ';'
-      {printf("\b : was feature error 7\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'
-      {printf("\b : was feature error 8\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr error ';'
-      {printf("\b : was feature error 9\n");yyerrok;}
-      | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error
-      {printf("\b : was feature error 10\n");yyerrok;}
-      | error ':' TYPEID ';'
-      {printf("\b : was feature error 11\n");yyerrok;}
-      | OBJECTID error TYPEID ';'
-      {printf("\b : was feature error 12\n");yyerrok;}
-      | OBJECTID ':' error ';'
-      {printf("\b : was feature error 13\n");yyerrok;}
-      | OBJECTID ':' TYPEID error
-      {printf("\b : was feature error 14\n");yyerrok;}
-      | error ':' TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 15\n");yyerrok;}
-      | OBJECTID error TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 16\n");yyerrok;}
-      | OBJECTID ':' error ASSIGN expr ';'
-      {printf("\b : was feature error 17\n");yyerrok;}
-      | OBJECTID ':' TYPEID error expr ';'
-      {printf("\b : was feature error 18\n");yyerrok;}
-      | OBJECTID ':' TYPEID ASSIGN error ';'
-      {printf("\b : was feature error 19\n");yyerrok;}
-      | OBJECTID ':' TYPEID ASSIGN expr error
-      {printf("\b : was feature error 20\n");yyerrok;}
     ;
 
     formal_list : /* empty formals list*/
@@ -321,15 +259,15 @@
         SET_NODELOC(@1);
         $$ = single_Formals($1);}
       | formal_list_ ','  formal
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Formals($1, single_Formals($3)); }
     ;
 
     formal :
       OBJECTID ':' TYPEID
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = formal($1, $3); }
     ;
 
@@ -339,16 +277,16 @@
       | fn_call                   {}
       | cond                      {}
       | loop                      {}
-      | '{' expression_block '}'  { @$ = @3;
-                                    SET_NODELOC(@3);
+      | '{' expression_block '}'  { @$ = @1;
+                                    SET_NODELOC(@1);
                                     $$ = block($2); }
       | let                       {}
       | case                      {}
-      | NEW TYPEID    { @$ = @2;
-                        SET_NODELOC(@2);
+      | NEW TYPEID    { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = new_($2); }
-      | ISVOID expr   { @$ = @2;
-                        SET_NODELOC(@2);
+      | ISVOID expr   { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = isvoid($2); }
       | expr '+' expr { @$ = @3;
                         SET_NODELOC(@3);
@@ -362,20 +300,20 @@
       | expr '/' expr { @$ = @3;
                         SET_NODELOC(@3);
                         $$ = divide($1, $3); }
-      | '~' expr      { @$ = @2;
-                        SET_NODELOC(@2);
+      | '~' expr      { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = neg($2); }
-      | expr '<' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '<' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = lt($1, $3); }
-      | expr LE expr  { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr LE expr  { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = leq($1, $3); }
       | expr '=' expr { @$ = @3;
                         SET_NODELOC(@3);
                         $$ = eq($1, $3); }
-      | NOT expr      { @$ = @2;
-                        SET_NODELOC(@2);
+      | NOT expr      { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = comp($2); }
       | '(' expr ')'  { @$ = @3;
                         SET_NODELOC(@3);
@@ -395,26 +333,26 @@
 
     assign :
       OBJECTID ASSIGN expr
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = assign($1, $3); }
     ;
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = dispatch($1, $3, $5); }
       | expr '@' TYPEID '.' OBJECTID '(' expression_list ')'
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = static_dispatch($1, $3, $5, $7); }
     ;
 
     fn_call :
       OBJECTID '(' expression_list ')'
-      { @$ = @4;
-        SET_NODELOC(@4);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
@@ -430,183 +368,87 @@
         SET_NODELOC(@1);
         $$ = single_Expressions($1);}
       | expression_list_ ',' expr
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Expressions($1, single_Expressions($3));}
     ;
 
 
     cond :
       IF expr THEN expr ELSE expr FI
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = cond($2, $4, $6); }
     ;
 
     loop :
       WHILE expr LOOP expr POOL
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = loop($2, $4); }
     ;
 
     expression_block :
       expr ';'
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = single_Expressions($1); }
-      | expr ';' expression_block
-      { @$ = @3;
-        SET_NODELOC(@3);
-        $$ = append_Expressions(single_Expressions($1), $3); }
-      | error ';'
-      {printf("\b : was expr error 1\n");}
-      | expr error
-      {printf("\b : was expr error 2\n");}
-      | error ';' expression_block
-      {printf("\b : was expr error 3\n");}
-      | expr error expression_block
-      {printf("\b : was expr error 4\n");}
+      | expression_block expr ';'
+      { @$ = @1;
+        SET_NODELOC(@1);
+        $$ = append_Expressions($1, single_Expressions($2)); }
+      | error ';' {yyerrok;}
+      | expression_block error ';' {yyerrok;}
     ;
 
     ulet :
       OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID IN expr
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, no_expr(), $5); }
       | OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID ',' ulet
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, no_expr(), $5); }
-      | error ':' TYPEID ASSIGN expr IN expr
-      {printf("\b : was ulet error 1\n");}
-      | OBJECTID error TYPEID ASSIGN expr IN expr
-      {printf("\b : was ulet error 2\n");}
-      | OBJECTID ':' error ASSIGN expr IN expr
-      {printf("\b : was ulet error 3\n");}
-      | OBJECTID ':' TYPEID error expr IN expr
-      {printf("\b : was ulet error 4\n");}
-      | OBJECTID ':' TYPEID ASSIGN error IN expr
-      {printf("\b : was ulet error 5\n");}
-      | OBJECTID ':' TYPEID ASSIGN expr error expr
-      {printf("\b : was ulet error 6\n");}
-      | OBJECTID ':' TYPEID ASSIGN expr IN error
-      {printf("\b : was ulet error 7\n");}
-      | error ':' TYPEID IN expr
-      {printf("\b : was ulet error 8\n");}
-      | OBJECTID error TYPEID IN expr
-      {printf("\b : was ulet error 9\n");}
-      | OBJECTID ':' error IN expr
-      {printf("\b : was ulet error 10\n");}
-      | OBJECTID ':' TYPEID error expr
-      {printf("\b : was ulet error 11\n");}
-      | OBJECTID ':' TYPEID IN error
-      {printf("\b : was ulet error 12\n");}
-      | error ':' TYPEID ASSIGN expr ',' ulet
-      {printf("\b : was ulet error 13\n");}
-      | OBJECTID error TYPEID ASSIGN expr ',' ulet
-      {printf("\b : was ulet error 14\n");}
-      | OBJECTID ':' error ASSIGN expr ',' ulet
-      {printf("\b : was ulet error 15\n");}
-      | OBJECTID ':' TYPEID error expr ',' ulet
-      {printf("\b : was ulet error 16\n");}
-      | OBJECTID ':' TYPEID ASSIGN error ',' ulet
-      {printf("\b : was ulet error 17\n");}
-      | OBJECTID ':' TYPEID ASSIGN expr error ulet
-      {printf("\b : was ulet error 18\n");}
-      | error ':' TYPEID ',' ulet
-      {printf("\b : was ulet error 19\n");}
-      | OBJECTID error TYPEID ',' ulet
-      {printf("\b : was ulet error 20\n");}
-      | OBJECTID ':' error ',' ulet
-      {printf("\b : was ulet error 21\n");}
-      | OBJECTID ':' TYPEID error ulet
-      {printf("\b : was ulet error 22\n");}
+      | OBJECTID ':' TYPEID ASSIGN expr ',' error {}
+      | OBJECTID ':' TYPEID ',' error {}
+      | error ',' IN expr {}
+      | error ',' ulet {}
     ;
 
     let:
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @5;
+        SET_NODELOC(@5);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID IN expr
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = let($2, $4, no_expr(), $6); }
       | LET OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @5;
+        SET_NODELOC(@5);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID ',' ulet
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = let($2, $4, no_expr(), $6); }
-      | error OBJECTID ':' TYPEID ASSIGN expr IN expr
-      {printf("\b : was let error 1\n");}
-      | LET error ':' TYPEID ASSIGN expr IN expr
-      {printf("\b : was let error 2\n");}
-      | LET OBJECTID error TYPEID ASSIGN expr IN expr
-      {printf("\b : was let error 3\n");}
-      | LET OBJECTID ':' error ASSIGN expr IN expr
-      {printf("\b : was let error 4\n");}
-      | LET OBJECTID ':' TYPEID error expr IN expr
-      {printf("\b : was let error 5\n");}
-      | LET OBJECTID ':' TYPEID ASSIGN error IN expr
-      {printf("\b : was let error 6\n");}
-      | LET OBJECTID ':' TYPEID ASSIGN expr error expr
-      {printf("\b : was let error 7\n");}
-      | LET OBJECTID ':' TYPEID ASSIGN expr IN error
-      {printf("\b : was let error 8\n");}
-      | error OBJECTID ':' TYPEID IN expr
-      {printf("\b : was let error 9\n");}
-      | LET error ':' TYPEID IN expr
-      {printf("\b : was let error 10\n");}
-      | LET OBJECTID error TYPEID IN expr
-      {printf("\b : was let error 11\n");}
-      | LET OBJECTID ':' error IN expr
-      {printf("\b : was let error 12\n");}
-      | LET OBJECTID ':' TYPEID error expr
-      {printf("\b : was let error 13\n");}
-      | LET OBJECTID ':' TYPEID IN error
-      {printf("\b : was let error 14\n");}
-      | error OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      {printf("\b : was let error 15\n");}
-      | LET error ':' TYPEID ASSIGN expr ',' ulet
-      {printf("\b : was let error 16\n");}
-      | LET OBJECTID error TYPEID ASSIGN expr ',' ulet
-      {printf("\b : was let error 17\n");}
-      | LET OBJECTID ':' error ASSIGN expr ',' ulet
-      {printf("\b : was let error 18\n");}
-      | LET OBJECTID ':' TYPEID error expr ',' ulet
-      {printf("\b : was let error 19\n");}
-      | LET OBJECTID ':' TYPEID ASSIGN error ',' ulet
-      {printf("\b : was let error 20\n");}
-      | LET OBJECTID ':' TYPEID ASSIGN expr error ulet
-      {printf("\b : was let error 21\n");}
-      | error OBJECTID ':' TYPEID ',' ulet
-      {printf("\b : was let error 22\n");}
-      | LET error ':' TYPEID ',' ulet
-      {printf("\b : was let error 23\n");}
-      | LET OBJECTID error TYPEID ',' ulet
-      {printf("\b : was let error 24\n");}
-      | LET OBJECTID ':' error ',' ulet
-      {printf("\b : was let error 25\n");}
-      | LET OBJECTID ':' TYPEID error ulet
-      {printf("\b : was let error 26\n");}
+      | LET error IN expr {}
+      | LET error ',' ulet {}
     ;
 
     branch :
       OBJECTID ':' TYPEID DARROW  expr ';'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = branch($1, $3, $5); }
     ;
 
@@ -616,15 +458,15 @@
         SET_NODELOC(@1);
         $$ = single_Cases($1);}
       | cases branch
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Cases($1, single_Cases($2)); }
     ;
 
     case :
       CASE expr OF cases ESAC
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = typcase($2, $4); }
     ;
 

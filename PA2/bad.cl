@@ -24,8 +24,8 @@ Class D inherts A {
 };
 
 (* error:  closing brace is missing *)
-(* Class E inherits A {
-; *)
+Class E inherits A {
+;
 
 
 (* Feature Errors *)
@@ -63,9 +63,78 @@ featuretest() : B { a ) ;
 };
 
 
+class a {
+}; 
+
+class a {
+};
+
+
+class a {
+};
+
+
+
+(* expression block errors *)
+
+(* no error *)
+class A {
+
+feature( a : B ) : B {
+
+{
+a + 1;
+a + 2;
+a + 3;
+}
+
+};
+
+};
+
+
+class a {
+};
+
+class a {
+};
+
+class a {
+};
+
+(* middle expression block doesn't terminate properly*)
+class A {
+
+feature( a : B) {
+
+{
+a + 1;
+# + 2;
+a + 3;
+}
+
+};
+};
+
+
+class a {
+};
+class a {
+}; 
+class a {
+};
+
+
 (* Let Errors *)
 (* no error *)
-let a : B in x
+class A {
+  main() : M {
+    let b : B in let c : C in x + x
+  };
+};
 
-
-
+class A {
+  main() : M {
+    let b : B in let c : c in let d : D in let e : e in x + x
+  };
+};
