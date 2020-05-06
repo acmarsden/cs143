@@ -185,86 +185,69 @@
     program : class_list  { @$ = @1; ast_root = program($1); }
     ;
 
-    class_list :
-      class     /* single class */
+    class_list : /* empty class */
+      { $$ = nil_Classes(); 
+        parse_results = $$; }
+      | class ';'     /* single class */
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Classes($1);
         parse_results = $$; }
-      | class_list class  /* several classes */
+      | class_list class ';' /* several classes */
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = append_Classes($1,single_Classes($2));
         parse_results = $$; }
+      | error ';' {}
+      | class_list error ';' {}
     ;
 
     /* If no parent is specified, the class inherits from the Object class. */
     class :
-      CLASS TYPEID '{' feature_list '}' ';'
+      CLASS TYPEID '{' feature_list '}'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = class_($2, idtable.add_string("Object"), $4,
                     stringtable.add_string(curr_filename)); }
-      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
+      | CLASS TYPEID INHERITS TYPEID '{' feature_list '}'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
-      | CLASS error '{' feature_list '}' ';'
-      {printf("\b : was class error 1\n");}
     ;
 
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
       {  $$ = nil_Features(); }
-      | feature_list_ {}
+      | feature_list_ {} 
     ;
 
     feature_list_ :
-      feature
+      feature ';'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Features($1); }
-      | feature_list_ feature
+      | feature_list_ feature ';'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = append_Features($1, single_Features($2));}
+      | error ';' {}
+      | feature_list_ error ';' {}
+   /* This won't continue matching on features after the first error */
     ;
 
     feature :
-      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
+      OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}'
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = method($1,$3,$6,$8); }
-      | OBJECTID ':' TYPEID ';'
+      | OBJECTID ':' TYPEID
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = attr($1, $3, no_expr()); }
-      | OBJECTID ':' TYPEID ASSIGN expr ';'
+      | OBJECTID ':' TYPEID ASSIGN expr
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = attr($1, $3, $5); }
-      | OBJECTID ':'  error ';'
-      {printf("\b : was feature error 1\n");}
-      | OBJECTID '(' error '{' expr '}' ';'
-      {printf("\b : was feature error 2\n");}
-      | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 3\n");}
-      | error ':' TYPEID ';'
-      {printf("\b : was feature error 4\n");}
-      | error ':' TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 5\n");}
-      | OBJECTID error formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 6\n");}
-      | OBJECTID error TYPEID ';'
-      {printf("\b : was feature error 7\n");}
-      | OBJECTID error TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 8\n");}
-      | OBJECTID '(' error formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 9\n");}
-      | OBJECTID ':' error TYPEID ';'
-      {printf("\b : was feature error 10\n");}
-      | OBJECTID ':' error TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 11\n");}
     ;
 
     formal_list : /* empty formals list*/
@@ -412,13 +395,13 @@
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Expressions($1); }
-      | expr ';' expression_block
+      | expression_block expr ';'
       { @$ = @1;
         SET_NODELOC(@1);
-        $$ = append_Expressions(single_Expressions($1), $3); }
+        $$ = append_Expressions($1, single_Expressions($2)); }
       | error ';'
       {printf("\b : was expr error 1\n");}
-      | error ';' expression_block
+      | expression_block error ';'
       {printf("\b : was expr error 2\n");}
     ;
 
