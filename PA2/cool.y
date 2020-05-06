@@ -424,20 +424,20 @@
 
     ulet :
       OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID IN expr
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, no_expr(), $5); }
       | OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, $5, $7); }
       | OBJECTID ':' TYPEID ',' ulet
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($1, $3, no_expr(), $5); }
       | error ',' IN expr
       {printf("\b : was ulet error 1\n");}
@@ -447,20 +447,20 @@
 
     let:
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID IN expr
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($2, $4, no_expr(), $6); }
       | LET OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID ',' ulet
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = let($2, $4, no_expr(), $6); }
       | LET error IN expr
       {printf("\b : was let error 1\n");}
