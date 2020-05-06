@@ -422,6 +422,8 @@
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = let($1, $3, no_expr(), $5); }
+      | OBJECTID ':' TYPEID ASSIGN expr ',' error {}
+      | OBJECTID ':' TYPEID ',' error {}
       | error ',' IN expr
       {printf("\b : was ulet error 1\n");}
       | error ',' ulet
