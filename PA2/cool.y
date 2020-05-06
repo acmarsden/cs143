@@ -395,26 +395,26 @@
 
     cond :
       IF expr THEN expr ELSE expr FI
-      { @$ = @7;
-        SET_NODELOC(@7);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = cond($2, $4, $6); }
     ;
 
     loop :
       WHILE expr LOOP expr POOL
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = loop($2, $4); }
     ;
 
     expression_block :
       expr ';'
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = single_Expressions($1); }
       | expr ';' expression_block
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Expressions(single_Expressions($1), $3); }
       | error ';'
       {printf("\b : was expr error 1\n");}
