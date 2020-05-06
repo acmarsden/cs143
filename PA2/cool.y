@@ -470,8 +470,8 @@
 
     branch :
       OBJECTID ':' TYPEID DARROW  expr ';'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = branch($1, $3, $5); }
     ;
 
@@ -481,15 +481,15 @@
         SET_NODELOC(@1);
         $$ = single_Cases($1);}
       | cases branch
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Cases($1, single_Cases($2)); }
     ;
 
     case :
       CASE expr OF cases ESAC
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = typcase($2, $4); }
     ;
 
