@@ -285,8 +285,8 @@
 
     formal :
       OBJECTID ':' TYPEID
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = formal($1, $3); }
     ;
 
@@ -296,13 +296,13 @@
       | fn_call                   {}
       | cond                      {}
       | loop                      {}
-      | '{' expression_block '}'  { @$ = @3;
-                                    SET_NODELOC(@3);
+      | '{' expression_block '}'  { @$ = @1;
+                                    SET_NODELOC(@1);
                                     $$ = block($2); }
       | let                       {}
       | case                      {}
-      | NEW TYPEID    { @$ = @2;
-                        SET_NODELOC(@2);
+      | NEW TYPEID    { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = new_($2); }
       | ISVOID expr   { @$ = @1;
                         SET_NODELOC(@1);
