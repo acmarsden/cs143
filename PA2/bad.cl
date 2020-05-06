@@ -127,7 +127,14 @@ class a {
 
 (* Let Errors *)
 (* no error *)
-let a : B in x
+class A {
+  main() : M {
+    let b : B in let c : C in x + x
+  };
+};
 
-
-
+class A {
+  main() : M {
+    let b : B in let c : c in let d : D in let e : e in x + x
+  };
+};
