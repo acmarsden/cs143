@@ -198,8 +198,8 @@
         SET_NODELOC(@1);
         $$ = append_Classes($1,single_Classes($2));
         parse_results = $$; }
-      | error ';' {}
-      | class_list error ';' {}
+      | error ';' {yyerrok;}
+      | class_list error ';' {yyerrok;}
     ;
 
     /* If no parent is specified, the class inherits from the Object class. */
@@ -230,9 +230,8 @@
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = append_Features($1, single_Features($2));}
-      | error ';' {}
-      | feature_list_ error ';' {}
-   /* This won't continue matching on features after the first error */
+      | error ';' {yyerrok;}
+      | feature_list_ error ';' {yyerrok;}
     ;
 
     feature :
@@ -399,10 +398,8 @@
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = append_Expressions($1, single_Expressions($2)); }
-      | error ';'
-      {printf("\b : was expr error 1\n");}
-      | expression_block error ';'
-      {printf("\b : was expr error 2\n");}
+      | error ';' {yyerrok;}
+      | expression_block error ';' {yyerrok;}
     ;
 
     ulet :
