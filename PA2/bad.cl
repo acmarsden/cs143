@@ -154,15 +154,23 @@ class A {
 };
 
 (* errors in let bindings , shorthand *)
+(* one error in type case *)
 class A {
   main() : M {
     let b : B, c : c, d : D, e : E in x + x
   };
 };
 
+(* one error in assignment *)
 class A {
   main() : M {
     let b : B, c : C, d : D <-, e : E in x + x
   };
 };
 
+(* two errors: type case and assignment *)
+class A {
+  main() : M {
+    let b : B, c : c, d : D <-, e : E in x + x
+  };
+};
