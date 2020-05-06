@@ -33,7 +33,7 @@ Class E inherits A {
 (* no error *)
 class A {
 featuretest( a : Int) : Int { a } ;
-featuretest : Int; 
+featuretest : Int;
 featuretest : Int <- x;
 featuretest() : Int { a };
 };
@@ -58,13 +58,13 @@ Featuretest() : B { a };
 class A {
 featuretest{a : B) : B { a };
 featuretest :: B;
-featuretest ; B <- x; 
+featuretest ; B <- x;
 featuretest() : B { a ) ;
 };
 
 
 class a {
-}; 
+};
 
 class a {
 };
@@ -120,7 +120,7 @@ a + 3;
 class a {
 };
 class a {
-}; 
+};
 class a {
 };
 
@@ -133,8 +133,36 @@ class A {
   };
 };
 
+(* error in types *)
 class A {
   main() : M {
     let b : B in let c : c in let d : D in let e : e in x + x
   };
 };
+
+(* correct let, shorthand *)
+class A {
+  main() : M {
+    let b : B, c : C, d : D, e : E in x + x
+  };
+};
+
+class A {
+  main() : M {
+    let b : B, c : C, d : D <- 5, e : E in x + x
+  };
+};
+
+(* errors in let bindings , shorthand *)
+class A {
+  main() : M {
+    let b : B, c : c, d : D, e : E in x + x
+  };
+};
+
+class A {
+  main() : M {
+    let b : B, c : C, d : D <-, e : E in x + x
+  };
+};
+
