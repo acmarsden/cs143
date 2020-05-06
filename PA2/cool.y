@@ -307,17 +307,17 @@
       | ISVOID expr   { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = isvoid($2); }
-      | expr '+' expr { @$ = @1;
-                        SET_NODELOC(@1);
+      | expr '+' expr { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = plus($1, $3); }
-      | expr '-' expr { @$ = @1;
-                        SET_NODELOC(@1);
+      | expr '-' expr { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = sub($1, $3); }
-      | expr '*' expr { @$ = @1;
-                        SET_NODELOC(@1);
+      | expr '*' expr { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = mul($1, $3); }
-      | expr '/' expr { @$ = @1;
-                        SET_NODELOC(@1);
+      | expr '/' expr { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = divide($1, $3); }
       | '~' expr      { @$ = @1;
                         SET_NODELOC(@1);
@@ -328,14 +328,14 @@
       | expr LE expr  { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = leq($1, $3); }
-      | expr '=' expr { @$ = @1;
-                        SET_NODELOC(@1);
+      | expr '=' expr { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = eq($1, $3); }
       | NOT expr      { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = comp($2); }
-      | '(' expr ')'  { @$ = @1;
-                        SET_NODELOC(@1);
+      | '(' expr ')'  { @$ = @3;
+                        SET_NODELOC(@3);
                         $$ = $2; }
       | OBJECTID      { @$ = @1;
                         SET_NODELOC(@1);
@@ -447,20 +447,20 @@
 
     let:
       LET OBJECTID ':' TYPEID ASSIGN expr IN expr
-      { @$ = @1;
-        SET_NODELOC(@1);
+      { @$ = @5;
+        SET_NODELOC(@5);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID IN expr
-      { @$ = @1;
-        SET_NODELOC(@1);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = let($2, $4, no_expr(), $6); }
       | LET OBJECTID ':' TYPEID ASSIGN expr ',' ulet
-      { @$ = @1;
-        SET_NODELOC(@1);
+      { @$ = @5;
+        SET_NODELOC(@5);
         $$ = let($2, $4, $6, $8); }
       | LET OBJECTID ':' TYPEID ',' ulet
-      { @$ = @1;
-        SET_NODELOC(@1);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = let($2, $4, no_expr(), $6); }
       | LET error IN expr
       {printf("\b : was let error 1\n");}
