@@ -421,10 +421,8 @@
         $$ = let($1, $3, no_expr(), $5); }
       | OBJECTID ':' TYPEID ASSIGN expr ',' error {}
       | OBJECTID ':' TYPEID ',' error {}
-      | error ',' IN expr
-      {printf("\b : was ulet error 1\n");}
-      | error ',' ulet
-      {printf("\b : was ulet error 2\n");}
+      | error ',' IN expr {}
+      | error ',' ulet {}
     ;
 
     let:
@@ -444,10 +442,8 @@
       { @$ = @4;
         SET_NODELOC(@4);
         $$ = let($2, $4, no_expr(), $6); }
-      | LET error IN expr
-      {printf("\b : was let error 1\n");}
-      | LET error ',' ulet
-      {printf("\b : was let error 2\n");}
+      | LET error IN expr {}
+      | LET error ',' ulet {}
     ;
 
     branch :
