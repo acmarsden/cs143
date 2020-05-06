@@ -334,8 +334,8 @@
       | NOT expr      { @$ = @1;
                         SET_NODELOC(@1);
                         $$ = comp($2); }
-      | '(' expr ')'  { @$ = @3;
-                        SET_NODELOC(@3);
+      | '(' expr ')'  { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = $2; }
       | OBJECTID      { @$ = @1;
                         SET_NODELOC(@1);
@@ -352,26 +352,26 @@
 
     assign :
       OBJECTID ASSIGN expr
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = assign($1, $3); }
     ;
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
-      { @$ = @4;
-        SET_NODELOC(@4);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = dispatch($1, $3, $5); }
       | expr '@' TYPEID '.' OBJECTID '(' expression_list ')'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = static_dispatch($1, $3, $5, $7); }
     ;
 
     fn_call :
       OBJECTID '(' expression_list ')'
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
