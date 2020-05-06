@@ -192,8 +192,8 @@
         $$ = single_Classes($1);
         parse_results = $$; }
       | class_list class  /* several classes */
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Classes($1,single_Classes($2));
         parse_results = $$; }
     ;
@@ -201,13 +201,13 @@
     /* If no parent is specified, the class inherits from the Object class. */
     class :
       CLASS TYPEID '{' feature_list '}' ';'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = class_($2, idtable.add_string("Object"), $4,
                     stringtable.add_string(curr_filename)); }
       | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
       | CLASS error '{' feature_list '}' ';'
       {printf("\b : was class error 1\n");}
@@ -232,16 +232,16 @@
 
     feature :
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      { @$ = @9;
-        SET_NODELOC(@9);
+      { @$ = @6;
+        SET_NODELOC(@6);
         $$ = method($1,$3,$6,$8); }
       | OBJECTID ':' TYPEID ';'
       { @$ = @3;
         SET_NODELOC(@3);
         $$ = attr($1, $3, no_expr()); }
       | OBJECTID ':' TYPEID ASSIGN expr ';'
-      { @$ = @5;
-        SET_NODELOC(@5);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = attr($1, $3, $5); }
       | OBJECTID ':'  error ';'
       {printf("\b : was feature error 1\n");}
@@ -278,8 +278,8 @@
         SET_NODELOC(@1);
         $$ = single_Formals($1);}
       | formal_list_ ','  formal
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Formals($1, single_Formals($3)); }
     ;
 
@@ -304,35 +304,35 @@
       | NEW TYPEID    { @$ = @2;
                         SET_NODELOC(@2);
                         $$ = new_($2); }
-      | ISVOID expr   { @$ = @2;
-                        SET_NODELOC(@2);
+      | ISVOID expr   { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = isvoid($2); }
-      | expr '+' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '+' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = plus($1, $3); }
-      | expr '-' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '-' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = sub($1, $3); }
-      | expr '*' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '*' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = mul($1, $3); }
-      | expr '/' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '/' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = divide($1, $3); }
-      | '~' expr      { @$ = @2;
-                        SET_NODELOC(@2);
+      | '~' expr      { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = neg($2); }
-      | expr '<' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '<' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = lt($1, $3); }
-      | expr LE expr  { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr LE expr  { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = leq($1, $3); }
-      | expr '=' expr { @$ = @3;
-                        SET_NODELOC(@3);
+      | expr '=' expr { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = eq($1, $3); }
-      | NOT expr      { @$ = @2;
-                        SET_NODELOC(@2);
+      | NOT expr      { @$ = @1;
+                        SET_NODELOC(@1);
                         $$ = comp($2); }
       | '(' expr ')'  { @$ = @3;
                         SET_NODELOC(@3);
@@ -352,26 +352,26 @@
 
     assign :
       OBJECTID ASSIGN expr
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @2;
+        SET_NODELOC(@2);
         $$ = assign($1, $3); }
     ;
 
     member_call :
       expr '.' OBJECTID '(' expression_list ')'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @4;
+        SET_NODELOC(@4);
         $$ = dispatch($1, $3, $5); }
       | expr '@' TYPEID '.' OBJECTID '(' expression_list ')'
-      { @$ = @8;
-        SET_NODELOC(@8);
+      { @$ = @6;
+        SET_NODELOC(@6);
         $$ = static_dispatch($1, $3, $5, $7); }
     ;
 
     fn_call :
       OBJECTID '(' expression_list ')'
-      { @$ = @4;
-        SET_NODELOC(@4);
+      { @$ = @2;
+        SET_NODELOC(@2);
         $$ = dispatch(object(idtable.add_string("self")), $1, $3); }
     ;
 
@@ -387,8 +387,8 @@
         SET_NODELOC(@1);
         $$ = single_Expressions($1);}
       | expression_list_ ',' expr
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Expressions($1, single_Expressions($3));}
     ;
 
