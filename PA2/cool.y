@@ -225,23 +225,23 @@
         SET_NODELOC(@1);
         $$ = single_Features($1); }
       | feature_list_ feature
-      { @$ = @2;
-        SET_NODELOC(@2);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = append_Features($1, single_Features($2));}
     ;
 
     feature :
       OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      { @$ = @6;
-        SET_NODELOC(@6);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = method($1,$3,$6,$8); }
       | OBJECTID ':' TYPEID ';'
-      { @$ = @3;
-        SET_NODELOC(@3);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = attr($1, $3, no_expr()); }
       | OBJECTID ':' TYPEID ASSIGN expr ';'
-      { @$ = @4;
-        SET_NODELOC(@4);
+      { @$ = @1;
+        SET_NODELOC(@1);
         $$ = attr($1, $3, $5); }
       | OBJECTID ':'  error ';'
       {printf("\b : was feature error 1\n");}
