@@ -210,33 +210,33 @@
         SET_NODELOC(@8);
         $$ = class_($2, $4, $6, stringtable.add_string(curr_filename)); }
       | error TYPEID '{' feature_list '}' ';'
-      {printf("\b : was class error 1\n");}
+      { printf("\b : was class error 1\n");yyerrok;}
       | CLASS error '{' feature_list '}' ';'
-      { printf("\b : was class error 2\n"); }
+      { printf("\b : was class error 2\n"); yyerrok;}
       | CLASS TYPEID error feature_list '}' ';'
-      { printf("\b : was class error 3\n"); }
+      { printf("\b : was class error 3\n"); yyerrok;}
       | CLASS TYPEID '{' error '}' ';'
-      { printf("\b : was class error 4\n"); }
+      { printf("\b : was class error 4\n"); yyerrok;}
       | CLASS TYPEID '{' feature_list error ';'
-      { printf("\b : was class error 5\n"); }
+      { printf("\b : was class error 5\n"); yyerrok;}
       | CLASS TYPEID '{' feature_list '}' error
-      { printf("\b : was class error 6\n"); }
+      { printf("\b : was class error 6\n"); yyerrok;}
       | error TYPEID INHERITS TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 7\n"); }
+      { printf("\b : was class error 7\n"); yyerrok;}
       | CLASS error INHERITS TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 8\n"); }
+      { printf("\b : was class error 8\n"); yyerrok;}
       | CLASS TYPEID error TYPEID '{' feature_list '}' ';'
-      { printf("\b : was class error 9\n"); }
+      { printf("\b : was class error 9\n"); yyerrok;}
       | CLASS TYPEID INHERITS error '{' feature_list '}' ';'
-      { printf("\b : was class error 10\n"); }
+      { printf("\b : was class error 10\n"); yyerrok;}
       | CLASS TYPEID INHERITS TYPEID error feature_list '}' ';'
-      { printf("\b : was class error 11\n"); }
+      { printf("\b : was class error 11\n"); yyerrok;}
       | CLASS TYPEID INHERITS TYPEID '{' error '}' ';'
-      { printf("\b : was class error 12\n"); }
+      { printf("\b : was class error 12\n"); yyerrok;}
       | CLASS TYPEID INHERITS TYPEID '{' feature_list error ';'
-      { printf("\b : was class error 13\n"); }
+      { printf("\b : was class error 13\n"); yyerrok;}
       | CLASS TYPEID INHERITS TYPEID '{' feature_list '}' error
-      { printf("\b : was class error 14\n"); }
+      { printf("\b : was class error 14\n"); yyerrok;}
     ;
     /* Feature list may be empty, but no empty features in list. */
     feature_list :   /* empty */
@@ -269,45 +269,45 @@
         SET_NODELOC(@5);
         $$ = attr($1, $3, $5); }
       | error '(' formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 1\n");}
+      {printf("\b : was feature error 1\n");yyerrok;}
       | OBJECTID error formal_list ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 2\n");}
+      {printf("\b : was feature error 2\n");yyerrok;}
       | OBJECTID '(' error ')' ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 3\n");}
+      {printf("\b : was feature error 3\n");yyerrok;}
       | OBJECTID '(' formal_list error ':' TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 4\n");}
+      {printf("\b : was feature error 4\n");yyerrok;}
       | OBJECTID '(' formal_list ')' error TYPEID '{' expr '}' ';'
-      {printf("\b : was feature error 5\n");}
+      {printf("\b : was feature error 5\n");yyerrok;}
       | OBJECTID '(' formal_list ')' ':' error '{' expr '}' ';'
-      {printf("\b : was feature error 6\n");}
+      {printf("\b : was feature error 6\n");yyerrok;}
       | OBJECTID '(' formal_list ')' ':' TYPEID error expr '}' ';'
-      {printf("\b : was feature error 7\n");}
+      {printf("\b : was feature error 7\n");yyerrok;}
       | OBJECTID '(' formal_list ')' ':' TYPEID '{' error '}' ';'
-      {printf("\b : was feature error 8\n");}
+      {printf("\b : was feature error 8\n");yyerrok;}
       | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr error ';'
-      {printf("\b : was feature error 9\n");}
+      {printf("\b : was feature error 9\n");yyerrok;}
       | OBJECTID '(' formal_list ')' ':' TYPEID '{' expr '}' error
-      {printf("\b : was feature error 10\n");}
+      {printf("\b : was feature error 10\n");yyerrok;}
       | error ':' TYPEID ';'
-      {printf("\b : was feature error 11\n");}
+      {printf("\b : was feature error 11\n");yyerrok;}
       | OBJECTID error TYPEID ';'
-      {printf("\b : was feature error 12\n");}
+      {printf("\b : was feature error 12\n");yyerrok;}
       | OBJECTID ':' error ';'
-      {printf("\b : was feature error 13\n");}
+      {printf("\b : was feature error 13\n");yyerrok;}
       | OBJECTID ':' TYPEID error
-      {printf("\b : was feature error 14\n");}
+      {printf("\b : was feature error 14\n");yyerrok;}
       | error ':' TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 15\n");}
+      {printf("\b : was feature error 15\n");yyerrok;}
       | OBJECTID error TYPEID ASSIGN expr ';'
-      {printf("\b : was feature error 16\n");}
+      {printf("\b : was feature error 16\n");yyerrok;}
       | OBJECTID ':' error ASSIGN expr ';'
-      {printf("\b : was feature error 17\n");}
+      {printf("\b : was feature error 17\n");yyerrok;}
       | OBJECTID ':' TYPEID error expr ';'
-      {printf("\b : was feature error 18\n");}
+      {printf("\b : was feature error 18\n");yyerrok;}
       | OBJECTID ':' TYPEID ASSIGN error ';'
-      {printf("\b : was feature error 19\n");}
+      {printf("\b : was feature error 19\n");yyerrok;}
       | OBJECTID ':' TYPEID ASSIGN expr error
-      {printf("\b : was feature error 20\n");}
+      {printf("\b : was feature error 20\n");yyerrok;}
     ;
 
     formal_list : /* empty formals list*/
