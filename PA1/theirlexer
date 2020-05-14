@@ -1,0 +1,2 @@
+#!/bin/csh -f
+/afs/ir.stanford.edu/class/cs143/bin/lexer $*
