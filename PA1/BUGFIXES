@@ -1,0 +1,29 @@
+Please find a detailed account of the bug fixes in our regrade below. Line numbers refer
+to those in the NEW cool.flex source file.
+
+NOTE to us: diff made between the following commit hashes:
+compare/f9e9cf1d04bd5ac6e412701ef52cd262deda5e9d...be52a8b9231cbb682f664100013a3d9cb7289cf0
+
+1) L127-L128: We added a forward slash for lookahead in the regex, and make this rule finish
+              discarding the rest of the line. 
+
+2) L141: Since the newline char was already matched here, we should immediately return error, 
+         instead of going into the STRERR condition. 
+
+3) L146, L148: We forgot an else! When we should have been going to start condition STRERR
+               because of string length, we ended up continuing to parse the string normally.
+
+4) L224: We were not eating up stars inside comments, which were being printed to the output.
+
+5) L245:  Some lines got accidentally deleted in our source (we're still clumsy with vim sometimes).
+          We think that we could even have made all those different lines the match single valid characters
+          only one LOC.
+
+We understand the diff size is 7 LOC. However, this is partly due to stylistic choices in the source file. 
+E.g. (1) would have been only 1 line, had we omitted the comment.
+
+We do believe that our resubmitted cool.flex file fixes only a few minor errors and we hope you'll 
+consider it a valid regrade. 
+Fixing some other errors present in our lexer would have required more significant changes and would 
+be definitely outside the scope of a valid regrade request. 
+
