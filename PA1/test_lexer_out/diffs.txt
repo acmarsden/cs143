@@ -1,0 +1,72 @@
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/arith.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/io.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
+
+
