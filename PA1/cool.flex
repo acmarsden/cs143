@@ -221,6 +221,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 "(*"			{ BEGIN(STAR_COMMENT); }
 "--"			{ BEGIN(DASH_COMMENT); }
 <STAR_COMMENT,DASH_COMMENT>[^*\n]*	/* eat up comment content */
+<STAR_COMMENT,DASH_COMMENT>[*]*	/* eat up stars */
 <STAR_COMMENT>"*)"		{ BEGIN(INITIAL);}
 <DASH_COMMENT>.*/\n		{ BEGIN(INITIAL);}
 <DASH_COMMENT><<EOF>>		{ BEGIN(INITIAL);}
@@ -241,6 +242,10 @@ WHITESPACE   [ \n\f\t\v\r]+
 [=]			{ return('='); }
 [+]			{ return('+'); }
 [-]			{ return('-'); }
+[*]			{ return('*'); }
+[/]			{ return('/'); }
+[@]			{ return('@'); }
+[~]			{ return('~'); }
 [,]			{ return(','); }
 [ \f\t\r\v]+            /* eat up unused whitespace */ 
 .			{ yylval.error_msg = yytext;
