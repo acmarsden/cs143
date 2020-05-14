@@ -143,9 +143,9 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STR,ENDSTR>\\n		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
 			  	BEGIN(STRERR);
-			  }
+			  }else{
 			  *string_buf_ptr++ = '\n';
-			  BEGIN(STR);
+			  BEGIN(STR);}
 			}
 <STR,ENDSTR>\\t		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
