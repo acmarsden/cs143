@@ -124,8 +124,8 @@ WHITESPACE   [ \n\f\t\v\r]+
 			  *string_buf_ptr = '\0';
 			  yylval.symbol = stringtable.add_string(string_buf);
 			  return(STR_CONST);}
-<STRERR>[^\"\n]*\n	{ /* Eat up rest of the string */
-			  ++curr_lineno;
+<STRERR>[^\"\n]*/\n	{ /* Eat up rest of the string */
+			  BEGIN(INITIAL); return(ERROR);
 			}
 <STRERR>.*\"		{ /* Eat up rest of the string */
 			  BEGIN(INITIAL);
@@ -138,7 +138,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 <STR,ENDSTR>\n		{ /* error - unterminated string constant */
 			  ++curr_lineno;
 			  yylval.error_msg = "Unterminated string constant";
-			  BEGIN(STRERR);
+			  BEGIN(INITIAL); return(ERROR);
 			}
 <STR,ENDSTR>\\n		{ if(str_length_reached()){
 			  	yylval.error_msg = "String constant too long";
