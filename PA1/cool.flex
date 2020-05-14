@@ -242,10 +242,7 @@ WHITESPACE   [ \n\f\t\v\r]+
 [=]			{ return('='); }
 [+]			{ return('+'); }
 [-]			{ return('-'); }
-[*]			{ return('*'); }
-[/]			{ return('/'); }
-[@]			{ return('@'); }
-[~]			{ return('~'); }
+[*/@~]			{ return(*yytext); }
 [,]			{ return(','); }
 [ \f\t\r\v]+            /* eat up unused whitespace */ 
 .			{ yylval.error_msg = yytext;
