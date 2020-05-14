@@ -2,6 +2,7 @@
 *.cc
 *.txt
 PA1/lexer
+PA1/test_lexer_out
 PA2/parser
 PA2/cool.output
 PA2/cool.tab.h
