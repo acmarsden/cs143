@@ -89,6 +89,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
     /* Fill this in */
 
+    install_basic_classes();
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         printf("%s\n", classes->nth(i)->getName()->get_string());
@@ -96,9 +97,17 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = classes->nth(i)->getName();
 	Symbol parent = classes->nth(i)->getParent();
+	children[parent].push_back(node);
     }
 }
 
+
+bool ClassTable::bfs() {
+
+
+	return true;
+
+}
 
 void ClassTable::install_basic_classes() {
 
@@ -200,8 +209,10 @@ void ClassTable::install_basic_classes() {
 						      no_expr()))),
 	       filename);
 
-
-
+    children[Object].push_back(IO);
+    children[Object].push_back(Int);
+    children[Object].push_back(Bool);
+    children[Object].push_back(Str);
 
 }
 

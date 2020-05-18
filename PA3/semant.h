@@ -25,8 +25,9 @@ class ClassTable {
 private:
   int semant_errors;
   void install_basic_classes();
+  bool bfs();
   ostream& error_stream;
-  std::map<Symbol, vector<Symbol> > children;
+  std::map<Symbol, std::vector<Symbol> > children;
 
 public:
   ClassTable(Classes);
