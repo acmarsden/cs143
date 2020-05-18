@@ -93,43 +93,60 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     install_basic_classes();
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
-        Class_ curr_class = classes->nth(i)
-        printf("%s: %s\n", curr_class->getName()->get_string(),
-                           curr_class->getParent()->get_string());
+        Class_ curr_class = classes->nth(i);
+        printf("%s: %s\n", curr_class->getName()->get_string(), 
+			   curr_class->getParent()->get_string());
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
+        if(children.find(node) == children.end())
+	    children[node] = std::vector<Symbol>();
         children[parent].push_back(node);
     }
 
-    has_cycle = has_cycle_bfs();
+    _has_cycle = has_cycle_bfs();
 }
 
 bool ClassTable::has_cycle_bfs() {
     std::set<Symbol> discovered;
     std::queue<Symbol> Q;
-
+    printf("Number of children: %lu\n", children.size());
     discovered.insert(Object);
     Q.push(Object);
-
-    while(!Q.empty()) {
+    while(!Q.empty() || discovered.size() < children.size()) {
+	if(Q.empty()){
+	    for (auto it=children.begin(); it!=children.end(); ++it) {
+                if(discovered.find(it->first) == discovered.end()) {
+	            Q.push(it->first);
+		    break;
+		}
+	    }
+	}
         Symbol current_vertex = Q.front();
+	printf("Visiting: %s\n", current_vertex->get_string());
         Q.pop();
         std::vector<Symbol> current_children = children[current_vertex];
-        for(int iter = 0; iter < current_children.size(); iter++) {
-            Symbol current_child = current_children[iter];
+        //for(uint iter = 0; iter < current_children.size(); iter++) {
+	for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
+	    //Symbol current_child = current_children[iter];
+	    Symbol current_child = *it;
+	    printf("bfs visiting: %s\n", current_child->get_string());
+            printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
+		printf("capacity: %lu\n", Q.size());
                 discovered.insert(current_child);
             }
             else {
                 // The node had already been discovered so we know there is a cycle
-                ostream& err_stream = semant_error(current_child);
-                err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
+                // TODO: something like this to do error reporting, but current_child needs to be a Class_ object
+		//ostream& err_stream = semant_error(current_child);
+                //err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
                 return true;
             }
         }
+
     }
     return false;
 }
@@ -238,6 +255,10 @@ void ClassTable::install_basic_classes() {
     children[Object].push_back(Int);
     children[Object].push_back(Bool);
     children[Object].push_back(Str);
+    children[IO] = std::vector<Symbol>();
+    children[Int] = std::vector<Symbol>();
+    children[Bool] = std::vector<Symbol>();
+    children[Str] = std::vector<Symbol>();
 
 }
 
@@ -297,7 +318,7 @@ void program_class::semant()
 
     /* some semantic analysis code may go here */
     // Stop semantic analysis if inheritance graph is not well formed
-    if(!classtable->has_cycle){
+    if(!classtable->has_cycle()){
         // continue semantic analysis
         printf("No inheritance cycles\n");
     }
