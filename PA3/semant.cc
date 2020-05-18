@@ -86,7 +86,9 @@ static void initialize_constants(void)
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
 
     /* Fill this in */
-
+    for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
+        printf("%s\n", classes->nth(i)->getName()->get_string());  
+    }
 }
 
 void ClassTable::install_basic_classes() {
@@ -245,6 +247,7 @@ void program_class::semant()
     ClassTable *classtable = new ClassTable(classes);
 
     /* some semantic analysis code may go here */
+    printf("========= END Constructor output =========\n");
 
     if (classtable->errors()) {
 	cerr << "Compilation halted due to static semantic errors." << endl;
