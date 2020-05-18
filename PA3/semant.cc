@@ -5,7 +5,9 @@
 #include <stdarg.h>
 #include "semant.h"
 #include "utilities.h"
-
+#include <map>
+#include <vector>
+#include <iostream>
 
 extern int semant_debug;
 extern char *curr_filename;
@@ -86,11 +88,21 @@ static void initialize_constants(void)
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
 
     /* Fill this in */
+
+    std::map<Symbol, std::vector<Symbol> > children;
+
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         printf("%s\n", classes->nth(i)->getName()->get_string());
         printf("%s\n", classes->nth(i)->getParent()->get_string());
+        Features feature_list = classes->nth(i)->getFeatures();
+        Symbol node = classes->nth(i)->getName();
+	Symbol parent = classes->nth(i)->getParent();
+	children[parent].push_back(node);
     }
 }
+
+
+
 
 void ClassTable::install_basic_classes() {
 
