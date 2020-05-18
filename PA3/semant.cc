@@ -87,7 +87,8 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
     /* Fill this in */
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
-        printf("%s\n", classes->nth(i)->getName()->get_string());  
+        printf("%s\n", classes->nth(i)->getName()->get_string());
+        printf("%s\n", classes->nth(i)->getParent()->get_string());
     }
 }
 
