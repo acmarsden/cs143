@@ -89,7 +89,6 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
     /* Fill this in */
 
-    std::map<Symbol, std::vector<Symbol> > children;
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         printf("%s\n", classes->nth(i)->getName()->get_string());
@@ -97,11 +96,8 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = classes->nth(i)->getName();
 	Symbol parent = classes->nth(i)->getParent();
-	children[parent].push_back(node);
     }
 }
-
-
 
 
 void ClassTable::install_basic_classes() {
@@ -203,6 +199,10 @@ void ClassTable::install_basic_classes() {
 						      Str, 
 						      no_expr()))),
 	       filename);
+
+
+
+
 }
 
 ////////////////////////////////////////////////////////////////////

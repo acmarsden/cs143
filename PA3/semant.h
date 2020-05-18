@@ -7,6 +7,8 @@
 #include "stringtab.h"
 #include "symtab.h"
 #include "list.h"
+#include <map>
+#include <vector>
 
 #define TRUE 1
 #define FALSE 0
@@ -24,6 +26,7 @@ private:
   int semant_errors;
   void install_basic_classes();
   ostream& error_stream;
+  std::map<Symbol, vector<Symbol> > children;
 
 public:
   ClassTable(Classes);
