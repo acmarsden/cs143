@@ -2,7 +2,7 @@
 #define SEMANT_H_
 
 #include <assert.h>
-#include <iostream>  
+#include <iostream>
 #include "cool-tree.h"
 #include "stringtab.h"
 #include "symtab.h"
@@ -24,6 +24,7 @@ typedef ClassTable *ClassTableP;
 class ClassTable {
 private:
   int semant_errors;
+  bool has_cycle();
   void install_basic_classes();
   bool bfs();
   ostream& error_stream;
