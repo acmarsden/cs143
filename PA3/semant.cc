@@ -8,7 +8,8 @@
 #include <map>
 #include <vector>
 #include <iostream>
-
+#include <set>
+#include <queue>
 extern int semant_debug;
 extern char *curr_filename;
 
@@ -104,7 +105,31 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
 bool ClassTable::bfs() {
 
+	std::set<Symbol> discovered;
+	std::queue<Symbol> Q;
 
+
+	discovered.insert(Object);
+	Q.push(Object);
+
+	while(!Q.empty()) {
+		Symbol current_vertex = Q.front();
+		Q.pop();
+		std::vector<Symbol> current_children = children[current_vertex];
+		for(int iter = 0; iter < current_children.size(); iter++) {
+			Symbol current_child = current_children[iter];
+			//Check that the node hasn't already been discovered
+			if(discovered.find(current_child) == discovered.end()) {
+				Q.push(current_child);
+				discovered.insert(current_child);
+			}
+			else {
+			//The node has already been discovered so we know there is a cycle
+			return false;
+			}
+		}
+
+	}
 	return true;
 
 }
