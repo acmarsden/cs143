@@ -9,6 +9,7 @@
 #include "list.h"
 #include <map>
 #include <vector>
+#include <set>
 
 #define TRUE 1
 #define FALSE 0
@@ -30,6 +31,7 @@ private:
   std::map<Symbol, Class_> symb_class_map;
   void install_basic_classes();
   bool has_cycle_bfs();
+  void type_checks_r(Symbol, std::set<Symbol>*);
 
 public:
   ClassTable(Classes);

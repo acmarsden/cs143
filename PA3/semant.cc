@@ -275,21 +275,21 @@ void ClassTable::type_checks()
     std::set<Symbol> visited;
 
     // enter scope
-    type_checks_r(Object, visited);
+    type_checks_r(Object, &visited);
     // leave scope
 }
 
 void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     // Do whatever you need to do
-    visited.insert(current_class_);
+    visited->insert(curr_class);
     printf("DFS visiting: %s\n", curr_class->get_string());
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-            if(visited.find(*it) == visited.end()){
+            if(visited->find(*it) == visited->end()){
                 // enter scope
-                type_checks_r(*it, &visited);
+                type_checks_r(*it, visited);
                 // leave scope
             }
         }
