@@ -275,9 +275,9 @@ void ClassTable::type_checks()
     std::set<Symbol> visited;
 
     // enter scope
-    class_table.enterscope();
+    class_symbol_table.enterscope();
     type_checks_r(Object, &visited);
-    class_table.exitscope();
+    class_symbol_table.exitscope();
 }
 
 void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
@@ -292,10 +292,10 @@ void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             if(visited->find(*it) == visited->end()){
                 // enter scope
-		class_table.enterscope();
+		class_symbol_table.enterscope();
                 type_checks_r(*it, visited);
-                class_table.dump();
-		class_table.exitscope();
+                class_symbol_table.dump();
+		class_symbol_table.exitscope();
             }
         }
     }
@@ -308,6 +308,7 @@ void ClassTable::check_features(Symbol curr_class) {
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
         printf("%s\n", curr_feature->getName()->get_string());
+        
     }
 }
 ////////////////////////////////////////////////////////////////////
