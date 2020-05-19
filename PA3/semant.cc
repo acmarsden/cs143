@@ -339,8 +339,13 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->typeCheck(classtable);
     }
+    return Object;
 }
 
+Symbol formal_class::typeCheck(ClassTable* classtable){
+	// TODO
+	return Object;
+}
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors

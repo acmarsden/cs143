@@ -74,6 +74,7 @@ class Formal_class : public tree_node {
 public:
    tree_node *copy()     { return copy_Formal(); }
    virtual Formal copy_Formal() = 0;
+   virtual Symbol typeCheck(ClassTable*) = 0;
 
 #ifdef Formal_EXTRAS
    Formal_EXTRAS
@@ -234,7 +235,6 @@ public:
    bool isAttribute() {return true;}
    Symbol typeCheck(ClassTable*);
 
-
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
 #endif
@@ -256,6 +256,7 @@ public:
    }
    Formal copy_Formal();
    void dump(ostream& stream, int n);
+   Symbol typeCheck(ClassTable*);
 
 #ifdef Formal_SHARED_EXTRAS
    Formal_SHARED_EXTRAS
