@@ -95,15 +95,15 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         Class_ curr_class = classes->nth(i);
-        printf("%s: %s\n", curr_class->getName()->get_string(), 
-			   curr_class->getParent()->get_string());
+        printf("%s: %s\n", curr_class->getName()->get_string(),
+               curr_class->getParent()->get_string());
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
         if(children.find(node) == children.end())
-	    children[node] = std::vector<Symbol>();
+        children[node] = std::vector<Symbol>();
         children[parent].push_back(node);
-	symb_class_map[node] = curr_class;
+    symb_class_map[node] = curr_class;
     }
 
     _has_cycle = has_cycle_bfs();
@@ -116,33 +116,33 @@ bool ClassTable::has_cycle_bfs() {
     discovered.insert(Object);
     Q.push(Object);
     while(!Q.empty() || discovered.size() < children.size()) {
-	if(Q.empty()){
-	    for (auto it=children.begin(); it!=children.end(); ++it) {
+    if(Q.empty()){
+        for (auto it=children.begin(); it!=children.end(); ++it) {
                 if(discovered.find(it->first) == discovered.end()) {
-	            Q.push(it->first);
-		    break;
-		}
-	    }
-	}
+                Q.push(it->first);
+            break;
+        }
+        }
+    }
         Symbol current_vertex = Q.front();
-	printf("Visiting: %s\n", current_vertex->get_string());
+    printf("Visiting: %s\n", current_vertex->get_string());
         Q.pop();
         std::vector<Symbol> current_children = children[current_vertex];
         //for(uint iter = 0; iter < current_children.size(); iter++) {
-	for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
-	    //Symbol current_child = current_children[iter];
-	    Symbol current_child = *it;
-	    printf("bfs visiting: %s\n", current_child->get_string());
+    for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
+        //Symbol current_child = current_children[iter];
+        Symbol current_child = *it;
+        printf("bfs visiting: %s\n", current_child->get_string());
             printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
-		printf("capacity: %lu\n", Q.size());
+        printf("capacity: %lu\n", Q.size());
                 discovered.insert(current_child);
             }
             else {
                 // The node had already been discovered so we know there is a cycle
-		ostream& err_stream = semant_error(symb_class_map[current_child]);
+        ostream& err_stream = semant_error(symb_class_map[current_child]);
                 err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
                 return true;
             }
@@ -271,24 +271,29 @@ void ClassTable::install_basic_classes() {
 
 void ClassTable::type_checks()
 {
-	// Traverse the inheritance tree in DFS order
-	std::stack<Symbol> S;
-	std::set<Symbol> visited;
-	S.push(Object);
-	while(S.size()>0){
-		Symbol current_class_ = S.top();
-		Class_ current_class = symb_class_map.find(current_class_)->second;
-		visited.insert(current_class_);
-		printf("DFS visiting: %s\n", current_class_->get_string());
-		S.pop();
-		std::vector<Symbol> curr_children = children[current_class_];
-		for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-			if(visited.find(*it) == visited.end()){
-				S.push(*it);
-			}
-		}
-		// Now do stuff with the other nodes
-	}
+    // Traverse the inheritance tree in DFS order
+    std::set<Symbol> visited;
+
+    // enter scope
+    type_checks_r(Object, visited);
+    // leave scope
+}
+
+void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
+{
+    // Do whatever you need to do
+    visited.insert(current_class_);
+    printf("DFS visiting: %s\n", curr_class->get_string());
+    if(children[curr_class].size() != 0){
+        std::vector<Symbol> curr_children = children[curr_class];
+        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+            if(visited.find(*it) == visited.end()){
+                // enter scope
+                type_checks_r(*it, &visited);
+                // leave scope
+            }
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -349,7 +354,7 @@ void program_class::semant()
     if(!classtable->has_cycle()){
         // continue semantic analysis
         printf("No inheritance cycles\n");
-	classtable->type_checks();
+    classtable->type_checks();
     }
     printf("========= END Constructor output =========\n");
 
