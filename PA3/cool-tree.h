@@ -60,6 +60,7 @@ public:
    virtual bool isAttribute() = 0;
    virtual Symbol getType() = 0;
    virtual Symbol typeCheck(ClassTable*);
+
 #ifdef Feature_EXTRAS
    Feature_EXTRAS
 #endif

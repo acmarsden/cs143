@@ -322,19 +322,17 @@ void ClassTable::check_features(Symbol curr_class, ClassTable* classtable) {
     }
 }
 
-void ClassTable::check_attribute(Feature curr_attr) {
-	Symbol attr_name = curr_attr->getName();
-	Symbol attr_type = curr_attr->getType();
+Symbol attr_class::typeCheck(ClassTable* classtable) {
 	// Check that the attribute type has been defined.
-	if() 
-
-
-	// Check that the attribute has not already been defined in a class or its ancestors.
-	if(class_symbol_table.lookup(attr_name)!=NULL) {
-		printf("Error: Attribute %s has already been defined.\n", attr_name->get_string()); }
-	else {
-	class_symbol_table.addid(attr_name, &attr_type);
+	if(classtable->children.find(type_decl)!= classtable->children.end() ) {
+		printf("Attribute type is not defined");
 	}
+	if(classtable->class_symbol_table.lookup(name)!=NULL){
+		printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
+	else {
+	classtable->class_symbol_table.addid(name, &type_decl);
+	}
+	return type_decl;
 }
 
 ////////////////////////////////////////////////////////////////////
