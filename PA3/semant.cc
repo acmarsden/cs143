@@ -307,8 +307,13 @@ void ClassTable::check_features(Symbol curr_class) {
     Features feature_list = symb_class_map[curr_class]->getFeatures();
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
-        printf("%s\n", curr_feature->getName()->get_string());
-        
+        bool is_attr = curr_feature->isAttribute();
+        if (is_attr){
+        	printf("Attribute: %s\n", curr_feature->getName()->get_string());
+	}
+	else{
+		printf("Method: %s\n", curr_feature->getName()->get_string());
+	}
     }
 }
 ////////////////////////////////////////////////////////////////////
