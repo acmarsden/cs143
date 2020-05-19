@@ -315,7 +315,7 @@ void ClassTable::check_features(Symbol curr_class) {
         bool is_attr = curr_feature->isAttribute();
         if (is_attr){
             // call check_type on the feature
-            Symbol feature_type = curr_feature->typeCheck(*this);
+            Symbol feature_type = curr_feature->typeCheck(this);
             printf("Attribute: %s\n", curr_feature->getName()->get_string());
         }
         else{

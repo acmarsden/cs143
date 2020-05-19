@@ -29,11 +29,11 @@ private:
   ostream& error_stream;
   void install_basic_classes();
   bool has_cycle_bfs();
-  void run_type_checks_r(Symbol, std::set<Symbol>*, ClassTable*);
-  void check_features(Symbol, ClassTable*);
+  void run_type_checks_r(Symbol, std::set<Symbol>*);
+  void check_features(Symbol);
 public:
   ClassTable(Classes);
-  void run_type_checks(ClassTable*);
+  void run_type_checks();
   std::set<Symbol> valid_types;
   std::map<Symbol, std::vector<Symbol> > children;
   std::map<Symbol, Class_> symb_class_map;
