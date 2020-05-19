@@ -283,8 +283,10 @@ void ClassTable::type_checks()
 void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     // Do whatever you need to do
+    // check_features?
     visited->insert(curr_class);
     printf("DFS visiting: %s\n", curr_class->get_string());
+    check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
@@ -299,6 +301,15 @@ void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
     }
 }
 
+
+void ClassTable::check_features(Symbol curr_class) {
+
+    Features feature_list = symb_class_map[curr_class]->getFeatures();
+    for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+        Feature curr_feature = feature_list->nth(i);
+        printf("%s\n", curr_feature->getName()->get_string());
+    }
+}
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors

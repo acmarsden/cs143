@@ -32,6 +32,7 @@ private:
   void install_basic_classes();
   bool has_cycle_bfs();
   void type_checks_r(Symbol, std::set<Symbol>*);
+  void check_features(Symbol);
 
 public:
   ClassTable(Classes);
