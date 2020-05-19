@@ -34,6 +34,7 @@ private:
 public:
   ClassTable(Classes);
   void run_type_checks(ClassTable*);
+  std::set<Symbol> valid_types;
   std::map<Symbol, std::vector<Symbol> > children;
   std::map<Symbol, Class_> symb_class_map;
   bool has_cycle() {return _has_cycle;}

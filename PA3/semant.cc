@@ -100,6 +100,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
+	valid_types.insert(node);
         if(children.find(node) == children.end())
         children[node] = std::vector<Symbol>();
         children[parent].push_back(node);
@@ -267,6 +268,12 @@ void ClassTable::install_basic_classes() {
     symb_class_map[Bool] = Bool_class;
     symb_class_map[Str] = Str_class;
 
+    valid_types.insert(Object);
+    valid_types.insert(IO);
+    valid_types.insert(Int);
+    valid_types.insert(Bool);
+    valid_types.insert(Str);
+
 }
 
 void ClassTable::run_type_checks(ClassTable* classtable)
@@ -310,6 +317,7 @@ void ClassTable::check_features(Symbol curr_class, ClassTable* classtable) {
         bool is_attr = curr_feature->isAttribute();
         if (is_attr){
         // call check_type on the feature
+	    Symbol feature_type = curr_feature->typeCheck(classtable);
             printf("Attribute: %s\n", curr_feature->getName()->get_string());
     }
     else{
@@ -324,8 +332,8 @@ void ClassTable::check_features(Symbol curr_class, ClassTable* classtable) {
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
-    if(classtable->children.find(type_decl)!= classtable->children.end() ) {
-        printf("Attribute type is not defined");
+    if(classtable->valid_types.find(type_decl)!= classtable->valid_types.end() ) {
+        printf("Attribute type error: %s is not defined\n", type_decl->get_string());
     }
     if(classtable->class_symbol_table.lookup(name)!=NULL){
         printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
