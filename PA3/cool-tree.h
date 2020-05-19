@@ -60,7 +60,7 @@ public:
    virtual bool isAttribute() = 0;
    virtual Symbol getType() = 0;
    virtual Symbol typeCheck(ClassTable*) = 0;
-
+   virtual void addScope(ClassTable*) = 0;
 #ifdef Feature_EXTRAS
    Feature_EXTRAS
 #endif
@@ -75,6 +75,7 @@ public:
    tree_node *copy()     { return copy_Formal(); }
    virtual Formal copy_Formal() = 0;
    virtual Symbol typeCheck(ClassTable*) = 0;
+   virtual void addScope(ClassTable*) = 0;
 
 #ifdef Formal_EXTRAS
    Formal_EXTRAS
@@ -103,6 +104,8 @@ class Case_class : public tree_node {
 public:
    tree_node *copy()     { return copy_Case(); }
    virtual Case copy_Case() = 0;
+   virtual Symbol typeCheck(ClassTable*) = 0;
+   virtual void addScope(ClassTable*) = 0;
 
 #ifdef Case_EXTRAS
    Case_EXTRAS
@@ -206,6 +209,7 @@ public:
    Symbol getType() {return return_type;}
    bool isAttribute() {return false;}
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*);
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -234,6 +238,7 @@ public:
    Symbol getType() {return type_decl;}
    bool isAttribute() {return true;}
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*);
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -257,6 +262,7 @@ public:
    Formal copy_Formal();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*);
 
 #ifdef Formal_SHARED_EXTRAS
    Formal_SHARED_EXTRAS
@@ -281,7 +287,8 @@ public:
    }
    Case copy_Case();
    void dump(ostream& stream, int n);
-
+   Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*);
 #ifdef Case_SHARED_EXTRAS
    Case_SHARED_EXTRAS
 #endif

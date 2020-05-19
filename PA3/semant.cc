@@ -340,6 +340,24 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     // TODO
     return Object;
 }
+
+Symbol branch_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+
+void attr_class::addScope(ClassTable* classtable) {
+}
+
+void method_class::addScope(ClassTable* classtable) {
+}
+
+void formal_class::addScope(ClassTable* classtable) {
+}
+
+void branch_class::addScope(ClassTable* classtable) {
+}
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors
