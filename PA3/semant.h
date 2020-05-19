@@ -27,16 +27,15 @@ private:
   int semant_errors;
   bool _has_cycle;
   ostream& error_stream;
-  std::map<Symbol, std::vector<Symbol> > children;
-  std::map<Symbol, Class_> symb_class_map;
   void install_basic_classes();
   bool has_cycle_bfs();
   void type_checks_r(Symbol, std::set<Symbol>*);
   void check_features(Symbol);
-  void check_attribute(Feature);
 public:
   ClassTable(Classes);
   void type_checks();
+  std::map<Symbol, std::vector<Symbol> > children;
+  std::map<Symbol, Class_> symb_class_map;
   bool has_cycle() {return _has_cycle;}
   SymbolTable<Symbol, Symbol> class_symbol_table;
   int errors() { return semant_errors; }

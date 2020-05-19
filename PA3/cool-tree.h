@@ -11,7 +11,7 @@
 
 #include "tree.h"
 #include "cool-tree.handcode.h"
-
+#include "semant.h"
 
 // define the class for phylum
 // define simple phylum - Program
@@ -56,7 +56,7 @@ public:
    virtual Symbol getName() = 0;
    virtual bool isAttribute() = 0;
    virtual Symbol getType() = 0;
-
+   virtual Symbol typeCheck(ClassTable*);
 #ifdef Feature_EXTRAS
    Feature_EXTRAS
 #endif
@@ -200,6 +200,7 @@ public:
    Symbol getName() {return name;}
    Symbol getType() {return return_type;}
    bool isAttribute() {return false;}
+   Symbol typeCheck(ClassTable*);
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
@@ -226,7 +227,10 @@ public:
    void dump(ostream& stream, int n);
    Symbol getName() {return name;}
    Symbol getType() {return type_decl;}
-   bool isAttribute() {return false;}
+   bool isAttribute() {return true;}
+   Symbol typeCheck(ClassTable*);
+
+
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS
 #endif
