@@ -276,57 +276,55 @@ void ClassTable::install_basic_classes() {
 
 }
 
-void ClassTable::run_type_checks(ClassTable* classtable)
+void ClassTable::run_type_checks()
 {
     // Traverse the inheritance tree in DFS order
     std::set<Symbol> visited;
 
     // enter scope
     class_symbol_table.enterscope();
-    run_type_checks_r(Object, &visited, classtable);
+    run_type_checks_r(Object, &visited);
     class_symbol_table.exitscope();
 }
 
-void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited, ClassTable* classtable)
+void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     // Do whatever you need to do
     // check_features?
     visited->insert(curr_class);
     printf("DFS visiting: %s\n", curr_class->get_string());
-    check_features(curr_class, classtable);
+    check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             if(visited->find(*it) == visited->end()){
                 // enter scope
-        class_symbol_table.enterscope();
-                run_type_checks_r(*it, visited, classtable);
+                class_symbol_table.enterscope();
+                run_type_checks_r(*it, visited);
                 class_symbol_table.dump();
-        class_symbol_table.exitscope();
+                class_symbol_table.exitscope();
             }
         }
     }
 }
 
-
-void ClassTable::check_features(Symbol curr_class, ClassTable* classtable) {
-
+void ClassTable::check_features(Symbol curr_class) {
     Features feature_list = symb_class_map[curr_class]->getFeatures();
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
         bool is_attr = curr_feature->isAttribute();
         if (is_attr){
-        // call check_type on the feature
-	    Symbol feature_type = curr_feature->typeCheck(classtable);
+            // call check_type on the feature
+            Symbol feature_type = curr_feature->typeCheck(*this);
             printf("Attribute: %s\n", curr_feature->getName()->get_string());
-    }
-    else{
-        // call check_type on the feature
-        printf("Method: %s\n", curr_feature->getName()->get_string());
-    }
-    Symbol feature_name = curr_feature->getName();
-    Symbol feature_type = curr_feature->getType();
-    class_symbol_table.addid(feature_name, &feature_type);
+        }
+        else{
+            // call check_type on the feature
+            printf("Method: %s\n", curr_feature->getName()->get_string());
+        }
+        Symbol feature_name = curr_feature->getName();
+        Symbol feature_type = curr_feature->getType();
+        class_symbol_table.addid(feature_name, &feature_type);
     }
 }
 
@@ -338,7 +336,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     if(classtable->class_symbol_table.lookup(name)!=NULL){
         printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
     else {
-    classtable->class_symbol_table.addid(name, &type_decl);
+        classtable->class_symbol_table.addid(name, &type_decl);
     }
     return type_decl;
 }
@@ -351,8 +349,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 }
 
 Symbol formal_class::typeCheck(ClassTable* classtable){
-	// TODO
-	return Object;
+    // TODO
+    return Object;
 }
 ////////////////////////////////////////////////////////////////////
 //
@@ -412,7 +410,7 @@ void program_class::semant()
     if(!classtable->has_cycle()){
         // continue semantic analysis
         printf("No inheritance cycles\n");
-    classtable->run_type_checks(classtable);
+        classtable->run_type_checks();
     }
     printf("========= END Constructor output =========\n");
 
