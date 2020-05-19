@@ -281,9 +281,11 @@ void ClassTable::type_checks()
 		visited.insert(current_class_);
 		printf("DFS visiting: %s\n", current_class_->get_string());
 		S.pop();
-		for(auto it=children[current_class_].begin(); it<children[current_class_].end(); ++it){
-			if(visited.find(current_class_) == visited.end())
+		std::vector<Symbol> curr_children = children[current_class_];
+		for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+			if(visited.find(*it) == visited.end()){
 				S.push(*it);
+			}
 		}
 		// Now do stuff with the other nodes
 	}
