@@ -316,7 +316,7 @@ void ClassTable::check_features(Symbol curr_class) {
 	}
 	Symbol feature_name = curr_feature->getName();
 	Symbol feature_type = curr_feature->getType();
-	class_symbol_table.addid(feature_name, feature_type);
+	class_symbol_table.addid(feature_name, &feature_type);
     }
 }
 ////////////////////////////////////////////////////////////////////
