@@ -24,13 +24,16 @@ typedef ClassTable *ClassTableP;
 class ClassTable {
 private:
   int semant_errors;
-  void install_basic_classes();
-  bool has_cycle_bfs();
   bool _has_cycle;
   ostream& error_stream;
   std::map<Symbol, std::vector<Symbol> > children;
+  std::map<Symbol, Class_> symb_class_map;
+  void install_basic_classes();
+  bool has_cycle_bfs();
+
 public:
   ClassTable(Classes);
+  void type_checks();
   bool has_cycle() {return _has_cycle;}
   int errors() { return semant_errors; }
   ostream& semant_error();

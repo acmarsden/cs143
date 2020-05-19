@@ -10,6 +10,7 @@
 #include <iostream>
 #include <set>
 #include <queue>
+#include <stack>
 extern int semant_debug;
 extern char *curr_filename;
 
@@ -102,6 +103,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         if(children.find(node) == children.end())
 	    children[node] = std::vector<Symbol>();
         children[parent].push_back(node);
+	symb_class_map[node] = curr_class;
     }
 
     _has_cycle = has_cycle_bfs();
@@ -140,9 +142,8 @@ bool ClassTable::has_cycle_bfs() {
             }
             else {
                 // The node had already been discovered so we know there is a cycle
-                // TODO: something like this to do error reporting, but current_child needs to be a Class_ object
-		//ostream& err_stream = semant_error(current_child);
-                //err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
+		ostream& err_stream = semant_error(symb_class_map[current_child]);
+                err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
                 return true;
             }
         }
@@ -260,6 +261,32 @@ void ClassTable::install_basic_classes() {
     children[Bool] = std::vector<Symbol>();
     children[Str] = std::vector<Symbol>();
 
+    symb_class_map[Object] = Object_class;
+    symb_class_map[IO] = IO_class;
+    symb_class_map[Int] = Int_class;
+    symb_class_map[Bool] = Bool_class;
+    symb_class_map[Str] = Str_class;
+
+}
+
+void ClassTable::type_checks()
+{
+	// Traverse the inheritance tree in DFS order
+	std::stack<Symbol> S;
+	std::set<Symbol> visited;
+	S.push(Object);
+	while(S.size()>0){
+		Symbol current_class_ = S.top();
+		Class_ current_class = symb_class_map.find(current_class_)->second;
+		visited.insert(current_class_);
+		printf("DFS visiting: %s\n", current_class_->get_string());
+		S.pop();
+		for(auto it=children[current_class_].begin(); it<children[current_class_].end(); ++it){
+			if(visited.find(current_class_) == visited.end())
+				S.push(*it);
+		}
+		// Now do stuff with the other nodes
+	}
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -295,7 +322,6 @@ ostream& ClassTable::semant_error()
 }
 
 
-
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
@@ -321,6 +347,7 @@ void program_class::semant()
     if(!classtable->has_cycle()){
         // continue semantic analysis
         printf("No inheritance cycles\n");
+	classtable->type_checks();
     }
     printf("========= END Constructor output =========\n");
 
