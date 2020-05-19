@@ -319,6 +319,22 @@ void ClassTable::check_features(Symbol curr_class) {
 	class_symbol_table.addid(feature_name, &feature_type);
     }
 }
+
+void ClassTable::check_attribute(Feature curr_attr) {
+	Symbol attr_name = curr_attr->getName();
+	Symbol attr_type = curr_attr->getType();
+	// Check that the attribute type has been defined.
+	if() 
+
+
+	// Check that the attribute has not already been defined in a class or its ancestors.
+	if(class_symbol_table.lookup(attr_name)!=NULL) {
+		printf("Error: Attribute %s has already been defined.\n", attr_name->get_string()); }
+	else {
+	class_symbol_table.addid(attr_name, &attr_type);
+	}
+}
+
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors

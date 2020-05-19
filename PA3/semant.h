@@ -33,7 +33,7 @@ private:
   bool has_cycle_bfs();
   void type_checks_r(Symbol, std::set<Symbol>*);
   void check_features(Symbol);
-
+  void check_attribute(Feature);
 public:
   ClassTable(Classes);
   void type_checks();
