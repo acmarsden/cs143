@@ -292,10 +292,10 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited,
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             if(visited->find(*it) == visited->end()){
                 // enter scope
-		class_symbol_table.enterscope();
+        class_symbol_table.enterscope();
                 run_type_checks_r(*it, visited, classtable);
                 class_symbol_table.dump();
-		class_symbol_table.exitscope();
+        class_symbol_table.exitscope();
             }
         }
     }
@@ -309,30 +309,36 @@ void ClassTable::check_features(Symbol curr_class, ClassTable* classtable) {
         Feature curr_feature = feature_list->nth(i);
         bool is_attr = curr_feature->isAttribute();
         if (is_attr){
-		// call check_type on the feature
-        	printf("Attribute: %s\n", curr_feature->getName()->get_string());
-	}
-	else{
-		// call check_type on the feature
-		printf("Method: %s\n", curr_feature->getName()->get_string());
-	}
-	Symbol feature_name = curr_feature->getName();
-	Symbol feature_type = curr_feature->getType();
-	class_symbol_table.addid(feature_name, &feature_type);
+        // call check_type on the feature
+            printf("Attribute: %s\n", curr_feature->getName()->get_string());
+    }
+    else{
+        // call check_type on the feature
+        printf("Method: %s\n", curr_feature->getName()->get_string());
+    }
+    Symbol feature_name = curr_feature->getName();
+    Symbol feature_type = curr_feature->getType();
+    class_symbol_table.addid(feature_name, &feature_type);
     }
 }
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
-	// Check that the attribute type has been defined.
-	if(classtable->children.find(type_decl)!= classtable->children.end() ) {
-		printf("Attribute type is not defined");
-	}
-	if(classtable->class_symbol_table.lookup(name)!=NULL){
-		printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
-	else {
-	classtable->class_symbol_table.addid(name, &type_decl);
-	}
-	return type_decl;
+    // Check that the attribute type has been defined.
+    if(classtable->children.find(type_decl)!= classtable->children.end() ) {
+        printf("Attribute type is not defined");
+    }
+    if(classtable->class_symbol_table.lookup(name)!=NULL){
+        printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
+    else {
+    classtable->class_symbol_table.addid(name, &type_decl);
+    }
+    return type_decl;
+}
+
+Symbol method_class::typeCheck(ClassTable* classtable){
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
+        Symbol formal_type = formals->nth(i)->typeCheck(classtable);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -393,7 +399,7 @@ void program_class::semant()
     if(!classtable->has_cycle()){
         // continue semantic analysis
         printf("No inheritance cycles\n");
-	classtable->run_type_checks(classtable);
+    classtable->run_type_checks(classtable);
     }
     printf("========= END Constructor output =========\n");
 
