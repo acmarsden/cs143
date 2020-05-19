@@ -24,27 +24,24 @@
 
 class ClassTable {
 private:
-  int semant_errors;
-  bool _has_cycle;
-  ostream& error_stream;
-  void install_basic_classes();
-  bool has_cycle_bfs();
-  void run_type_checks_r(Symbol, std::set<Symbol>*);
-  void check_features(Symbol);
+    int semant_errors;
+    bool _has_cycle;
+    ostream& error_stream;
+    void install_basic_classes();
+    bool has_cycle_bfs();
+    void run_type_checks_r(Symbol, std::set<Symbol>*);
+    void check_features(Symbol);
 public:
-  ClassTable(Classes);
-  void run_type_checks();
-  std::set<Symbol> valid_types;
-  std::map<Symbol, std::vector<Symbol> > children;
-  std::map<Symbol, Class_> symb_class_map;
-  bool has_cycle() {return _has_cycle;}
-  SymbolTable<Symbol, Symbol> class_symbol_table;
-  int errors() { return semant_errors; }
-  ostream& semant_error();
-  ostream& semant_error(Class_ c);
-  ostream& semant_error(Symbol filename, tree_node *t);
+    ClassTable(Classes);
+    void run_type_checks();
+    std::map<Symbol, std::vector<Symbol> > children;
+    std::map<Symbol, Class_> symb_class_map;
+    bool has_cycle() {return _has_cycle;}
+    SymbolTable<Symbol, Symbol> class_symbol_table;
+    int errors() { return semant_errors; }
+    ostream& semant_error();
+    ostream& semant_error(Class_ c);
+    ostream& semant_error(Symbol filename, tree_node *t);
 };
 
-
 #endif
-

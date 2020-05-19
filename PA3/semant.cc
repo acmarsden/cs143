@@ -88,9 +88,6 @@ static void initialize_constants(void)
 
 
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
-
-    /* Fill this in */
-
     install_basic_classes();
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
@@ -100,11 +97,11 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
-	valid_types.insert(node);
-        if(children.find(node) == children.end())
-        children[node] = std::vector<Symbol>();
+        if(children.find(node) == children.end()){
+            children[node] = std::vector<Symbol>();
+        }
         children[parent].push_back(node);
-    symb_class_map[node] = curr_class;
+        symb_class_map[node] = curr_class;
     }
 
     _has_cycle = has_cycle_bfs();
@@ -117,33 +114,31 @@ bool ClassTable::has_cycle_bfs() {
     discovered.insert(Object);
     Q.push(Object);
     while(!Q.empty() || discovered.size() < children.size()) {
-    if(Q.empty()){
-        for (auto it=children.begin(); it!=children.end(); ++it) {
-                if(discovered.find(it->first) == discovered.end()) {
-                Q.push(it->first);
-            break;
+        if(Q.empty()){
+            for (auto it=children.begin(); it!=children.end(); ++it) {
+                    if(discovered.find(it->first) == discovered.end()) {
+                    Q.push(it->first);
+                        break;
+                    }
+            }
         }
-        }
-    }
         Symbol current_vertex = Q.front();
-    printf("Visiting: %s\n", current_vertex->get_string());
+        printf("Visiting: %s\n", current_vertex->get_string());
         Q.pop();
         std::vector<Symbol> current_children = children[current_vertex];
-        //for(uint iter = 0; iter < current_children.size(); iter++) {
-    for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
-        //Symbol current_child = current_children[iter];
-        Symbol current_child = *it;
-        printf("bfs visiting: %s\n", current_child->get_string());
+        for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
+            Symbol current_child = *it;
+            printf("bfs visiting: %s\n", current_child->get_string());
             printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
-        printf("capacity: %lu\n", Q.size());
+                printf("capacity: %lu\n", Q.size());
                 discovered.insert(current_child);
             }
             else {
                 // The node had already been discovered so we know there is a cycle
-        ostream& err_stream = semant_error(symb_class_map[current_child]);
+                ostream& err_stream = semant_error(symb_class_map[current_child]);
                 err_stream << current_child->get_string() <<" is part of a cycle in the inheritance graph."<<endl;
                 return true;
             }
@@ -267,13 +262,6 @@ void ClassTable::install_basic_classes() {
     symb_class_map[Int] = Int_class;
     symb_class_map[Bool] = Bool_class;
     symb_class_map[Str] = Str_class;
-
-    valid_types.insert(Object);
-    valid_types.insert(IO);
-    valid_types.insert(Int);
-    valid_types.insert(Bool);
-    valid_types.insert(Str);
-
 }
 
 void ClassTable::run_type_checks()
@@ -330,7 +318,7 @@ void ClassTable::check_features(Symbol curr_class) {
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
-    if(classtable->valid_types.find(type_decl)!= classtable->valid_types.end() ) {
+    if(classtable->children.find(type_decl) == classtable->children.end()) {
         printf("Attribute type error: %s is not defined\n", type_decl->get_string());
     }
     if(classtable->class_symbol_table.lookup(name)!=NULL){
@@ -384,7 +372,6 @@ ostream& ClassTable::semant_error()
     return error_stream;
 }
 
-
 /*   This is the entry point to the semantic checker.
 
      Your checker should do the following two things:
@@ -419,5 +406,3 @@ void program_class::semant()
     exit(1);
     }
 }
-
-
