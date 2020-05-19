@@ -14,8 +14,8 @@
 #define TRUE 1
 #define FALSE 0
 
-class ClassTable;
-typedef ClassTable *ClassTableP;
+//class ClassTable;
+//typedef ClassTable *ClassTableP;
 
 // This is a structure that may be used to contain the semantic
 // information such as the inheritance graph.  You may use it or not as
@@ -29,11 +29,11 @@ private:
   ostream& error_stream;
   void install_basic_classes();
   bool has_cycle_bfs();
-  void type_checks_r(Symbol, std::set<Symbol>*);
-  void check_features(Symbol);
+  void run_type_checks_r(Symbol, std::set<Symbol>*, ClassTable*);
+  void check_features(Symbol, ClassTable*);
 public:
   ClassTable(Classes);
-  void type_checks();
+  void run_type_checks(ClassTable*);
   std::map<Symbol, std::vector<Symbol> > children;
   std::map<Symbol, Class_> symb_class_map;
   bool has_cycle() {return _has_cycle;}
