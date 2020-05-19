@@ -275,8 +275,9 @@ void ClassTable::type_checks()
     std::set<Symbol> visited;
 
     // enter scope
+    class_table.enterscope();
     type_checks_r(Object, &visited);
-    // leave scope
+    class_table.exitscope();
 }
 
 void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
@@ -289,8 +290,10 @@ void ClassTable::type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             if(visited->find(*it) == visited->end()){
                 // enter scope
+		class_table.enterscope();
                 type_checks_r(*it, visited);
-                // leave scope
+                class_table.dump();
+		class_table.exitscope();
             }
         }
     }

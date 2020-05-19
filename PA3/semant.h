@@ -37,6 +37,7 @@ public:
   ClassTable(Classes);
   void type_checks();
   bool has_cycle() {return _has_cycle;}
+  SymbolTable<Symbol, Symbol> class_table;
   int errors() { return semant_errors; }
   ostream& semant_error();
   ostream& semant_error(Class_ c);
