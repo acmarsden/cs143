@@ -339,7 +339,6 @@ void attr_class::addToScope(ClassTable* classtable) {
 }
 
 void method_class::addToScope(ClassTable* classtable) {
-    //Check whether this method is a redefinition and if so make sure it adheres
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
@@ -367,7 +366,6 @@ void method_class::addToScope(ClassTable* classtable) {
     // Now add it to the present scope
     classtable->methodST.addid(name, &data);
     // and call addToScope on the expression of the method (only relevant for cases and lets)
-    expr->addToScope(classtable);
 }
 
 void formal_class::addToScope(ClassTable* classtable) {
@@ -417,6 +415,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         classtable->objectST.addid(formal_name, &formal_type);
     }
 
+    expr->addToScope(classtable);
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
