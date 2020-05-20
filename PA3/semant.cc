@@ -280,22 +280,15 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 //Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
 //Set C_old to be C
 //TODO: We need to implement SELF_TYPE in here.
-//
     std::set<Symbol> seen_symbols;
-
-    //Hard to initialize so we do a bool to check if we've started
     Symbol join = Object;
-    bool is_first = true;
-    for(auto it=symbol_vec.begin(); it!=symbol_vec.end(); ++it){
-        if(is_first){
-            join = *it;
-            is_first = false;
-        }
-
-        if(seen_symbols.find(*it)==seen_symbols.end()){
+    join = symbol_vec[0];
+    seen_symbols.insert(symbol_vec[0]);
+    for(uint i=1; i<symbol_vec.size(); ++i){
+        if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
             //This symbol has NOT already been included in join so we need to update join.
-            join = compute_join_pair(join, *it);
-            seen_symbols.insert(*it);
+            join = compute_join_pair(join, symbol_vec[i]);
+            seen_symbols.insert(symbol_vec[i]);
         }
     }
     return join;
