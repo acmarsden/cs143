@@ -333,6 +333,8 @@ void method_class::addScope(ClassTable* classtable) {
 	formals->nth(i)->addScope(classtable);
     }
     classtable->methodST.addid(name, &data);
+    //call addScope on the expression of the method
+    expr->addScope(classtable);
 }
 
 void formal_class::addScope(ClassTable* classtable) {
@@ -343,6 +345,13 @@ void branch_class::addScope(ClassTable* classtable) {
 	classtable->objectST.addid(name, &type_decl);
 }
 
+void let_class::addScope(ClassTable* classtable){
+	classtable->objectST.enterscope();
+	classtable->objectST.addid(identifier, &type_decl);
+	body->addScope(classtable);
+	classtable->objectST.exitscope();
+
+}
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
