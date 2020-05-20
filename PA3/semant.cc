@@ -276,6 +276,31 @@ void ClassTable::run_type_checks()
     methodST.enterscope();
 }
 
+void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
+{
+    // TODO: skip the basic classes
+    visited->insert(curr_class);
+    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
+    if(curr_class != Object && curr_class != Str && curr_class != Int &&
+       curr_class != IO && curr_class != Bool){
+        check_features(curr_class);
+    }
+    if(children[curr_class].size() != 0){
+        std::vector<Symbol> curr_children = children[curr_class];
+        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+            if(visited->find(*it) == visited->end()){
+                // enter scope
+                objectST.enterscope();
+                methodST.enterscope();
+                run_type_checks_r(*it, visited);
+                if(_DEBUG) objectST.dump();
+                objectST.exitscope();
+                methodST.enterscope();
+            }
+        }
+    }
+}
+
 Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 //Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
 //Set C_old to be C
@@ -319,28 +344,6 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
         curr_symbolA =  symb_class_map[curr_symbolA]->getParent();
     }
     return join_pair;
-}
-
-void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
-{
-    // TODO: skip the basic classes
-    visited->insert(curr_class);
-    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
-    check_features(curr_class);
-    if(children[curr_class].size() != 0){
-        std::vector<Symbol> curr_children = children[curr_class];
-        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-            if(visited->find(*it) == visited->end()){
-                // enter scope
-                objectST.enterscope();
-                methodST.enterscope();
-                run_type_checks_r(*it, visited);
-                if(_DEBUG) objectST.dump();
-                objectST.exitscope();
-                methodST.enterscope();
-            }
-        }
-    }
 }
 
 void ClassTable::check_features(Symbol curr_class) {
