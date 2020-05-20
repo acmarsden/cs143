@@ -572,6 +572,14 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
 // TODO
+    Symbol pred_type = pred->typeCheck(classtable);
+    if(pred_type!=Bool){
+        if(_DEBUG) printf("Loop Error: the predicate is not of type Bool. \n");
+        // TODO: Handle error here
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Loop Error: the predicate is not of type Bool. \n" << endl;
+    }
     return Object;
 }
 
