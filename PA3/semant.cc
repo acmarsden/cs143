@@ -291,7 +291,7 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
             join = *it;
             is_first = false;
         }
-        
+
         if(seen_symbols.find(*it)==seen_symbols.end()){
             //This symbol has NOT already been included in join so we need to update join.
             join = compute_join_pair(join, *it);
@@ -316,7 +316,7 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
         if(curr_parentB==Object) found_all_ancestors = true;
         b_ancestors.insert(curr_parentB);
     }
-    
+
     Symbol curr_symbolA = symbolA;
     bool not_found = true;
     Symbol join_pair = Object;
@@ -511,29 +511,36 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
     // First get O(Id), i.e. the type the environment gives to the id
-    Symbol* env_given_type = classtable->objectST.probe(name);
+    Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the expression
-    Symbol expr_type = expr->typeCheck(classtable);
-    // Check that the type of the expression conforms to env_given_type
-    // i.e. that expr_type inherits from env_given_type
-    if(*env_given_type!=expr_type){
-        bool no_inheritance_found = typeCheck_r(classtable, *env_given_type, expr_type);;
+    // TODO: I think this can be null? If the assignment is not specified.
+    Symbol inferred_assign_type = expr->typeCheck(classtable);
+    // Check that the type of the expression conforms to declared_type
+    // i.e. that inferred_assign_type inherits from declared_type
+    if(*declared_type!=inferred_assign_type){
+        bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
         if(no_inheritance_found){
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
-            //TODO: properly return error stuff here
+            Symbol curr_class = classtable->getCurrentClass();
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Assign error: Expression type does not conform to Id type." << endl;
             return Object;
         }
-        else return expr_type;
+        else return inferred_assign_type;
     }
-    // return the type as the type of the expression
-    else{ return expr_type;}
+    else{
+         // return the type as the type of the expression
+        return inferred_assign_type;
+    }
 }
 
 bool assign_class::typeCheck_r(ClassTable* classtable, Symbol curr_class_type, Symbol expr_type) {
+    // Starting at curr_class_type, recursively checks its children to see if they
+    // contain expr_type
     std::vector<Symbol> curr_children = classtable->children[curr_class_type];
     for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
         if(*it==expr_type){
-            //expr_type does indeed inherit from env_given_type
+            //expr_type does indeed inherit from declared_type
             return false;
         }
         else{
@@ -555,7 +562,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
-    
+
     Symbol pred_type = pred->typeCheck(classtable);
     Symbol then_exp_type = then_exp->typeCheck(classtable);
     Symbol else_exp_type = else_exp->typeCheck(classtable);
@@ -601,7 +608,7 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
             //TODO: Handle this error correctly
         }
     }
-    
+
     Symbol return_type = classtable->compute_join(types_vec);
     return return_type;
 }
@@ -621,7 +628,7 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Int;
     }
@@ -637,7 +644,7 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Int;
     }
@@ -645,7 +652,7 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
         if(_DEBUG) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
         return Object;
         //TODO: handle error exiting correctly here.
-        
+
     }
 }
 
@@ -654,7 +661,7 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Int;
     }
@@ -670,7 +677,7 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Int;
     }
@@ -690,7 +697,7 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
-        return Object;        
+        return Object;
         //TODO: handle error exiting correctly here.
     }
 }
@@ -700,7 +707,7 @@ Symbol lt_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Bool;
     }
@@ -716,7 +723,7 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Bool;
     }
@@ -733,7 +740,7 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
-    
+
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         return Bool;
     }
