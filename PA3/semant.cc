@@ -454,7 +454,12 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
-// TODO
+// TODO JUST A ROUGH SKETCH, NEED TO CHECK THIS 
+    // First get O(Id), i.e. the type the environment gives to the id
+    //Symbol env_given_type = classtable->objectST.probe(name);
+    // Now get the type of the expression
+    // Check that the type of the expression conforms to env_given_type
+    // return the type as the type of the expression
     return Object;
 }
 
