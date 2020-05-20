@@ -348,13 +348,11 @@ void method_class::addToScope(ClassTable* classtable) {
     }
 
     //Check whether this method is a redefinition and if so make sure it adheres
-    std::vector<Symbol>* lookup = methodST.lookup(name);
+    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     if(lookup!=NULL){
         if(data != *lookup){
-            if(DEBUG_){
-                printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
-                name->get_string());
-            }
+            if(_DEBUG) printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
+                              name->get_string());
         }
     }
     classtable->methodST.addid(name, &data);
@@ -432,7 +430,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         Symbol formal_type = formals->nth(i)->getType();
         classtable->objectST.addid(formal_name, &formal_type);
     }
-    Symbol inferred_return_type = expr.typeCheck(classtable);
+    Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
     // Check the inferred type against the declared return type

@@ -76,6 +76,7 @@ public:
    virtual Symbol typeCheck(ClassTable*) = 0;
    virtual void addToScope(ClassTable*) = 0;
    virtual Symbol getType() = 0;
+   virtual Symbol getName() = 0;
 
 #ifdef Formal_EXTRAS
    Formal_EXTRAS
@@ -265,6 +266,7 @@ public:
    Symbol typeCheck(ClassTable*);
    void addToScope(ClassTable*);
    Symbol getType() {return type_decl;}
+   Symbol getName() {return name;}
 
 #ifdef Formal_SHARED_EXTRAS
    Formal_SHARED_EXTRAS
