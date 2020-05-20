@@ -340,8 +340,6 @@ void attr_class::addScope(ClassTable* classtable) {
 
 void method_class::addScope(ClassTable* classtable) {
     
-    //Check whether this method is a redefinition and if so make sure it adheres
-    
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
@@ -349,6 +347,17 @@ void method_class::addScope(ClassTable* classtable) {
         data.push_back(formal_type);
         // call addScope on the formal
         formals->nth(i)->addScope(classtable);
+    }
+    
+    //Check whether this method is a redefinition and if so make sure it adheres
+    std::vector<Symbol>* lookup = methodST.lookup(name);
+    if(lookup!=NULL){
+    	if(data != *lookup){
+		if(DEBUG_){
+		printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
+			name->get_string());
+		}
+	}
     }
     classtable->methodST.addid(name, &data);
     //call addScope on the expression of the method
@@ -406,11 +415,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 	
      
     //Call typecheck on the expression and ensure it matches return type of method
-	
 
-    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
-        Symbol formal_type = formals->nth(i)->typeCheck(classtable);
-    }
     return Object;
 }
 
