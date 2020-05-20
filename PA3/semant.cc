@@ -92,7 +92,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         Class_ curr_class = classes->nth(i);
-        printf("%s: %s\n", curr_class->getName()->get_string(),
+        if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
@@ -110,7 +110,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 bool ClassTable::has_cycle_bfs() {
     std::set<Symbol> discovered;
     std::queue<Symbol> Q;
-    printf("Number of children: %lu\n", children.size());
+    if(_DEBUG) printf("Number of children: %lu\n", children.size());
     discovered.insert(Object);
     Q.push(Object);
     while(!Q.empty() || discovered.size() < children.size()) {
@@ -123,7 +123,7 @@ bool ClassTable::has_cycle_bfs() {
             }
         }
         Symbol current_vertex = Q.front();
-        printf("Visiting: %s\n", current_vertex->get_string());
+        if(_DEBUG) printf("Visiting: %s\n", current_vertex->get_string());
         Q.pop();
         std::vector<Symbol> current_children = children[current_vertex];
         for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
@@ -133,7 +133,7 @@ bool ClassTable::has_cycle_bfs() {
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
-                printf("capacity: %lu\n", Q.size());
+                if(_DEBUG) printf("capacity: %lu\n", Q.size());
                 discovered.insert(current_child);
             }
             else {
