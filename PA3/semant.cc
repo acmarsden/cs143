@@ -128,8 +128,8 @@ bool ClassTable::has_cycle_bfs() {
         std::vector<Symbol> current_children = children[current_vertex];
         for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
             Symbol current_child = *it;
-            printf("bfs visiting: %s\n", current_child->get_string());
-            printf("%d\n", discovered.find(current_child) == discovered.end());
+            if(DEBUG) printf("bfs visiting: %s\n", current_child->get_string());
+            if(DEBUG) printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
@@ -268,11 +268,12 @@ void ClassTable::run_type_checks()
 {
     // Traverse the inheritance tree in DFS order
     std::set<Symbol> visited;
-
     // enter scope
-    class_symbol_table.enterscope();
+    objectST.enterscope();
+    methodST.enterscope();
     run_type_checks_r(Object, &visited);
-    class_symbol_table.exitscope();
+    objectST.exitscope();
+    methodST.enterscope();
 }
 
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
@@ -280,17 +281,19 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
     // Do whatever you need to do
     // check_features?
     visited->insert(curr_class);
-    printf("DFS visiting: %s\n", curr_class->get_string());
+    if(DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
     check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             if(visited->find(*it) == visited->end()){
                 // enter scope
-                class_symbol_table.enterscope();
+                objectST.enterscope();
+                methodST.enterscope();
                 run_type_checks_r(*it, visited);
-                class_symbol_table.dump();
-                class_symbol_table.exitscope();
+                if(DEBUG) objectST.dump();
+                objectST.exitscope();
+                methodST.enterscope();
             }
         }
     }
@@ -304,15 +307,15 @@ void ClassTable::check_features(Symbol curr_class) {
         if (is_attr){
             // call check_type on the feature
             Symbol feature_type = curr_feature->typeCheck(this);
-            printf("Attribute: %s\n", curr_feature->getName()->get_string());
+            if(DEBUG) printf("Attribute: %s\n", curr_feature->getName()->get_string());
         }
         else{
             // call check_type on the feature
-            printf("Method: %s\n", curr_feature->getName()->get_string());
+            if(DEBUG) printf("Method: %s\n", curr_feature->getName()->get_string());
         }
         Symbol feature_name = curr_feature->getName();
         Symbol feature_type = curr_feature->getType();
-        class_symbol_table.addid(feature_name, &feature_type);
+        objectST.addid(feature_name, &feature_type);
     }
 }
 
@@ -332,12 +335,12 @@ void branch_class::addScope(ClassTable* classtable) {
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
-        printf("Attribute type error: %s is not defined\n", type_decl->get_string());
+        if(DEBUG) printf("Attribute type error: %s is not defined\n", type_decl->get_string());
     }
-    if(classtable->class_symbol_table.lookup(name)!=NULL){
-        printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
+    if(classtable->objectST.lookup(name)!=NULL){
+        if(DEBUG) printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
     else {
-        classtable->class_symbol_table.addid(name, &type_decl);
+        classtable->objectST.addid(name, &type_decl);
     }
     return type_decl;
 }
@@ -537,13 +540,15 @@ void program_class::semant()
     // Stop semantic analysis if inheritance graph is not well formed
     if(!classtable->has_cycle()){
         // continue semantic analysis
-        printf("No inheritance cycles\n");
+        if(DEBUG) printf("No inheritance cycles\n");
         classtable->run_type_checks();
     }
-    printf("========= END Constructor output =========\n");
+    if(DEBUG) printf("========= END Constructor output =========\n");
 
     if (classtable->errors()) {
-    cerr << "Compilation halted due to static semantic errors." << endl;
-    exit(1);
+        cerr << "Compilation halted due to static semantic errors." << endl;
+        exit(1);
     }
 }
+
+bool DEBUG=true;
