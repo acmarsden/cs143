@@ -75,6 +75,7 @@ public:
    virtual Formal copy_Formal() = 0;
    virtual Symbol typeCheck(ClassTable*) = 0;
    virtual void addScope(ClassTable*) = 0;
+   virtual Symbol getType() = 0;
 
 #ifdef Formal_EXTRAS
    Formal_EXTRAS
@@ -90,7 +91,7 @@ public:
    tree_node *copy()     { return copy_Expression(); }
    virtual Expression copy_Expression() = 0;
    virtual Symbol typeCheck(ClassTable*) = 0;
-
+   virtual void addScope(ClassTable*) = 0;
 #ifdef Expression_EXTRAS
    Expression_EXTRAS
 #endif
@@ -263,6 +264,7 @@ public:
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
    void addScope(ClassTable*);
+   Symbol getType() {return type_decl;}
 
 #ifdef Formal_SHARED_EXTRAS
    Formal_SHARED_EXTRAS
@@ -311,6 +313,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
 #endif
@@ -337,7 +340,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
-
+   void addScope(ClassTable*) {return;}
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
 #endif
@@ -362,6 +365,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -387,6 +391,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -410,6 +415,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -433,6 +439,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -454,6 +461,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -481,7 +489,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
-
+   void addScope(ClassTable*);
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
 #endif
@@ -504,6 +512,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -527,6 +536,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -550,6 +560,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -573,6 +584,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -594,6 +606,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -617,6 +630,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -640,6 +654,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -663,6 +678,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -684,6 +700,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -705,6 +722,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -726,6 +744,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -747,6 +766,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -768,6 +788,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -789,6 +810,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -808,6 +830,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
@@ -829,6 +852,7 @@ public:
    Expression copy_Expression();
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
+   void addScope(ClassTable*) {return;}
 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
