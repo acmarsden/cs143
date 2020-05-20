@@ -388,7 +388,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol method_class::typeCheck(ClassTable* classtable){
-    std::vector<Symbol> formal_names;
+    std::set<Symbol> formal_names;
     std::vector<Symbol> formal_types;
     // Check the formals list for previous definition in a parent class
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
@@ -402,7 +402,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
                        name->get_string() );
             }
         }
-        formal_names.push_back(formal_name);
+        formal_names.insert(formal_name);
         formal_types.push_back(formal_type);
     }
     // Check for a previous definition of this method in the class hierarchy
