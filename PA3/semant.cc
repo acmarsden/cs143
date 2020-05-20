@@ -316,6 +316,19 @@ void ClassTable::check_features(Symbol curr_class) {
     }
 }
 
+void attr_class::addScope(ClassTable* classtable) {
+}
+
+void method_class::addScope(ClassTable* classtable) {
+}
+
+void formal_class::addScope(ClassTable* classtable) {
+}
+
+void branch_class::addScope(ClassTable* classtable) {
+}
+
+
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
@@ -346,18 +359,128 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 	return Object;
 }
 
-
-void attr_class::addScope(ClassTable* classtable) {
+Symbol assign_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
 }
 
-void method_class::addScope(ClassTable* classtable) {
+Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
 }
 
-void formal_class::addScope(ClassTable* classtable) {
+Symbol dispatch_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
 }
 
-void branch_class::addScope(ClassTable* classtable) {
+Symbol cond_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
 }
+
+Symbol loop_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol typcase_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol block_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol let_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol plus_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol sub_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol mul_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol divide_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol neg_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol lt_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol eq_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol leq_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol comp_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+
+Symbol int_const_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol bool_const_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol string_const_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol new__class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol isvoid_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol no_expr_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+Symbol object_class::typeCheck(ClassTable* classtable) {
+// TODO
+	return Object;
+}
+
+
 ////////////////////////////////////////////////////////////////////
 //
 // semant_error is an overloaded function for reporting errors
