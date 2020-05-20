@@ -388,29 +388,60 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol method_class::typeCheck(ClassTable* classtable){
-    std::vector<Symbol> formal_visited;
+    std::vector<Symbol> formal_names;
+    std::vector<Symbol> formal_types;
+    // Check the formals list for previous definition in a parent class
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
-    Symbol formal_name = formals->nth(i)->getName();
-	//Check that the identifiers in the formal params are distinct
-	if(formal_visited.find(formal_name) == formal_visited.end()){
-		if(_DEBUG) {
-			printf("Formal error: %s is not a distinct formal identifier for method %s",
-				   formal_name->get_string(),
-				   name->get_string() );
-		}
-	}
-
-	// Typecheck the formals: will ensure declared type is known and matches inferred type
-	// The inferred type of the formal is used to infer the return type of the method
-	// Question: do we need to store formal_type for any reason? If it doesn't return an error it should be the same as what is in the symbol table.
-        Symbol formal_type = formals->nth(i)->typeCheck(classtable);
+        Symbol formal_name = formals->nth(i)->getName();
+        Symbol formal_type = formals->nth(i)->getType();
+        //Check that the identifiers in the formal params are distinct
+        if(formal_names.find(formal_name) != formal_names.end()){
+            if(_DEBUG) {
+                printf("Formal error: %s is not a distinct formal identifier for method %s",
+                       formal_name->get_string(),
+                       name->get_string() );
+            }
+        }
+        formal_names.push_back(formal_name);
+        formal_types.push_back(formal_type);
     }
+    // Check for a previous definition of this method in the class hierarchy
+    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    if(lookup != NULL){
+        // If it did find a match, the defintions must conform
+        bool matches = true;
+        if(return_type != (*lookup)[1]){
+            matches = false;
+        }
+        for(uint i=0; i<formal_types.size(); ++i){
+            if(formal_types[i] != (*lookup)[i+1]){
+                matches = false;
+            }
+        }
+        if(!matches){
+            printf("Method formals list or return type does not conform to parent definition\n");
+        }
+    }
+    // If it did not find a match, we are OK, since it is the first time it is
+    // defined in the class hierarchy
 
+    // Now enter a new scope, add formals to it, recurse on the body and exit scope
+    classtable->objectST.enterscope();
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
+        Symbol formal_name = formals->nth(i)->getName();
+        Symbol formal_type = formals->nth(i)->getType();
+        classtable->objectST.addid(formal_name, &formal_type);
+    }
+    Symbol inferred_return_type = expr.typeCheck(classtable);
+    classtable->objectST.exitscope();
 
-
-    //Call typecheck on the expression and ensure it matches return type of method
-
-    return Object;
+    // Check the inferred type against the declared return type
+    if(inferred_return_type == return_type){
+        return inferred_return_type;
+    }else{
+        // TODO: maybe an error here?
+        return Object;
+    }
 }
 
 Symbol formal_class::typeCheck(ClassTable* classtable){
@@ -420,128 +451,128 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
 
 Symbol branch_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol plus_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol sub_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol mul_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol divide_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol neg_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol lt_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol eq_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol leq_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol comp_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 
 Symbol int_const_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol bool_const_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol string_const_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol no_expr_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
 // TODO
-	return Object;
+    return Object;
 }
 
 
