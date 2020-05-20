@@ -479,23 +479,75 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol plus_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    e1->addToScope(classtable);
+    e2->addToScope(classtable);
+    Symbol inferred_e1_type = e1->typeCheck(classtable);
+    Symbol inferred_e2_type = e2->typeCheck(classtable);
+    
+    if(inferred_e1_type == Int && inferred_e2_type == Int) {
+        return Int;
+    }
+    else{
+        if(_DEBUG){
+        printf("Expression plus_class error: Cannot add non-integer expressions \n");
+        //TODO: handle error exiting correctly here.
+        return Object;
+        }
+    }
 }
 
 Symbol sub_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    e1->addToScope(classtable);
+    e2->addToScope(classtable);
+    Symbol inferred_e1_type = e1->typeCheck(classtable);
+    Symbol inferred_e2_type = e2->typeCheck(classtable);
+    
+    if(inferred_e1_type == Int && inferred_e2_type == Int) {
+        return Int;
+    }
+    else{
+        if(_DEBUG){
+        printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
+        return Object;
+        //TODO: handle error exiting correctly here.
+        }
+    }
 }
 
 Symbol mul_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    e1->addToScope(classtable);
+    e2->addToScope(classtable);
+    Symbol inferred_e1_type = e1->typeCheck(classtable);
+    Symbol inferred_e2_type = e2->typeCheck(classtable);
+    
+    if(inferred_e1_type == Int && inferred_e2_type == Int) {
+        return Int;
+    }
+    else{
+        if(_DEBUG){
+        printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
+        return Object;
+        //TODO: handle error exiting correctly here.
+        }
+    }
 }
 
 Symbol divide_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    e1->addToScope(classtable);
+    e2->addToScope(classtable);
+    Symbol inferred_e1_type = e1->typeCheck(classtable);
+    Symbol inferred_e2_type = e2->typeCheck(classtable);
+    
+    if(inferred_e1_type == Int && inferred_e2_type == Int) {
+        return Int;
+    }
+    else{
+        if(_DEBUG){
+        printf("Expression divide_class error: Cannot divide non-integer expressions \n");
+        return Object;
+        //TODO: handle error exiting correctly here.
+        }
+    }
 }
 
 Symbol neg_class::typeCheck(ClassTable* classtable) {
