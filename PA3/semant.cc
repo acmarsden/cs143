@@ -548,7 +548,7 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e1_type = e1->typeCheck(classtable);
 
     if(inferred_e1_type == Int) {
-        return Int
+        return Int;
     }
     else{
         if(_DEBUG) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
