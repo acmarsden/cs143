@@ -300,6 +300,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 }
 
 void ClassTable::check_features(Symbol curr_class) {
+    this.current_class = curr_class;
     Features feature_list = symb_class_map[curr_class]->getFeatures();
     // First, let's gather all the identifier information for this class
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
@@ -357,7 +358,9 @@ void method_class::addToScope(ClassTable* classtable) {
             }
         }
         if(!matches){
-            printf("Method formals list or return type does not conform to parent definition\n");
+            Symbol curr_class = classtable->getCurrentClass();
+            ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Method formals list or return type does not conform to parent definition" << endl;
         }
     }
     // If it did not find a match, we are OK, since it is the first time it is
