@@ -26,6 +26,7 @@ class ClassTable {
 private:
     int semant_errors;
     bool _has_cycle;
+    Symbol current_class;
     ostream& error_stream;
     void install_basic_classes();
     bool has_cycle_bfs();
@@ -33,13 +34,14 @@ private:
     void check_features(Symbol);
 public:
     ClassTable(Classes);
-    void run_type_checks();
-    std::map<Symbol, std::vector<Symbol> > children;
-    std::map<Symbol, Class_> symb_class_map;
-    bool has_cycle() {return _has_cycle;}
     SymbolTable<Symbol, Symbol> objectST;
     SymbolTable<Symbol, std::vector<Symbol> > methodST;
+    std::map<Symbol, std::vector<Symbol> > children;
+    std::map<Symbol, Class_> symb_class_map;
+    void run_type_checks();
+    bool has_cycle() {return _has_cycle;}
     int errors() { return semant_errors; }
+    Symbol getCurrentClass(){return current_class;}
     ostream& semant_error();
     ostream& semant_error(Class_ c);
     ostream& semant_error(Symbol filename, tree_node *t);
