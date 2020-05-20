@@ -385,7 +385,23 @@ void ClassTable::check_features(Symbol curr_class) {
 }
 
 void attr_class::addToScope(ClassTable* classtable) {
-    classtable->objectST.addid(name, &type_decl);
+    // Check that the attribute type has been defined.
+    if(classtable->children.find(type_decl) == classtable->children.end()) {
+        if(_DEBUG) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined\n" << endl;
+    }
+    // Check if an attribute with the same name already exists (since attributes are global)
+    if(classtable->objectST.probe(name)!=NULL){
+        if(_DEBUG) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined.\n" << endl;
+    }
+    else {
+        classtable->objectST.addid(name, &type_decl);
+    }
 }
 
 void method_class::addToScope(ClassTable* classtable) {
@@ -433,23 +449,28 @@ void let_class::addToScope(ClassTable* classtable){
 }
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
-    // Check that the attribute type has been defined.
-    if(classtable->children.find(type_decl) == classtable->children.end()) {
-        if(_DEBUG) printf("Attribute type error: %s is not defined\n", type_decl->get_string());
-        Symbol curr_class = classtable->getCurrentClass();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Attribute type error: " << type_decl->get_string() << " is not defined\n" << endl;
+    // Quite similat to assign_class
+    Symbol* declared_type = classtable->objectST.probe(name);
+    // Now get the type of the assign expression
+    // TODO: I think this can be null, or not exist
+    Symbol inferred_assign_type = expr->typeCheck(classtable);
+    // Check that the type of the expression conforms to declared_type
+    // i.e. that inferred_assign_type inherits from declared_type
+    if(*declared_type!=inferred_assign_type){
+        bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
+        if(no_inheritance_found){
+            if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
+            Symbol curr_class = classtable->getCurrentClass();
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Attribute init error: Assignment wxpression type does not conform to declared Id type." << endl;
+            return Object;
+        }
+        else return inferred_assign_type;
     }
-    if(classtable->objectST.lookup(name)!=NULL){
-        if(_DEBUG) printf("Error: Attribute %s has already been defined.\n", name->get_string());
-        Symbol curr_class = classtable->getCurrentClass();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Error: Attribute "<< name->get_string() << " has already been defined.\n" << endl;
+    else{
+         // return the type as the type of the expression
+        return inferred_assign_type;
     }
-    else {
-        classtable->objectST.addid(name, &type_decl);
-    }
-    return type_decl;
 }
 
 Symbol method_class::typeCheck(ClassTable* classtable){
@@ -505,7 +526,6 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     // First get O(Id), i.e. the type the environment gives to the id
     Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the expression
-    // TODO: I think this can be null? If the assignment is not specified.
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
     // i.e. that inferred_assign_type inherits from declared_type
