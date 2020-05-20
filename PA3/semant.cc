@@ -583,8 +583,6 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
-// TODO
-
     //Iterate over the cases
     std::vector<Symbol> types_vec;
     std::set<Symbol> types_set;
@@ -593,18 +591,20 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
         Case curr_branch = cases->nth(i);
         classtable->objectST.enterscope();
         curr_branch->addToScope(classtable);
-        Symbol expr_type = curr_branch->getExpr()->typeCheck(classtable);
+        Symbol branch_declared_type = curr_branch->getType();
+        Symbol branch_expr_inferred_type = curr_branch->getExpr()->typeCheck(classtable);
         classtable->objectST.exitscope();
-        if(types_set.find(expr_type)==types_set.end()) {
-            types_vec.push_back(expr_type);
-            types_set.insert(expr_type);
+        types_vec.push_back(branch_expr_inferred_type);
+        if(types_set.find(branch_declared_type)==types_set.end()) {
+            types_set.insert(branch_declared_type);
         }
         else {
             if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
-            //TODO: Handle this error correctly
+            Symbol curr_class = classtable->getCurrentClass();
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Case Error: The branches in each case must have distinct types." << endl;
         }
     }
-
     Symbol return_type = classtable->compute_join(types_vec);
     return return_type;
 }
