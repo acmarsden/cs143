@@ -308,26 +308,22 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
     std::set<Symbol> b_ancestors;
     Symbol curr_symbolB = symbolB;
     bool found_all_ancestors = false;
-    if(curr_symbolB == Object) found_all_ancestors = true;
-    b_ancestors.insert(symbolB);
     while(!found_all_ancestors){
-        Class_ curr_classB = symb_class_map[symbolB];
-        Symbol curr_parentB = curr_classB->getParent();
-        if(curr_parentB==Object) found_all_ancestors = true;
-        b_ancestors.insert(curr_parentB);
+        if(curr_symbolB == Object) found_all_ancestors = true;
+        b_ancestors.insert(symbolB);
+        curr_symbolB = symb_class_map[curr_symbolB]->getParent();
     }
 
     Symbol curr_symbolA = symbolA;
-    bool not_found = true;
+    bool found_join = false;
     Symbol join_pair = Object;
-    while(not_found){
-        Class_ curr_classA = symb_class_map[symbolA];
-        Symbol curr_parentA = curr_classA->getParent();
-        if(b_ancestors.find(curr_parentA)!=b_ancestors.end()){
-           //Found join
-           join_pair = curr_parentA;
-           not_found = false;
+    while(!found_join){
+        if(b_ancestors.find(curr_symbolA)!=b_ancestors.end()){
+            //Found join
+            join_pair = curr_symbolA;
+            found_join = true;
         }
+        curr_symbolA =  symb_class_map[curr_symbolA]->getParent();
     }
     return join_pair;
 }
