@@ -304,7 +304,7 @@ void ClassTable::check_features(Symbol curr_class) {
     // First, let's gather all the identifier information for this class
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
-        curr_feature->addScope(this);
+        curr_feature->addToScope(this);
     }
     // Now that we have all the object and methid ids, let's type check them
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
@@ -334,50 +334,44 @@ void ClassTable::check_features(Symbol curr_class) {
     }
 }
 
-void attr_class::addScope(ClassTable* classtable) {
+void attr_class::addToScope(ClassTable* classtable) {
     classtable->objectST.addid(name, &type_decl);
 }
 
-void method_class::addScope(ClassTable* classtable) {
-    
+void method_class::addToScope(ClassTable* classtable) {
+    //Check whether this method is a redefinition and if so make sure it adheres
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         data.push_back(formal_type);
-        // call addScope on the formal
-        formals->nth(i)->addScope(classtable);
     }
-    
+
     //Check whether this method is a redefinition and if so make sure it adheres
     std::vector<Symbol>* lookup = methodST.lookup(name);
     if(lookup!=NULL){
-    	if(data != *lookup){
-		if(DEBUG_){
-		printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
-			name->get_string());
-		}
-	}
+        if(data != *lookup){
+            if(DEBUG_){
+                printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
+                name->get_string());
+            }
+        }
     }
     classtable->methodST.addid(name, &data);
-    //call addScope on the expression of the method
-    expr->addScope(classtable);
+    //call addToScope on the expression of the method
+    expr->addToScope(classtable);
 }
 
-void formal_class::addScope(ClassTable* classtable) {
+void formal_class::addToScope(ClassTable* classtable) {
     classtable->objectST.addid(name, &type_decl);
 }
 
-void branch_class::addScope(ClassTable* classtable) {
+void branch_class::addToScope(ClassTable* classtable) {
     classtable->objectST.addid(name, &type_decl);
 }
 
-void let_class::addScope(ClassTable* classtable){
-	classtable->objectST.enterscope();
-	classtable->objectST.addid(identifier, &type_decl);
-	body->addScope(classtable);
-	classtable->objectST.exitscope();
-
+void let_class::addToScope(ClassTable* classtable){
+    classtable->objectST.addid(identifier, &type_decl);
 }
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
@@ -400,9 +394,9 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 	//Check that the identifiers in the formal params are distinct
 	if(formal_visited.find(formal_name) == formal_visited.end()){
 		if(_DEBUG) {
-			printf("Formal error: %s is not a distinct formal identifier for method %s", 
-				   formal_name->get_string(), 
-				   name->get_string() ); 
+			printf("Formal error: %s is not a distinct formal identifier for method %s",
+				   formal_name->get_string(),
+				   name->get_string() );
 		}
 	}
 
@@ -411,9 +405,9 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 	// Question: do we need to store formal_type for any reason? If it doesn't return an error it should be the same as what is in the symbol table.
         Symbol formal_type = formals->nth(i)->typeCheck(classtable);
     }
- 
-	
-     
+
+
+
     //Call typecheck on the expression and ensure it matches return type of method
 
     return Object;
