@@ -347,16 +347,26 @@ void method_class::addToScope(ClassTable* classtable) {
         data.push_back(formal_type);
     }
 
-    //Check whether this method is a redefinition and if so make sure it adheres
+    // Check for a previous definition of this method in the class hierarchy
     std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
-    if(lookup!=NULL){
-        if(data != *lookup){
-            if(_DEBUG) printf("Error: method %s is a redefinition which does not follow inheritance rules.\n",
-                              name->get_string());
+    if(lookup != NULL){
+        // If it did find a match, the defintions must conform
+        bool matches = true;
+        for(uint i=0; i<data.size(); ++i){
+            if(data[i] != (*lookup)[i]){
+                matches = false;
+            }
+        }
+        if(!matches){
+            printf("Method formals list or return type does not conform to parent definition\n");
         }
     }
+    // If it did not find a match, we are OK, since it is the first time it is
+    // defined in the class hierarchy
+
+    // Now add it to the present scope
     classtable->methodST.addid(name, &data);
-    //call addToScope on the expression of the method
+    // and call addToScope on the expression of the method (only relevant for cases and lets)
     expr->addToScope(classtable);
 }
 
@@ -387,11 +397,13 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 
 Symbol method_class::typeCheck(ClassTable* classtable){
     std::set<Symbol> formal_names;
-    std::vector<Symbol> formal_types;
-    // Check the formals list for previous definition in a parent class
+
+    // Enter a new scope, add formals to it, recurse on the body and exit scope
+    classtable->objectST.enterscope();
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_name = formals->nth(i)->getName();
         Symbol formal_type = formals->nth(i)->getType();
+
         //Check that the identifiers in the formal params are distinct
         if(formal_names.find(formal_name) != formal_names.end()){
             if(_DEBUG) {
@@ -401,35 +413,10 @@ Symbol method_class::typeCheck(ClassTable* classtable){
             }
         }
         formal_names.insert(formal_name);
-        formal_types.push_back(formal_type);
-    }
-    // Check for a previous definition of this method in the class hierarchy
-    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
-    if(lookup != NULL){
-        // If it did find a match, the defintions must conform
-        bool matches = true;
-        if(return_type != (*lookup)[1]){
-            matches = false;
-        }
-        for(uint i=0; i<formal_types.size(); ++i){
-            if(formal_types[i] != (*lookup)[i+1]){
-                matches = false;
-            }
-        }
-        if(!matches){
-            printf("Method formals list or return type does not conform to parent definition\n");
-        }
-    }
-    // If it did not find a match, we are OK, since it is the first time it is
-    // defined in the class hierarchy
 
-    // Now enter a new scope, add formals to it, recurse on the body and exit scope
-    classtable->objectST.enterscope();
-    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
-        Symbol formal_name = formals->nth(i)->getName();
-        Symbol formal_type = formals->nth(i)->getType();
         classtable->objectST.addid(formal_name, &formal_type);
     }
+
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
