@@ -108,6 +108,9 @@ public:
    virtual Case copy_Case() = 0;
    virtual Symbol typeCheck(ClassTable*) = 0;
    virtual void addToScope(ClassTable*) = 0;
+   virtual Symbol getType() = 0;
+   virtual Symbol getName() = 0;
+   virtual Expression getExpr() = 0;
 
 #ifdef Case_EXTRAS
    Case_EXTRAS
@@ -293,6 +296,9 @@ public:
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
    void addToScope(ClassTable*);
+   Symbol getType() {return type_decl;}
+   Symbol getName() {return name;}
+   Expression getExpr() {return expr;}
 #ifdef Case_SHARED_EXTRAS
    Case_SHARED_EXTRAS
 #endif

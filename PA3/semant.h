@@ -42,6 +42,8 @@ public:
     bool has_cycle() {return _has_cycle;}
     int errors() { return semant_errors; }
     Symbol getCurrentClass(){return current_class;}
+    Symbol compute_join(std::vector<Symbol>);
+    Symbol compute_join_pair(Symbol, Symbol);
     ostream& semant_error();
     ostream& semant_error(Class_ c);
     ostream& semant_error(Symbol filename, tree_node *t);

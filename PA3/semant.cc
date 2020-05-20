@@ -276,6 +276,62 @@ void ClassTable::run_type_checks()
     methodST.enterscope();
 }
 
+Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
+//Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
+//Set C_old to be C
+//TODO: We need to implement SELF_TYPE in here.
+//
+    std::set<Symbol> seen_symbols;
+
+    //Hard to initialize so we do a bool to check if we've started
+    Symbol join = Object;
+    bool is_first = true;
+    for(auto it=symbol_vec.begin(); it!=symbol_vec.end(); ++it){
+        if(is_first){
+            join = *it;
+            is_first = false;
+        }
+        
+        if(seen_symbols.find(*it)==seen_symbols.end()){
+            //This symbol has NOT already been included in join so we need to update join.
+            join = compute_join_pair(join, *it);
+            seen_symbols.insert(*it);
+        }
+    }
+    return join;
+}
+
+Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
+    if(symbolA == symbolB) return symbolA;
+    //Increment A's ancestors one by one and check against all of B's ancestors
+    //First get B's ancestors
+    std::set<Symbol> b_ancestors;
+    Symbol curr_symbolB = symbolB;
+    bool found_all_ancestors = false;
+    if(curr_symbolB == Object) found_all_ancestors = true;
+    b_ancestors.insert(symbolB);
+    while(!found_all_ancestors){
+        Class_ curr_classB = symb_class_map[symbolB];
+        Symbol curr_parentB = curr_classB->getParent();
+        if(curr_parentB==Object) found_all_ancestors = true;
+        b_ancestors.insert(curr_parentB);
+    }
+    
+    Symbol curr_symbolA = symbolA;
+    bool not_found = true;
+    Symbol join_pair = Object;
+    while(not_found){
+        Class_ curr_classA = symb_class_map[symbolA];
+        Symbol curr_parentA = curr_classA->getParent();
+        if(b_ancestors.find(curr_parentA)!=b_ancestors.end()){
+           //Found join
+           join_pair = curr_parentA;
+           not_found = false;
+        }
+    }
+    return join_pair;
+}
+
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     // TODO: skip the basic classes
@@ -503,15 +559,19 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
     Symbol pred_type = pred->typeCheck(classtable);
     Symbol then_exp_type = then_exp->typeCheck(classtable);
     Symbol else_exp_type = else_exp->typeCheck(classtable);
+    Symbol return_type = Object;
     if(pred_type!=Bool){
         if(_DEBUG) printf("If-Statement Error: the predicate is not of type Bool.\n");
     }
     else {
         //Compute join of then_exp_type and else_exp_type
-        return Object;
+        std::vector<Symbol> symbol_vec;
+        symbol_vec.push_back(then_exp_type);
+        symbol_vec.push_back(else_exp_type);
+        return_type = classtable->compute_join(symbol_vec);
     }
 
-    return Object;
+    return return_type;
 }
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
@@ -521,7 +581,29 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
 // TODO
-    return Object;
+
+    //Iterate over the cases
+    std::vector<Symbol> types_vec;
+    std::set<Symbol> types_set;
+    for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
+        //Compute the type of the expression e_i when x_i has type T_i i.e. O[T/x_i],M,C |- e_i:T_i'
+        Case curr_branch = cases->nth(i);
+        classtable->objectST.enterscope();
+        curr_branch->addToScope(classtable);
+        Symbol expr_type = curr_branch->getExpr()->typeCheck(classtable);
+        classtable->objectST.exitscope();
+        if(types_set.find(expr_type)==types_set.end()) {
+            types_vec.push_back(expr_type);
+            types_set.insert(expr_type);
+        }
+        else {
+            if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
+            //TODO: Handle this error correctly
+        }
+    }
+    
+    Symbol return_type = classtable->compute_join(types_vec);
+    return return_type;
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
