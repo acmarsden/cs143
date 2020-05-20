@@ -319,17 +319,19 @@ void ClassTable::check_features(Symbol curr_class) {
             if(lookup != NULL){
                 declared_type = *lookup;
             }else{
-                printf("Error\n");
+                ostream& err_stream = semant_error(symb_class_map[curr_class]);
+                err_stream << "Error: Did not find attr '" << feat_name->get_string() << "'' in the current scope.\n" << endl;
             }
-            // assert this is equal to curr_feature->getType()?
+            // assert declared_type is equal to curr_feature->getType()?
         }else{
             std::vector<Symbol>* lookup = methodST.lookup(feat_name);
             if(lookup != NULL){
                 declared_type = lookup->front();
             }else{
-                printf("Error\n");
+                ostream& err_stream = semant_error(symb_class_map[curr_class]);
+                err_stream << "Error: Did not find method '"<< feat_name->get_string() << "'' in the current scope.\n" << endl;
             }
-            // assert this is equal to curr_feature->getType()?
+            // assert declared_type is equal to curr_feature->getType()?
         }
         // TODO: compare declared type and inferred type
     }
@@ -387,9 +389,15 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
         if(_DEBUG) printf("Attribute type error: %s is not defined\n", type_decl->get_string());
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Attribute type error: " << type_decl->get_string() << " is not defined\n" << endl;
     }
     if(classtable->objectST.lookup(name)!=NULL){
         if(_DEBUG) printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: Attribute "<< name->get_string() << " has already been defined.\n" << endl;
     else {
         classtable->objectST.addid(name, &type_decl);
     }
@@ -412,6 +420,10 @@ Symbol method_class::typeCheck(ClassTable* classtable){
                        formal_name->get_string(),
                        name->get_string() );
             }
+            Symbol curr_class = classtable->getCurrentClass();
+            ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Formal error: " << formal_name->get_string();
+            err_stream << " is not a distinct formal identifier for method " << name->get_string() << endl;
         }
         formal_names.insert(formal_name);
 
