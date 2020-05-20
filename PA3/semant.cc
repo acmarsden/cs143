@@ -390,7 +390,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 Symbol method_class::typeCheck(ClassTable* classtable){
     std::vector<Symbol> formal_visited;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
-	Symbol formal_name = formals->nth(i)->getName();
+    Symbol formal_name = formals->nth(i)->getName();
 	//Check that the identifiers in the formal params are distinct
 	if(formal_visited.find(formal_name) == formal_visited.end()){
 		if(_DEBUG) {
