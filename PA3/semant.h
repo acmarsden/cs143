@@ -38,7 +38,7 @@ public:
     std::map<Symbol, Class_> symb_class_map;
     bool has_cycle() {return _has_cycle;}
     SymbolTable<Symbol, Symbol> objectST;
-    SymbolTable<Symbol, Symbol> methodST;
+    SymbolTable<Symbol, std::vector<Symbol> > methodST;
     int errors() { return semant_errors; }
     ostream& semant_error();
     ostream& semant_error(Class_ c);
