@@ -278,8 +278,7 @@ void ClassTable::run_type_checks()
 
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
-    // Do whatever you need to do
-    // check_features?
+    // TODO: skip the basic classes
     visited->insert(curr_class);
     if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
     check_features(curr_class);
