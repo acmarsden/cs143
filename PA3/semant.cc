@@ -339,6 +339,9 @@ void attr_class::addScope(ClassTable* classtable) {
 }
 
 void method_class::addScope(ClassTable* classtable) {
+    
+    //Check whether this method is a redefinition and if so make sure it adheres
+    
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
@@ -382,6 +385,29 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol method_class::typeCheck(ClassTable* classtable){
+    std::vector<Symbol> formal_visited;
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
+	Symbol formal_name = formals->nth(i)->getName();
+	//Check that the identifiers in the formal params are distinct
+	if(formal_visited.find(formal_name) == formal_visited.end()){
+		if(_DEBUG) {
+			printf("Formal error: %s is not a distinct formal identifier for method %s", 
+				   formal_name->get_string(), 
+				   name->get_string() ); 
+		}
+	}
+
+	// Typecheck the formals: will ensure declared type is known and matches inferred type
+	// The inferred type of the formal is used to infer the return type of the method
+	// Question: do we need to store formal_type for any reason? If it doesn't return an error it should be the same as what is in the symbol table.
+        Symbol formal_type = formals->nth(i)->typeCheck(classtable);
+    }
+ 
+	
+     
+    //Call typecheck on the expression and ensure it matches return type of method
+	
+
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->typeCheck(classtable);
     }
