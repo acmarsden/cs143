@@ -312,18 +312,19 @@ void ClassTable::check_features(Symbol curr_class) {
         bool is_attr = curr_feature->isAttribute();
         Symbol inferred_type = curr_feature->typeCheck(this);
         Symbol declared_type;
+        Symbol feat_name = curr_feature->getName();
         if(is_attr){
-            Symbol lookup = objectST.lookup(curr_feature->getName());
+            Symbol* lookup = objectST.lookup(feat_name);
             if(lookup != NULL){
-                declared_type = lookup;
+                declared_type = *lookup;
             }else{
                 printf("Error\n");
             }
             // assert this is equal to curr_feature->getType()?
         }else{
-            std::vector<Symbol> lookup = methodST.lookup(curr_feature->getName());
+            std::vector<Symbol>* lookup = methodST.lookup(feat_name);
             if(lookup != NULL){
-                declared_type = lookup.front();
+                declared_type = lookup->front();
             }else{
                 printf("Error\n");
             }
