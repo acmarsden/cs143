@@ -454,13 +454,38 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
-// TODO JUST A ROUGH SKETCH, NEED TO CHECK THIS 
     // First get O(Id), i.e. the type the environment gives to the id
-    //Symbol env_given_type = classtable->objectST.probe(name);
+    Symbol* env_given_type = classtable->objectST.probe(name);
     // Now get the type of the expression
+    Symbol expr_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to env_given_type
+    // i.e. that expr_type inherits from env_given_type
+    if(*env_given_type!=expr_type){
+        bool no_inheritance_found = typeCheck_r(classtable, *env_given_type, expr_type);;
+        if(no_inheritance_found){
+            if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
+            //TODO: properly return error stuff here
+            return Object;
+        }
+        else return expr_type;
+    }
     // return the type as the type of the expression
-    return Object;
+    else{ return expr_type;}
+}
+
+bool assign_class::typeCheck_r(ClassTable* classtable, Symbol curr_class_type, Symbol expr_type) {
+    std::vector<Symbol> curr_children = classtable->children[curr_class_type];
+    for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+        if(*it==expr_type){
+            //expr_type does indeed inherit from env_given_type
+            return false;
+        }
+        else{
+            return typeCheck_r(classtable, *it, expr_type);
+        }
+    }
+    //Should return true if you have no children since we already checked that you weren't expr_type
+    return true;
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
@@ -474,7 +499,18 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
-// TODO
+    
+    Symbol pred_type = pred->typeCheck(classtable);
+    Symbol then_exp_type = then_exp->typeCheck(classtable);
+    Symbol else_exp_type = else_exp->typeCheck(classtable);
+    if(pred_type!=Bool){
+        if(_DEBUG) printf("If-Statement Error: the predicate is not of type Bool.\n");
+    }
+    else {
+        //Compute join of then_exp_type and else_exp_type
+        return Object;
+    }
+
     return Object;
 }
 
