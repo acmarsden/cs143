@@ -320,7 +320,6 @@ void ClassTable::check_features(Symbol curr_class) {
 }
 
 void attr_class::addScope(ClassTable* classtable) {
-
         classtable->objectST.addid(name, &type_decl);
 }
 
@@ -328,16 +327,20 @@ void method_class::addScope(ClassTable* classtable) {
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
-        Symbol formal_type = formals->nth(i)->typeCheck(classtable);
+        Symbol formal_type = formals->nth(i)->getType();
         data.push_back(formal_type);
+        // call addScope on the formal
+	formals->nth(i)->addScope(classtable);
     }
     classtable->methodST.addid(name, &data);
 }
 
 void formal_class::addScope(ClassTable* classtable) {
+	classtable->objectST.addid(name, &type_decl);
 }
 
 void branch_class::addScope(ClassTable* classtable) {
+	classtable->objectST.addid(name, &type_decl);
 }
 
 
