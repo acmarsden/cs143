@@ -301,26 +301,40 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 
 void ClassTable::check_features(Symbol curr_class) {
     Features feature_list = symb_class_map[curr_class]->getFeatures();
+    // First, let's gather all the identifier information for this class
+    for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+        Feature curr_feature = feature_list->nth(i);
+        curr_feature->addScope(this);
+    }
+    // Now that we have all the object and methid ids, let's type check them
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
         bool is_attr = curr_feature->isAttribute();
-        if (is_attr){
-            // call check_type on the feature
-            Symbol feature_type = curr_feature->typeCheck(this);
-            if(_DEBUG) printf("Attribute: %s\n", curr_feature->getName()->get_string());
+        Symbol inferred_type = curr_feature->typeCheck(this);
+        Symbol declared_type;
+        if(is_attr){
+            Symbol lookup = objectST.lookup(curr_feature->getName());
+            if(lookup != NULL){
+                declared_type = lookup;
+            }else{
+                printf("Error\n");
+            }
+            // assert this is equal to curr_feature->getType()?
+        }else{
+            std::vector<Symbol> lookup = methodST.lookup(curr_feature->getName());
+            if(lookup != NULL){
+                declared_type = lookup.front();
+            }else{
+                printf("Error\n");
+            }
+            // assert this is equal to curr_feature->getType()?
         }
-        else{
-            // call check_type on the feature
-            if(_DEBUG) printf("Method: %s\n", curr_feature->getName()->get_string());
-        }
-        Symbol feature_name = curr_feature->getName();
-        Symbol feature_type = curr_feature->getType();
-        objectST.addid(feature_name, &feature_type);
+        // TODO: compare declared type and inferred type
     }
 }
 
 void attr_class::addScope(ClassTable* classtable) {
-        classtable->objectST.addid(name, &type_decl);
+    classtable->objectST.addid(name, &type_decl);
 }
 
 void method_class::addScope(ClassTable* classtable) {
@@ -330,7 +344,7 @@ void method_class::addScope(ClassTable* classtable) {
         Symbol formal_type = formals->nth(i)->getType();
         data.push_back(formal_type);
         // call addScope on the formal
-	formals->nth(i)->addScope(classtable);
+        formals->nth(i)->addScope(classtable);
     }
     classtable->methodST.addid(name, &data);
     //call addScope on the expression of the method
@@ -338,11 +352,11 @@ void method_class::addScope(ClassTable* classtable) {
 }
 
 void formal_class::addScope(ClassTable* classtable) {
-	classtable->objectST.addid(name, &type_decl);
+    classtable->objectST.addid(name, &type_decl);
 }
 
 void branch_class::addScope(ClassTable* classtable) {
-	classtable->objectST.addid(name, &type_decl);
+    classtable->objectST.addid(name, &type_decl);
 }
 
 void let_class::addScope(ClassTable* classtable){
