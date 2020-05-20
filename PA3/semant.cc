@@ -128,8 +128,8 @@ bool ClassTable::has_cycle_bfs() {
         std::vector<Symbol> current_children = children[current_vertex];
         for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
             Symbol current_child = *it;
-            if(DEBUG) printf("bfs visiting: %s\n", current_child->get_string());
-            if(DEBUG) printf("%d\n", discovered.find(current_child) == discovered.end());
+            if(_DEBUG) printf("bfs visiting: %s\n", current_child->get_string());
+            if(_DEBUG) printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
@@ -281,7 +281,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
     // Do whatever you need to do
     // check_features?
     visited->insert(curr_class);
-    if(DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
+    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
     check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
@@ -291,7 +291,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
                 objectST.enterscope();
                 methodST.enterscope();
                 run_type_checks_r(*it, visited);
-                if(DEBUG) objectST.dump();
+                if(_DEBUG) objectST.dump();
                 objectST.exitscope();
                 methodST.enterscope();
             }
@@ -307,11 +307,11 @@ void ClassTable::check_features(Symbol curr_class) {
         if (is_attr){
             // call check_type on the feature
             Symbol feature_type = curr_feature->typeCheck(this);
-            if(DEBUG) printf("Attribute: %s\n", curr_feature->getName()->get_string());
+            if(_DEBUG) printf("Attribute: %s\n", curr_feature->getName()->get_string());
         }
         else{
             // call check_type on the feature
-            if(DEBUG) printf("Method: %s\n", curr_feature->getName()->get_string());
+            if(_DEBUG) printf("Method: %s\n", curr_feature->getName()->get_string());
         }
         Symbol feature_name = curr_feature->getName();
         Symbol feature_type = curr_feature->getType();
@@ -335,10 +335,10 @@ void branch_class::addScope(ClassTable* classtable) {
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Check that the attribute type has been defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
-        if(DEBUG) printf("Attribute type error: %s is not defined\n", type_decl->get_string());
+        if(_DEBUG) printf("Attribute type error: %s is not defined\n", type_decl->get_string());
     }
     if(classtable->objectST.lookup(name)!=NULL){
-        if(DEBUG) printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
+        if(_DEBUG) printf("Error: Attribute %s has already been defined.\n", name->get_string()); }
     else {
         classtable->objectST.addid(name, &type_decl);
     }
@@ -531,6 +531,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
+    _DEBUG = true;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
@@ -540,10 +541,10 @@ void program_class::semant()
     // Stop semantic analysis if inheritance graph is not well formed
     if(!classtable->has_cycle()){
         // continue semantic analysis
-        if(DEBUG) printf("No inheritance cycles\n");
+        if(_DEBUG) printf("No inheritance cycles\n");
         classtable->run_type_checks();
     }
-    if(DEBUG) printf("========= END Constructor output =========\n");
+    if(_DEBUG) printf("========= END Constructor output =========\n");
 
     if (classtable->errors()) {
         cerr << "Compilation halted due to static semantic errors." << endl;
@@ -551,4 +552,3 @@ void program_class::semant()
     }
 }
 
-bool DEBUG=true;

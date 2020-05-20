@@ -11,7 +11,6 @@
 
 #include "tree.h"
 #include "cool-tree.handcode.h"
-#include "semant.h"
 
 class ClassTable;
 typedef ClassTable *ClassTableP;
