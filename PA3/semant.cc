@@ -760,8 +760,33 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    
+    Symbol curr_class = classtable->getCurrentClass();
+    // Check if there is initialization
+    Symbol inferred_init_type = init->typeCheck(classtable);
+    //TODO: Compute T_0' using SELFTYPE on type_decl
+    // Check that type_decl is defined.
+    if(classtable->children.find(type_decl) == classtable->children.end()) {
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Let error: Declared type of variable: " << type_decl->get_string() << " is not defined" << endl;
+        }
+    Symbol var_type = type_decl;
+
+    if(inferred_init_type != No_type){
+        // Ensure initialization type conforms to the declared type of variable
+        if(!classtable->isDescendantOf(var_type, inferred_init_type)){
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Let Error: Initialization expression type: " << inferred_init_type->get_string() << " does not conform to declared type of variable: " << var_type->get_string() << endl;
+        }
+    }
+
+    // Infer type of the body expression when the variable type is set to var_type
+    classtable->objectST.enterscope();
+    classtable->objectST.addid(identifier, &type_decl);
+    Symbol body_inferred_type = body->typeCheck(classtable);
+    classtable->objectST.exitscope();
+    
+    return body_inferred_type;
 }
 
 Symbol plus_class::typeCheck(ClassTable* classtable) {
