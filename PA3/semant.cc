@@ -1027,7 +1027,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = true;
+    _DEBUG = false;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
