@@ -608,7 +608,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         // Check that this type inherits from the type given in the method declaration
         // Otherwise return an error
     }
-    
+
     return inferred_expr_type;
 }
 
@@ -671,8 +671,11 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    Expresion curr_expr;
+    for(int i=body->first(); body->more(i); i=body->next(i)) {
+        curr_expr = cases->nth(i);
+    }
+    return curr_expr->typeCheck(classtable);
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
@@ -681,6 +684,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol plus_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -691,12 +695,14 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression plus_class error: Cannot add non-integer expressions \n");
-        //TODO: handle error exiting correctly here.
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression plus_class error: Cannot add non-integer expressions" << endl;
         return Object;
     }
 }
 
 Symbol sub_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -707,13 +713,14 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression sub_class error: Cannot subtract non-integer expressions" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
-
     }
 }
 
 Symbol mul_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -724,12 +731,14 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression mul_class error: Cannot multiply non-integer expressions" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
     }
 }
 
 Symbol divide_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -740,12 +749,14 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression divide_class error: Cannot divide non-integer expressions" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
     }
 }
 
 Symbol neg_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
 
@@ -754,12 +765,14 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression neg_class error: Cannot negate a non-integer expression" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
     }
 }
 
 Symbol lt_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -770,22 +783,23 @@ Symbol lt_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression lt_class error: Cannot compare non-integer expressions" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
     }
 }
 
 Symbol eq_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     // Implement "wrinkle" that if any expr is of type Int, String, or Bool then both must be.
-    if(inferred_e1_type == Int || inferred_e1_type == Str || inferred_e1_type == Bool 
+    if(inferred_e1_type == Int || inferred_e1_type == Str || inferred_e1_type == Bool
             || inferred_e2_type == Int || inferred_e2_type == Str || inferred_e2_type == Bool){
         if(_DEBUG) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
-        Symbol curr_class = classtable->getCurrentClass();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
     }
@@ -793,6 +807,7 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol leq_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     e1->addToScope(classtable);
     e2->addToScope(classtable);
     Symbol inferred_e1_type = e1->typeCheck(classtable);
@@ -803,40 +818,36 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(_DEBUG) printf("Expression eq_class error: Cannot compare non-integer expressions \n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression eq_class error: Cannot compare non-integer expressions" << endl;
         return Object;
-        //TODO: handle error exiting correctly here.
     }
 }
 
 Symbol comp_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return e1->typeCheck(classtable);
 }
 
 
 Symbol int_const_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return Int;
 }
 
 Symbol bool_const_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return Bool;
 }
 
 Symbol string_const_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return String;
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
-// TODO
+// TODO: tricky
     return Object;
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return Bool;
 }
 
 Symbol no_expr_class::typeCheck(ClassTable* classtable) {
@@ -844,7 +855,6 @@ Symbol no_expr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
-// TODO
     return Object;
 }
 
