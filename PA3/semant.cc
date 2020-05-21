@@ -949,7 +949,7 @@ Symbol string_const_class::typeCheck(ClassTable* classtable) {
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
 // TODO: tricky
-    return Object;
+    return type_name;
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
