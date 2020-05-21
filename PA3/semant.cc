@@ -91,7 +91,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     install_basic_classes();
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
-        class_ curr_class = classes->nth(i);
+        Class_ curr_class = classes->nth(i);
         if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
         Features feature_list = classes->nth(i)->getFeatures();
