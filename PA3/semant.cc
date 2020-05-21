@@ -91,7 +91,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     install_basic_classes();
 
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
-        Class_ curr_class = classes->nth(i);
+        class_ curr_class = classes->nth(i);
         if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
         Features feature_list = classes->nth(i)->getFeatures();
@@ -564,12 +564,44 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
 // TODO
-    return Object;
+    // First get the type for the base expression e_0
+    Symbol inferred_expr_type = expr->typeCheck(classtable);
+    // Check that this type conforms with what is declared
+    if(!classtable->isDescendantOf(type_name, inferred_expr_type)){
+        if(_DEBUG) printf("Static Dispatch Error: Expression type does ");
+    }
+    // Check that method with "name" is a method of the expression type
+    // TODO
+
+    // Loop through the expressions and get their inferred return types
+    for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
+        Expression curr_expr = actual->nth(i);
+        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+        //TODO
+        // Check that this type inherits from the type given in the method declaration
+        // Otherwise return an error
+    }
+    
+    return inferred_expr_type;
 }
 
 Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 // TODO
-    return Object;
+    // First get the type for the base expression e_0
+    Symbol inferred_expr_type = expr->typeCheck(classtable);
+    // Check that method with "name" is a method of the expression type
+    // TODO
+
+    // Loop through the expressions and get their inferred return types
+    for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
+        Expression curr_expr = actual->nth(i);
+        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+        //TODO
+        // Check that this type inherits from the type given in the method declaration
+        // Otherwise return an error
+    }
+    
+    return inferred_expr_type;
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
@@ -593,11 +625,10 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
-// TODO
+
     Symbol pred_type = pred->typeCheck(classtable);
     if(pred_type!=Bool){
         if(_DEBUG) printf("Loop Error: the predicate is not of type Bool. \n");
-        // TODO: Handle error here
         Symbol curr_class = classtable->getCurrentClass();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Loop Error: the predicate is not of type Bool. \n" << endl;
@@ -743,15 +774,15 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e1_type = e1->typeCheck(classtable);
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
-    if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Bool;
+    // Implement "wrinkle" that if any expr is of type Int, String, or Bool then both must be.
+    if(inferred_e1_type == Int || inferred_e1_type == Str || inferred_e1_type == Bool 
+            || inferred_e2_type == Int || inferred_e2_type == Str || inferred_e2_type == Bool){
+        if(_DEBUG) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
+        Symbol curr_class = classtable->getCurrentClass();
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
     }
-    else{
-        if(_DEBUG) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
-        return Object;
-        //TODO: handle error exiting correctly here.
-    }
-    return Object;
+    return Bool;
 }
 
 Symbol leq_class::typeCheck(ClassTable* classtable) {
