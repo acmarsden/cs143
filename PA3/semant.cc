@@ -410,7 +410,12 @@ void attr_class::addToScope(ClassTable* classtable) {
             err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined." << endl;
         }
         else {
-            classtable->objectST.addid(name, &type_decl);
+            if(type_decl == SELF_TYPE) {
+                classtable->objectST.addid(name, &(classtable->getCurrentClass()));
+            }else{
+                classtable->objectST.addid(name, &type_decl);
+            }
+
         }
     }
 }
@@ -418,9 +423,19 @@ void attr_class::addToScope(ClassTable* classtable) {
 void method_class::addToScope(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     std::vector<Symbol> data;
-    data.push_back(return_type);
+    if(return_type == SELF_TYPE) {
+        data.push_back(classtable->getCurrentClass());
+    }else{
+        data.push_back(return_type);
+    }
+
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
+        if(formal_type == SELF_TYPE) {
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Formal '" << formals->nth(i)->getName()->get_string();
+             err_stream << "' was declared to be SELF_TYPE which is not allowed" << endl;
+        }
         data.push_back(formal_type);
     }
 
@@ -461,11 +476,12 @@ void let_class::addToScope(ClassTable* classtable){
 }
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
-    // Quite similat to assign_class
+    // Quite similar to assign_class
     Symbol curr_class = classtable->getCurrentClass();
     Symbol declared_type;
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
+        // will already have SELF_TYPE resolved
         declared_type = *lookup;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -496,12 +512,13 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     std::set<Symbol> formal_names;
-    Symbol declared_type;
+    Symbol declared_return_type;
 
     // Check the method exists
     std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
-        declared_type = lookup->front();
+        // will already have SELF_TYPE resolved
+        declared_return_type = lookup->front();
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
@@ -550,13 +567,13 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     classtable->objectST.exitscope();
 
     // Check the inferred type conforms to the declared return type
-    if(classtable->isDescendantOf(return_type, inferred_return_type)){
-        return return_type;
+    if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
+        return declared_return_type;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Method error: '" << name->get_string();
         err_stream << "' returns type '" << inferred_return_type->get_string();
-        err_stream << "' but type '" << return_type->get_string();
+        err_stream << "' but type '" << declared_return_type->get_string();
         err_stream << "' was declared."<< endl;
         return Object;
     }
