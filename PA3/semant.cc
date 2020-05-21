@@ -660,7 +660,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
     if(curr_signature[0] == SELF_TYPE) {
-        return classtable->getCurrentClass();
+        return curr_class;
     }
     else{
         return curr_signature[0];
@@ -712,7 +712,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
     if(curr_signature[0] == SELF_TYPE) {
-        return classtable->getCurrentClass();
+        return curr_class;
     }
     else{
         return curr_signature[0];
@@ -787,17 +787,20 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
 Symbol let_class::typeCheck(ClassTable* classtable) {
 
     Symbol curr_class = classtable->getCurrentClass();
-    // Check if there is initialization
-    Symbol inferred_init_type = init->typeCheck(classtable);
     //TODO: Compute T_0' using SELFTYPE on type_decl
     // Check that type_decl is defined.
-    if(classtable->children.find(type_decl) == classtable->children.end()) {
+    Symbol var_type = type_decl;
+    if(var_type == SELF_TYPE){
+        var_type = curr_class;
+    }
+    if(classtable->children.find(var_type) == classtable->children.end()) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Let error: Declared type of variable: '" << type_decl->get_string()
             << "' is not defined." << endl;
         }
-    Symbol var_type = type_decl;
 
+    // Check if there is initialization
+    Symbol inferred_init_type = init->typeCheck(classtable);
     if(inferred_init_type != No_type){
         // Ensure initialization type conforms to the declared type of variable
         if(!classtable->isDescendantOf(var_type, inferred_init_type)){
@@ -809,7 +812,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
 
     // Infer type of the body expression when the variable type is set to var_type
     classtable->objectST.enterscope();
-    classtable->objectST.addid(identifier, &type_decl);
+    classtable->objectST.addid(identifier, &var_type);
     Symbol body_inferred_type = body->typeCheck(classtable);
     classtable->objectST.exitscope();
 
