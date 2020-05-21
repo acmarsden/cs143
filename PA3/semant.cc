@@ -278,7 +278,6 @@ void ClassTable::run_type_checks()
 
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
-    // TODO: skip the basic classes
     visited->insert(curr_class);
     if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
     if(curr_class != Object && curr_class != Str && curr_class != Int &&
@@ -452,24 +451,23 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Quite similat to assign_class
     Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the assign expression
-    // TODO: I think this can be null, or not exist
     Symbol inferred_assign_type = expr->typeCheck(classtable);
-    // Check that the type of the expression conforms to declared_type
-    // i.e. that inferred_assign_type inherits from declared_type
-    if(*declared_type!=inferred_assign_type){
-        bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
-        if(no_inheritance_found){
-            if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
-            Symbol curr_class = classtable->getCurrentClass();
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Attribute init error: Assignment wxpression type does not conform to declared Id type." << endl;
-            return Object;
+    if(inferred_assign_type != No_type){
+        // Check that the type of the expression conforms to declared_type
+        // i.e. that inferred_assign_type inherits from declared_type
+        if(*declared_type!=inferred_assign_type){
+            bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
+            if(no_inheritance_found){
+                if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
+                Symbol curr_class = classtable->getCurrentClass();
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                err_stream << "Attribute init error: Assignment wxpression type does not conform to declared Id type." << endl;
+                return Object;
+            }
         }
-        else return inferred_assign_type;
-    }
-    else{
-         // return the type as the type of the expression
         return inferred_assign_type;
+    }else{
+        return declared_type;
     }
 }
 
@@ -803,8 +801,7 @@ Symbol isvoid_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol no_expr_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    return No_type;
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
