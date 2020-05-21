@@ -723,7 +723,8 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Dispatch Error: Expression type '" << inferred_expr_type->get_string()
             << "' does not have method '" << name->get_string() << "'." << endl;
-    }else{
+    }
+    else{
         // Loop through the expressions and get their inferred return types
         int j = 1;
         for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
@@ -732,8 +733,9 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
+                printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[i]->get_string(), inferred_curr_expr_type->get_string());
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-                err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression '"
+                err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '"
                     << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
             }
             ++j;
