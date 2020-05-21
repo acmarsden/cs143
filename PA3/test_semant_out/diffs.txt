@@ -1,6 +1,7 @@
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/arith.cl 
-1c1,3326
+1,2c1,3326
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:251: Static Dispatch Error: Expression type Objectdoes not have method in_string
 < Segmentation fault (core dumped)
 ---
 > #7
@@ -3333,17 +3334,64 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
+1,12c1
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'c2i', the type 'String' of formal 'char'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2c', the type 'Int' of formal 'i'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'a2i', the type 'String' of formal 's'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'a2i_aux', the type 'String' of formal 's'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2a', the type 'Int' of formal 'i'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2a_aux', the type 'Int' of formal 'i'' was not defined.
+< 
+---
+> Class Main is not defined.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
-1d0
+1,2c1,7
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Static Dispatch Error: Expression type Objectdoes not have method out_string
 < Segmentation fault (core dumped)
+---
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Class A2I of let-bound identifier z is undefined.
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used with undefined class A2I.
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Dispatch on undefined class A2I.
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Inferred type Object of initialization of i does not conform to identifier's declared type Int.
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch on undefined class A2I.
+> /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Inferred type Object of initialization of news does not conform to identifier's declared type String.
+> Compilation halted due to static semantic errors.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
-1c1,653
+1,24c1,653
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Error: In method 'initBook', the type 'String' of formal 'title_p'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'print' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method formals list or return type does not conform to parent definition
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Error: In method 'initArticle', the type 'String' of formal 'title_p'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method error: 'print' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Method error: 'isNil' returns type 'Bool' but type 'Bool' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Error: In method 'cons', the type 'Book' of formal 'hd'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Method error: 'car' returns type 'Book' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Method error: 'cdr' returns type 'BookList' but type 'BookList' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Method error: 'print_list' returns type 'Object' but type 'Object' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method formals list or return type does not conform to parent definition
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method formals list or return type does not conform to parent definition
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method formals list or return type does not conform to parent definition
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method formals list or return type does not conform to parent definition
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method error: 'isNil' returns type 'Bool' but type 'Bool' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Error: In method 'init', the type 'Book' of formal 'hd'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method error: 'car' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Method error: 'cdr' returns type 'Object' but type 'BookList' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:73: Static Dispatch Error: Expression type Objectdoes not have method print_list
 < Segmentation fault (core dumped)
 ---
 > #3
@@ -4003,7 +4051,11 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
-1c1,606
+1,5c1,606
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Error: In method 'init', the type 'String' of formal 'map'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'print' returns type 'Object' but type 'SELF_TYPE' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Static Dispatch Error: Expression type Objectdoes not have method length
 < Segmentation fault (core dumped)
 ---
 > #5
@@ -4616,7 +4668,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
-1c1,323
+1,2c1,323
+< /afs/ir.stanford.edu/class/cs143/examples/complex.cl:1: Static Dispatch Error: Expression type Complexdoes not have method init
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -4946,7 +4999,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
-1c1,97
+1,2c1,97
+< /afs/ir.stanford.edu/class/cs143/examples/cool.cl:1: Static Dispatch Error: Expression type Objectdoes not have method out_string
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -5050,7 +5104,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
-1c1,1983
+1,8c1,1983
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'outgoing' returns type 'Object' but type 'EList' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'number' returns type 'Object' but type 'Int' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Error: In method 'init', the type 'Int' of formal 'n'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Error: In method 'add_out', the type 'Edge' of formal 's'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Static Dispatch Error: Expression type Objectdoes not have method print
 < Segmentation fault (core dumped)
 ---
 > #38
@@ -7494,7 +7555,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
-1c1,27
+1,2c1,27
+< /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl:1: Static Dispatch Error: Expression type Objectdoes not have method out_string
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -7528,7 +7590,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/io.cl 
-1c1,178
+1,2c1,178
+< /afs/ir.stanford.edu/class/cs143/examples/io.cl:69: Static Dispatch Error: Expression type Objectdoes not have method out_string
 < Segmentation fault (core dumped)
 ---
 > #49
@@ -7713,7 +7776,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
-1c1,3762
+1,7c1,3762
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Method error: 'isNil' returns type 'Bool' but type 'Bool' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Method error: 'head' returns type 'Variable' but type 'Variable' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Method error: 'tail' returns type 'VarList' but type 'VarList' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Error: In method 'add', the type 'Variable' of formal 'x'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Static Dispatch Error: Expression type Objectdoes not have method out_string
 < Segmentation fault (core dumped)
 ---
 > #21
@@ -11482,7 +11551,17 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
-1c1,2859
+1,11c1,2859
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Error: In method 'size_of_board', the type 'String' of formal 'initial'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Error: In method 'board_init', the type 'String' of formal 'start'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Error: In method 'init', the type 'String' of formal 'map'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Let Error: Initialization expression type: Int does not conform to declared type of variable: Int
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Let Error: Initialization expression type: Object does not conform to declared type of variable: Int
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Method error: 'print' returns type 'Object' but type 'SELF_TYPE' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Static Dispatch Error: Expression type Objectdoes not have method length
 < Segmentation fault (core dumped)
 ---
 > #45
@@ -14348,7 +14427,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
-1c1,383
+1,4c1,383
+< /afs/ir.stanford.edu/class/cs143/examples/list.cl:100: Error: In method 'print_list', the type 'List' of formal 'l'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/list.cl:100: Static Dispatch Error: Expression type Objectdoes not have method isNil
 < Segmentation fault (core dumped)
 ---
 > #26
@@ -14738,7 +14820,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
-1c1,459
+1,2c1,459
+< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:1: Static Dispatch Error: Expression type Complexdoes not have method init
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -15204,7 +15287,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
-1c1,255
+1,7c1,255
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Error: In method 'pal', the type 'String' of formal 's'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Error: Attribute 'i'' was not declared in the current scope.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Static Dispatch Error: Expression type Objectdoes not have method pal
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Static Dispatch Error: Expression type Objectdoes not have method in_string
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -15466,7 +15555,11 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
-0a1,280
+1,3c1,280
+< /afs/ir.stanford.edu/class/cs143/examples/primes.cl:27: Method error: 'main' returns type 'Int' but type 'Int' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/primes.cl:27: Attribute init error: Assignment expression type does not conform to declared Id type.
+< Compilation halted due to static semantic errors.
+---
 > #27
 > _program
 >   #27
@@ -15751,7 +15844,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
-1c1,708
+1,7c1,708
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Method error: 'isNil' returns type 'Bool' but type 'Bool' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Error: In method 'cons', the type 'Int' of formal 'hd'' was not defined.
+< 
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Method error: 'car' returns type 'Int' but type 'Int' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Method error: 'cdr' returns type 'List' but type 'List' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Static Dispatch Error: Expression type Objectdoes not have method cdr
 < Segmentation fault (core dumped)
 ---
 > #24
