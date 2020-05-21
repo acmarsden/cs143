@@ -313,13 +313,25 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 //Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
 //Set C_old to be C
-//TODO: We need to implement SELF_TYPE in here.
+    Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = Object;
     join = symbol_vec[0];
+    // Instead of SELF_TYPE we make sure each type in symbol_vec is known to us
+    if(children.find(join) == children.end()) {
+        if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", join->get_string());
+            ostream& err_stream = semant_error(symb_class_map[curr_class]);
+            err_stream << "'compute_join' error: '" << join->get_string() << "'' is not defined" << endl;
+        }
     seen_symbols.insert(symbol_vec[0]);
     for(uint i=1; i<symbol_vec.size(); ++i){
         if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
+            // Make sure symbol_vec[i] is known to us
+            if(children.find(join) == children.end()) {
+                if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", symbol_vec[i]->get_string());
+                ostream& err_stream = semant_error(symb_class_map[curr_class]);
+                err_stream << "'compute_join' error: '" << symbol_vec[i]->get_string() << "'' is not defined" << endl;
+        }
             //This symbol has NOT already been included in join so we need to update join.
             join = compute_join_pair(join, symbol_vec[i]);
             seen_symbols.insert(symbol_vec[i]);
