@@ -575,8 +575,18 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
 }
 
 Symbol branch_class::typeCheck(ClassTable* classtable) {
-// TODO
-    return Object;
+    Symbol curr_class = classtable->getCurrentClass();
+    classtable->objectST.enterscope();
+    this->addToScope(classtable);
+    Symbol expr_inferred_type = expr->typeCheck(classtable);
+    classtable->objectST.exitscope();
+
+    // Check if type_decl is defined
+    if(classtable->symb_class_map.find(type_decl) == classtable->symb_class_map.end()){
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined.\n" << endl;
+    }
+    return expr_inferred_type;
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
@@ -626,7 +636,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             curr_type = classtable->symb_class_map[curr_type]->getParent();
             curr_signature = classtable->classMethods[curr_type][name];
         }
-    } 
+    }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Static Dispatch Error: Declared type " << type_name->get_string() << "does not have method " << name->get_string() << endl;
@@ -656,7 +666,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     //TODO: Incorporate SELF_TYPE
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
-    //Handle SELF_TYPE part here. 
+    //Handle SELF_TYPE part here.
     // Check that method with "name" is implemented as a method of some parent of the expression type
     Symbol curr_type = inferred_expr_type;
     std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
@@ -669,7 +679,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             curr_type = classtable->symb_class_map[curr_type]->getParent();
             curr_signature = classtable->classMethods[curr_type][name];
         }
-    } 
+    }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Static Dispatch Error: Expression type " << inferred_expr_type->get_string() << "does not have method " << name->get_string() << endl;
@@ -727,19 +737,18 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     //Iterate over the cases
-    std::vector<Symbol> types_vec;
-    std::set<Symbol> types_set;
+    std::vector<Symbol> expr_types_vec;
+    std::set<Symbol> declared_types_set;
     for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
         //Compute the type of the expression e_i when x_i has type T_i i.e. O[T/x_i],M,C |- e_i:T_i'
         Case curr_branch = cases->nth(i);
-        classtable->objectST.enterscope();
-        curr_branch->addToScope(classtable);
+        Symbol branch_expr_inferred_type = curr_branch->typeCheck(classtable);
+        expr_types_vec.push_back(branch_expr_inferred_type);
+
+        // check the declared types are all distinct
         Symbol branch_declared_type = curr_branch->getType();
-        Symbol branch_expr_inferred_type = curr_branch->getExpr()->typeCheck(classtable);
-        classtable->objectST.exitscope();
-        types_vec.push_back(branch_expr_inferred_type);
-        if(types_set.find(branch_declared_type)==types_set.end()) {
-            types_set.insert(branch_declared_type);
+        if(declared_types_set.find(branch_declared_type)==declared_types_set.end()) {
+            declared_types_set.insert(branch_declared_type);
         }
         else {
             if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
@@ -747,7 +756,7 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
         }
     }
-    Symbol return_type = classtable->compute_join(types_vec);
+    Symbol return_type = classtable->compute_join(expr_types_vec);
     return return_type;
 }
 
