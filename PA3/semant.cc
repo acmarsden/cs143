@@ -567,49 +567,93 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
-// TODO
+    //TODO: Incorporate SELF_TYPE
+    Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
     // Check that this type conforms with what is declared
+    // This part is what makes it STATIC DISPATCH
     if(!classtable->isDescendantOf(type_name, inferred_expr_type)){
-        if(_DEBUG) printf("Static Dispatch Error: Expression type does not match type name for method.\n");
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Static Dispatch Error: Expression type " << inferred_expr_type->get_string() << "does not conform to type name " << type_name->get_string() << "for method " << name->get_string() << endl;
     }
-    // Check that method with "name" is implemented as a method of the expression type
-    std::vector<Symbol> signature = classtable->classMethods[inferred_expr_type][name];
+    // Check that method with "name" is implemented as a method of some parent of the declared type_name
+    Symbol curr_type = type_name;
+    std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
+    bool still_searching_for_method = true;
+    while(still_searching_for_method){
+        if(curr_signature.size()>0 || curr_type == Object){
+            still_searching_for_method = false;
+        }
+        else{
+            curr_type = classtable->symb_class_map[curr_type]->getParent();
+            curr_signature = classtable->classMethods[curr_type][name];
+        }
+    } 
+    if(curr_signature.size()<1){
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Static Dispatch Error: Declared type " << type_name->get_string() << "does not have method " << name->get_string() << endl;
+    }
     // Loop through the expressions and get their inferred return types
     int j = 1;
     for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
         Expression curr_expr = actual->nth(i);
         Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
-        //TODO
         // Check that this type inherits from the type given in the method declaration
         // Otherwise return an error
-        if(!classtable->isDescendantOf(signature[j], inferred_curr_expr_type)){
-            if(_DEBUG) printf("Static Dispatch Error: Expression type does not associated formal type for method.\n");
-
+        if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
+            if(_DEBUG) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Static Dispatch Error: Declared type " << type_name->get_string() << "method implementation does not match formals type list " << endl;
         }
         ++j;
     }
-    return inferred_expr_type;
+    // Return the return type of the method. This is key part where we need to implement SELF_TYPE
+    // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
+    return curr_signature[0];
 }
 
 Symbol dispatch_class::typeCheck(ClassTable* classtable) {
-// TODO
+
+    Symbol curr_class = classtable->getCurrentClass();
+    //TODO: Incorporate SELF_TYPE
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
-    // Check that method with "name" is a method of the expression type
-    // TODO
-
+    //Handle SELF_TYPE part here. 
+    // Check that method with "name" is implemented as a method of some parent of the expression type
+    Symbol curr_type = inferred_expr_type;
+    std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
+    bool still_searching_for_method = true;
+    while(still_searching_for_method){
+        if(curr_signature.size()>0 || curr_type == Object){
+            still_searching_for_method = false;
+        }
+        else{
+            curr_type = classtable->symb_class_map[curr_type]->getParent();
+            curr_signature = classtable->classMethods[curr_type][name];
+        }
+    } 
+    if(curr_signature.size()<1){
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Static Dispatch Error: Expression type " << inferred_expr_type->get_string() << "does not have method " << name->get_string() << endl;
+    }
     // Loop through the expressions and get their inferred return types
+    int j = 1;
     for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
         Expression curr_expr = actual->nth(i);
         Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
-        //TODO
         // Check that this type inherits from the type given in the method declaration
         // Otherwise return an error
+        if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
+            if(_DEBUG) printf("Static Dispatch Error: Expression type does not associated formal type for method.\n");
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression " << inferred_expr_type->get_string() << " do not match the formal types declared for method implementation " << endl;
+        }
+        ++j;
     }
-
-    return inferred_expr_type;
+    // Return the return type of the method. This is key part where we need to implement SELF_TYPE
+    // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
+    return curr_signature[0];
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
