@@ -711,20 +711,21 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Dispatch Error: Expression type '" << inferred_expr_type->get_string()
             << "' does not have method '" << name->get_string() << "'." << endl;
-    }
-    // Loop through the expressions and get their inferred return types
-    int j = 1;
-    for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
-        Expression curr_expr = actual->nth(i);
-        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
-        // Check that this type inherits from the type given in the method declaration
-        // Otherwise return an error
-        if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression '"
-                << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
+    }else{
+        // Loop through the expressions and get their inferred return types
+        int j = 1;
+        for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
+            Expression curr_expr = actual->nth(i);
+            Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+            // Check that this type inherits from the type given in the method declaration
+            // Otherwise return an error
+            if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression '"
+                    << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
+            }
+            ++j;
         }
-        ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
