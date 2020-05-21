@@ -679,6 +679,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             still_searching_for_method = false;
         }
         else{
+            printf("LOOK FOR METHOD IN INHERITED CLASS.\n");
             curr_type = classtable->symb_class_map[curr_type]->getParent();
             curr_signature = classtable->classMethods[curr_type][name];
         }
@@ -964,7 +965,12 @@ Symbol string_const_class::typeCheck(ClassTable* classtable) {
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
 // TODO: tricky
+    if(type_name==SELF_TYPE){
+        return classtable->getCurrentClass();
+    }
+    else{
     return type_name;
+    }
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
