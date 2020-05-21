@@ -454,7 +454,7 @@ void method_class::addToScope(ClassTable* classtable) {
     // Now add it to the present scope
     classtable->methodST.addid(name, &data);
     // and add the method signature to this scope-independent data structure
-    classtable->classMethods[curr_class][name].push_back(data);
+    classtable->classMethods[curr_class][name] = data;
 }
 
 void formal_class::addToScope(ClassTable* classtable) {
