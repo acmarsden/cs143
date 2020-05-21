@@ -671,9 +671,9 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
-    Expresion curr_expr;
+    Expression curr_expr;
     for(int i=body->first(); body->more(i); i=body->next(i)) {
-        curr_expr = cases->nth(i);
+        curr_expr = body->nth(i);
     }
     return curr_expr->typeCheck(classtable);
 }
@@ -838,7 +838,7 @@ Symbol bool_const_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol string_const_class::typeCheck(ClassTable* classtable) {
-    return String;
+    return Str;
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
