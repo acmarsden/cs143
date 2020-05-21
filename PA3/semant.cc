@@ -411,7 +411,7 @@ void attr_class::addToScope(ClassTable* classtable) {
         }
         else {
             if(type_decl == SELF_TYPE) {
-                classtable->objectST.addid(name, &(classtable->getCurrentClass()));
+                classtable->objectST.addid(name, &curr_class);
             }else{
                 classtable->objectST.addid(name, &type_decl);
             }
