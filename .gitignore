@@ -1,10 +1,13 @@
 *.o
 *.cc
 *.txt
+*.d
 PA1/lexer
 PA1/test_lexer_out
 PA2/parser
 PA2/cool.output
 PA2/cool.tab.h
 PA2/test_parser_out
+PA3/semant
+PA3/test_semant_out
 
