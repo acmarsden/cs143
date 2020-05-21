@@ -7,6 +7,6 @@ for test_file in /afs/ir.stanford.edu/class/cs143/examples/*.cl; do
   filename=$(basename -- "$test_file")
   extension="${filename##*.}"
   filename="${filename%.*}"
-  ./mysemant $test_file > $OUT_DIR/our_$filename.out
+  ./mysemant $test_file &> $OUT_DIR/our_$filename.out
 done
 

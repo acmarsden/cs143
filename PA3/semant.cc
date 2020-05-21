@@ -401,13 +401,13 @@ void attr_class::addToScope(ClassTable* classtable) {
         if(classtable->children.find(type_decl) == classtable->children.end()) {
             if(_DEBUG) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined\n" << endl;
+            err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined" << endl;
         }
         // Check if an attribute with the same name already exists (since attributes are global)
         if(classtable->objectST.probe(name)!=NULL){
             if(_DEBUG) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined.\n" << endl;
+            err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined." << endl;
         }
         else {
             classtable->objectST.addid(name, &type_decl);
@@ -469,7 +469,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
         declared_type = *lookup;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope.\n" << endl;
+        err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope." << endl;
         return Object;
     }
 
@@ -505,7 +505,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
-        err_stream << "'' in the current scope.\n" << endl;
+        err_stream << "'' in the current scope." << endl;
         return Object;
     }
 
@@ -524,7 +524,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
             err_stream << "Error: In method '" << name->get_string();
             err_stream << "', the type '" << formal_declared_type->get_string();
             err_stream << "' of formal '" << formal_name->get_string();
-            err_stream << "'' was not defined.\n" << endl;
+            err_stream << "'' was not defined." << endl;
             return Object;
         }
 
@@ -569,7 +569,7 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
         return type_decl;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined.\n" << endl;
+        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
         return Object;
     }
 }
@@ -584,7 +584,7 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
     // Check if type_decl is defined
     if(classtable->symb_class_map.find(type_decl) == classtable->symb_class_map.end()){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined.\n" << endl;
+        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
     }
     return expr_inferred_type;
 }
@@ -622,7 +622,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     // This part is what makes it STATIC DISPATCH
     if(!classtable->isDescendantOf(type_name, inferred_expr_type)){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string() 
+        err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string()
             << "' does not conform to type name '" << type_name->get_string() << "' for method '" << name->get_string() << "'" << endl;
     }
     // Check that method with "name" is implemented as a method of some parent of the declared type_name
@@ -640,7 +640,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string() 
+        err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string()
             << "' does not have method '" << name->get_string() << "'" <<  endl;
     }
     // Loop through the expressions and get their inferred return types
@@ -653,7 +653,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
             if(_DEBUG) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string() 
+            err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string()
                 << "' method implementation does not match formals type list. " << endl;
         }
         ++j;
@@ -686,7 +686,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Dispatch Error: Expression type '" << inferred_expr_type->get_string() 
+        err_stream << "Dispatch Error: Expression type '" << inferred_expr_type->get_string()
             << "' does not have method '" << name->get_string() << "'." << endl;
     }
     // Loop through the expressions and get their inferred return types
@@ -698,7 +698,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         // Otherwise return an error
         if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression '" 
+            err_stream << "Static Dispatch Error: The formal types listed in dispatch call for expression '"
                 << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
         }
         ++j;
@@ -774,7 +774,7 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
-    
+
     Symbol curr_class = classtable->getCurrentClass();
     // Check if there is initialization
     Symbol inferred_init_type = init->typeCheck(classtable);
@@ -782,7 +782,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     // Check that type_decl is defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Let error: Declared type of variable: '" << type_decl->get_string() 
+        err_stream << "Let error: Declared type of variable: '" << type_decl->get_string()
             << "' is not defined." << endl;
         }
     Symbol var_type = type_decl;
@@ -791,7 +791,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
         // Ensure initialization type conforms to the declared type of variable
         if(!classtable->isDescendantOf(var_type, inferred_init_type)){
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string() 
+            err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string()
                 << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
         }
     }
@@ -801,7 +801,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     classtable->objectST.addid(identifier, &type_decl);
     Symbol body_inferred_type = body->typeCheck(classtable);
     classtable->objectST.exitscope();
-    
+
     return body_inferred_type;
 }
 
