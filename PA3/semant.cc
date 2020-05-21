@@ -575,20 +575,20 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         if(_DEBUG) printf("Static Dispatch Error: Expression type does not match type name for method.\n");
     }
     // Check that method with "name" is implemented as a method of the expression type
-    std::vector<Symbol>* signature = &classtable->classMethods[inferred_expr_type][name];
-    if(signature!=NULL){
-        // Loop through the expressions and get their inferred return types
-        for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
-            Expression curr_expr = actual->nth(i);
-            Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
-            //TODO
-            // Check that this type inherits from the type given in the method declaration
-            // Otherwise return an error
-            if(!classtable->isDescendantOf(signature[i+1], inferred_curr_expr_type)){
-                if(_DEBUG) printf("Static Dispatch Error: Expression type does not associated formal type for method.\n");
+    std::vector<Symbol> signature = classtable->classMethods[inferred_expr_type][name];
+    // Loop through the expressions and get their inferred return types
+    int j = 1;
+    for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
+        Expression curr_expr = actual->nth(i);
+        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+        //TODO
+        // Check that this type inherits from the type given in the method declaration
+        // Otherwise return an error
+        if(!classtable->isDescendantOf(signature[j], inferred_curr_expr_type)){
+            if(_DEBUG) printf("Static Dispatch Error: Expression type does not associated formal type for method.\n");
 
-            }
         }
+        ++j;
     }
     return inferred_expr_type;
 }
