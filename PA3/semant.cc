@@ -614,7 +614,6 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
-    //TODO: Incorporate SELF_TYPE
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
@@ -660,16 +659,23 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    return curr_signature[0];
+    if(curr_signature[0] == SELF_TYPE) {
+        return classtable->getCurrentClass();
+    }
+    else{
+        return curr_signature[0];
+    }
 }
+
 
 Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 
     Symbol curr_class = classtable->getCurrentClass();
-    //TODO: Incorporate SELF_TYPE
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
-    //Handle SELF_TYPE part here.
+    if(inferred_expr_type == SELF_TYPE){
+        inferred_expr_type = classtable->getCurrentClass();
+    }
     // Check that method with "name" is implemented as a method of some parent of the expression type
     Symbol curr_type = inferred_expr_type;
     std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
@@ -705,7 +711,12 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    return curr_signature[0];
+    if(curr_signature[0] == SELF_TYPE) {
+        return classtable->getCurrentClass();
+    }
+    else{
+        return curr_signature[0];
+    }
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
@@ -964,12 +975,11 @@ Symbol string_const_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
-// TODO: tricky
     if(type_name==SELF_TYPE){
         return classtable->getCurrentClass();
     }
     else{
-    return type_name;
+        return type_name;
     }
 }
 
