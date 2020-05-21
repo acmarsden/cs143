@@ -322,7 +322,6 @@ public:
    void dump(ostream& stream, int n);
    Symbol typeCheck(ClassTable*);
    void addToScope(ClassTable*) {return;}
-   bool typeCheck_r(ClassTable*, Symbol, Symbol); 
 #ifdef Expression_SHARED_EXTRAS
    Expression_SHARED_EXTRAS
 #endif

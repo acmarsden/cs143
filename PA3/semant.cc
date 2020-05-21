@@ -383,6 +383,24 @@ void ClassTable::check_features(Symbol curr_class) {
     }
 }
 
+bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
+    // Starting at parent, recursively checks its children to see if they
+    // contain query_type
+    std::vector<Symbol> curr_children = children[parent];
+    for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+        Symbol child_type = *it;
+        if(child_type==query_type){
+            //query_type does indeed inherit from parent
+            return true;
+        }
+        else{
+            return isDescendantOf(child_type, query_type);
+        }
+    }
+    //Should return false if you have no children since we already checked that you weren't query_type
+    return false;
+}
+
 void attr_class::addToScope(ClassTable* classtable) {
     // Check that the attribute type has been defined.
     if(classtable->children.find(type_decl) == classtable->children.end()) {
@@ -451,13 +469,13 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Quite similat to assign_class
     Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the assign expression
-    Symbol inferred_assign_type = expr->typeCheck(classtable);
-    if(inferred_assign_type != No_type){
+    Symbol inferred_init_type = init->typeCheck(classtable);
+    if(inferred_init_type != No_type){
         // Check that the type of the expression conforms to declared_type
         // i.e. that inferred_assign_type inherits from declared_type
-        if(*declared_type!=inferred_assign_type){
-            bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
-            if(no_inheritance_found){
+        if(*declared_type!=inferred_init_type){
+            bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_init_type);
+            if(!inheritance_found){
                 if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
                 Symbol curr_class = classtable->getCurrentClass();
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -465,9 +483,9 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
                 return Object;
             }
         }
-        return inferred_assign_type;
+        return inferred_init_type;
     }else{
-        return declared_type;
+        return *declared_type;
     }
 }
 
@@ -528,8 +546,8 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     // Check that the type of the expression conforms to declared_type
     // i.e. that inferred_assign_type inherits from declared_type
     if(*declared_type!=inferred_assign_type){
-        bool no_inheritance_found = typeCheck_r(classtable, *declared_type, inferred_assign_type);
-        if(no_inheritance_found){
+        bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_assign_type);
+        if(!inheritance_found){
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
             Symbol curr_class = classtable->getCurrentClass();
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -542,23 +560,6 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
          // return the type as the type of the expression
         return inferred_assign_type;
     }
-}
-
-bool assign_class::typeCheck_r(ClassTable* classtable, Symbol curr_class_type, Symbol expr_type) {
-    // Starting at curr_class_type, recursively checks its children to see if they
-    // contain expr_type
-    std::vector<Symbol> curr_children = classtable->children[curr_class_type];
-    for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-        if(*it==expr_type){
-            //expr_type does indeed inherit from declared_type
-            return false;
-        }
-        else{
-            return typeCheck_r(classtable, *it, expr_type);
-        }
-    }
-    //Should return true if you have no children since we already checked that you weren't expr_type
-    return true;
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {

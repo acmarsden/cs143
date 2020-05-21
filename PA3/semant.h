@@ -44,6 +44,7 @@ public:
     Symbol getCurrentClass(){return current_class;}
     Symbol compute_join(std::vector<Symbol>);
     Symbol compute_join_pair(Symbol, Symbol);
+    bool isDescendantOf(Symbol, Symbol);
     ostream& semant_error();
     ostream& semant_error(Class_ c);
     ostream& semant_error(Symbol filename, tree_node *t);
