@@ -463,13 +463,12 @@ void let_class::addToScope(ClassTable* classtable){
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Quite similat to assign_class
     Symbol curr_class = classtable->getCurrentClass();
-    Symbol* declared_type = classtable->objectST.probe(name);
     Symbol declared_type;
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
         declared_type = *lookup;
     }else{
-        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope.\n" << endl;
         return Object;
     }
@@ -497,13 +496,14 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     std::set<Symbol> formal_names;
+    Symbol declared_type;
 
     // Check the method exists
     std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         declared_type = lookup->front();
     }else{
-        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
         err_stream << "'' in the current scope.\n" << endl;
         return Object;
@@ -520,9 +520,9 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         if(!classtable->isDescendantOf(formal_declared_type, formal_inferred_type)){
             // The type of the formal was not declared before
             //(already caught by formal_class::typeCheck)
-            ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Error: In method '" << name->get_string();
-            err_stream << "', the type '" << type_decl->get_string();
+            err_stream << "', the type '" << formal_declared_type->get_string();
             err_stream << "' of formal '" << formal_name->get_string();
             err_stream << "'' was not defined.\n" << endl;
             return Object;
@@ -542,7 +542,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         }
         formal_names.insert(formal_name);
 
-        classtable->objectST.addid(formal_name, &formal_type);
+        classtable->objectST.addid(formal_name, &formal_declared_type);
     }
 
     expr->addToScope(classtable);
@@ -553,6 +553,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     if(classtable->isDescendantOf(return_type, inferred_return_type)){
         return return_type;
     }else{
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Method error: '" << name->get_string();
         err_stream << "' returns type '" << inferred_return_type->get_string();
         err_stream << "' but type '" << return_type->get_string();
@@ -567,7 +568,7 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
         return type_decl;
     }else{
-        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined.\n" << endl;
         return Object;
     }
