@@ -1,0 +1,2 @@
+#!/bin/csh -f
+./lexer $* | ./parser | /afs/ir.stanford.edu/class/cs143/bin/semant
