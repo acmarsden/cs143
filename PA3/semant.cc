@@ -280,10 +280,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     visited->insert(curr_class);
     if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
-    if(curr_class != Object && curr_class != Str && curr_class != Int &&
-       curr_class != IO && curr_class != Bool){
-        check_features(curr_class);
-    }
+    check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
@@ -353,33 +350,36 @@ void ClassTable::check_features(Symbol curr_class) {
         Feature curr_feature = feature_list->nth(i);
         curr_feature->addToScope(this);
     }
-    // Now that we have all the object and methid ids, let's type check them
-    for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
-        Feature curr_feature = feature_list->nth(i);
-        bool is_attr = curr_feature->isAttribute();
-        Symbol inferred_type = curr_feature->typeCheck(this);
-        Symbol declared_type;
-        Symbol feat_name = curr_feature->getName();
-        if(is_attr){
-            Symbol* lookup = objectST.lookup(feat_name);
-            if(lookup != NULL){
-                declared_type = *lookup;
+    // Now that we have all the object and methid ids, let's type check them, but not the base classes
+    if(curr_class != Object && curr_class != Str && curr_class != Int &&
+       curr_class != IO && curr_class != Bool){
+        for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+            Feature curr_feature = feature_list->nth(i);
+            bool is_attr = curr_feature->isAttribute();
+            Symbol inferred_type = curr_feature->typeCheck(this);
+            Symbol declared_type;
+            Symbol feat_name = curr_feature->getName();
+            if(is_attr){
+                Symbol* lookup = objectST.lookup(feat_name);
+                if(lookup != NULL){
+                    declared_type = *lookup;
+                }else{
+                    ostream& err_stream = semant_error(symb_class_map[curr_class]);
+                    err_stream << "Error: Did not find attr '" << feat_name->get_string() << "'' in the current scope.\n" << endl;
+                }
+                // assert declared_type is equal to curr_feature->getType()?
             }else{
-                ostream& err_stream = semant_error(symb_class_map[curr_class]);
-                err_stream << "Error: Did not find attr '" << feat_name->get_string() << "'' in the current scope.\n" << endl;
+                std::vector<Symbol>* lookup = methodST.lookup(feat_name);
+                if(lookup != NULL){
+                    declared_type = lookup->front();
+                }else{
+                    ostream& err_stream = semant_error(symb_class_map[curr_class]);
+                    err_stream << "Error: Did not find method '"<< feat_name->get_string() << "'' in the current scope.\n" << endl;
+                }
+                // assert declared_type is equal to curr_feature->getType()?
             }
-            // assert declared_type is equal to curr_feature->getType()?
-        }else{
-            std::vector<Symbol>* lookup = methodST.lookup(feat_name);
-            if(lookup != NULL){
-                declared_type = lookup->front();
-            }else{
-                ostream& err_stream = semant_error(symb_class_map[curr_class]);
-                err_stream << "Error: Did not find method '"<< feat_name->get_string() << "'' in the current scope.\n" << endl;
-            }
-            // assert declared_type is equal to curr_feature->getType()?
+            // TODO: compare declared type and inferred type
         }
-        // TODO: compare declared type and inferred type
     }
 }
 
@@ -402,26 +402,30 @@ bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
 }
 
 void attr_class::addToScope(ClassTable* classtable) {
-    // Check that the attribute type has been defined.
-    if(classtable->children.find(type_decl) == classtable->children.end()) {
-        if(_DEBUG) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
-        Symbol curr_class = classtable->getCurrentClass();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined\n" << endl;
-    }
-    // Check if an attribute with the same name already exists (since attributes are global)
-    if(classtable->objectST.probe(name)!=NULL){
-        if(_DEBUG) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
-        Symbol curr_class = classtable->getCurrentClass();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined.\n" << endl;
-    }
-    else {
-        classtable->objectST.addid(name, &type_decl);
+    // Don´t do this for base classes
+    Symbol curr_class = classtable->getCurrentClass();
+    if(curr_class != Object && curr_class != Str && curr_class != Int &&
+           curr_class != IO && curr_class != Bool){
+        // Check that the attribute type has been defined.
+        if(classtable->children.find(type_decl) == classtable->children.end()) {
+            if(_DEBUG) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined\n" << endl;
+        }
+        // Check if an attribute with the same name already exists (since attributes are global)
+        if(classtable->objectST.probe(name)!=NULL){
+            if(_DEBUG) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined.\n" << endl;
+        }
+        else {
+            classtable->objectST.addid(name, &type_decl);
+        }
     }
 }
 
 void method_class::addToScope(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     std::vector<Symbol> data;
     data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
@@ -440,7 +444,6 @@ void method_class::addToScope(ClassTable* classtable) {
             }
         }
         if(!matches){
-            Symbol curr_class = classtable->getCurrentClass();
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Method formals list or return type does not conform to parent definition" << endl;
         }
@@ -450,7 +453,8 @@ void method_class::addToScope(ClassTable* classtable) {
 
     // Now add it to the present scope
     classtable->methodST.addid(name, &data);
-    // and call addToScope on the expression of the method (only relevant for cases and lets)
+    // and add the method signature to this scope-independent data structure
+    classtable->classMethods[curr_class][name] = data;
 }
 
 void formal_class::addToScope(ClassTable* classtable) {
@@ -467,6 +471,7 @@ void let_class::addToScope(ClassTable* classtable){
 
 Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Quite similat to assign_class
+    Symbol curr_class = classtable->getCurrentClass();
     Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the assign expression
     Symbol inferred_init_type = init->typeCheck(classtable);
@@ -477,7 +482,6 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
             bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_init_type);
             if(!inheritance_found){
                 if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
-                Symbol curr_class = classtable->getCurrentClass();
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Attribute init error: Assignment wxpression type does not conform to declared Id type." << endl;
                 return Object;
@@ -490,6 +494,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol method_class::typeCheck(ClassTable* classtable){
+    Symbol curr_class = classtable->getCurrentClass();
     std::set<Symbol> formal_names;
 
     // Enter a new scope, add formals to it, recurse on the body and exit scope
@@ -505,7 +510,6 @@ Symbol method_class::typeCheck(ClassTable* classtable){
                        formal_name->get_string(),
                        name->get_string() );
             }
-            Symbol curr_class = classtable->getCurrentClass();
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Formal error: " << formal_name->get_string();
             err_stream << " is not a distinct formal identifier for method " << name->get_string() << endl;
@@ -539,6 +543,7 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     // First get O(Id), i.e. the type the environment gives to the id
     Symbol* declared_type = classtable->objectST.probe(name);
     // Now get the type of the expression
@@ -549,7 +554,6 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
         bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_assign_type);
         if(!inheritance_found){
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
-            Symbol curr_class = classtable->getCurrentClass();
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Assign error: Expression type does not conform to Id type." << endl;
             return Object;
@@ -625,11 +629,18 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
+<<<<<<< HEAD
 
     Symbol pred_type = pred->typeCheck(classtable);
     if(pred_type!=Bool){
         if(_DEBUG) printf("Loop Error: the predicate is not of type Bool. \n");
         Symbol curr_class = classtable->getCurrentClass();
+=======
+    Symbol curr_class = classtable->getCurrentClass();
+    Symbol pred_type = pred->typeCheck(classtable);
+    if(pred_type!=Bool){
+        if(_DEBUG) printf("Loop Error: the predicate is not of type Bool. \n");
+>>>>>>> dad760e0cc27e4b42da0385c92bd7a2d0253c1bc
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Loop Error: the predicate is not of type Bool. \n" << endl;
     }
@@ -637,6 +648,7 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     //Iterate over the cases
     std::vector<Symbol> types_vec;
     std::set<Symbol> types_set;
@@ -654,7 +666,6 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
         }
         else {
             if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
-            Symbol curr_class = classtable->getCurrentClass();
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
         }
