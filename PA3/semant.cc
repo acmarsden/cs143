@@ -626,20 +626,15 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
     // i.e. that inferred_assign_type inherits from declared_type
-    if(*declared_type!=inferred_assign_type){
-        bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_assign_type);
-        if(!inheritance_found){
+   
+    if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Assign error: Expression type does not conform to Id type." << endl;
             return Object;
-        }
-        else return inferred_assign_type;
     }
-    else{
-         // return the type as the type of the expression
-        return inferred_assign_type;
-    }
+    else return inferred_assign_type;
+
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
@@ -719,6 +714,9 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             curr_signature = classtable->classMethods[curr_type][name];
         }
     }
+    for(uint i = 0; i<curr_signature.size(); i++){
+        printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());
+    }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Dispatch Error: Expression type '" << inferred_expr_type->get_string()
@@ -733,7 +731,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
-                printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[i]->get_string(), inferred_curr_expr_type->get_string());
+                printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_curr_expr_type->get_string());
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '"
                     << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
