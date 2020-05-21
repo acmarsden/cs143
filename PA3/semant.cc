@@ -97,11 +97,22 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
+
+        // This data structure will be useful to traverse the classes in
+        // DFS order of inheritance
         if(children.find(node) == children.end()){
             children[node] = std::vector<Symbol>();
         }
         children[parent].push_back(node);
-        symb_class_map[node] = curr_class;
+
+        // Take this opportunity to check no class is not defined multiple times
+        if(symb_class_map.find(node) != symb_class_map.end()){
+            // this class was already defined before!
+            ostream& err_stream = semant_error(curr_class);
+            err_stream << "Class '" << node->get_string() << "' is multiply defined."<<endl;
+        }else{
+            symb_class_map[node] = curr_class;
+        }
     }
 
     _has_cycle = has_cycle_bfs();
@@ -267,6 +278,8 @@ void ClassTable::install_basic_classes() {
 void ClassTable::run_type_checks()
 {
     // Traverse the inheritance tree in DFS order
+    // This guarantees that methodST at any given point only has
+    // members of the present class or its ancestors
     std::set<Symbol> visited;
     // enter scope
     objectST.enterscope();
@@ -350,35 +363,13 @@ void ClassTable::check_features(Symbol curr_class) {
         Feature curr_feature = feature_list->nth(i);
         curr_feature->addToScope(this);
     }
-    // Now that we have all the object and methid ids, let's type check them, but not the base classes
+    // Now that we have all the object and methid ids, let's type check them,
+    // but not the base classes
     if(curr_class != Object && curr_class != Str && curr_class != Int &&
        curr_class != IO && curr_class != Bool){
         for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
             Feature curr_feature = feature_list->nth(i);
-            bool is_attr = curr_feature->isAttribute();
-            Symbol inferred_type = curr_feature->typeCheck(this);
-            Symbol declared_type;
-            Symbol feat_name = curr_feature->getName();
-            if(is_attr){
-                Symbol* lookup = objectST.lookup(feat_name);
-                if(lookup != NULL){
-                    declared_type = *lookup;
-                }else{
-                    ostream& err_stream = semant_error(symb_class_map[curr_class]);
-                    err_stream << "Error: Did not find attr '" << feat_name->get_string() << "'' in the current scope.\n" << endl;
-                }
-                // assert declared_type is equal to curr_feature->getType()?
-            }else{
-                std::vector<Symbol>* lookup = methodST.lookup(feat_name);
-                if(lookup != NULL){
-                    declared_type = lookup->front();
-                }else{
-                    ostream& err_stream = semant_error(symb_class_map[curr_class]);
-                    err_stream << "Error: Did not find method '"<< feat_name->get_string() << "'' in the current scope.\n" << endl;
-                }
-                // assert declared_type is equal to curr_feature->getType()?
-            }
-            // TODO: compare declared type and inferred type
+            curr_feature->typeCheck(this);
         }
     }
 }
@@ -473,23 +464,33 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     // Quite similat to assign_class
     Symbol curr_class = classtable->getCurrentClass();
     Symbol* declared_type = classtable->objectST.probe(name);
+    Symbol declared_type;
+    Symbol* lookup = classtable->objectST.probe(name);
+    if(lookup != NULL){
+        declared_type = *lookup;
+    }else{
+        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope.\n" << endl;
+        return Object;
+    }
+
     // Now get the type of the assign expression
     Symbol inferred_init_type = init->typeCheck(classtable);
     if(inferred_init_type != No_type){
         // Check that the type of the expression conforms to declared_type
         // i.e. that inferred_assign_type inherits from declared_type
-        if(*declared_type!=inferred_init_type){
-            bool inheritance_found = classtable->isDescendantOf(*declared_type, inferred_init_type);
+        if(declared_type!=inferred_init_type){
+            bool inheritance_found = classtable->isDescendantOf(declared_type, inferred_init_type);
             if(!inheritance_found){
                 if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-                err_stream << "Attribute init error: Assignment wxpression type does not conform to declared Id type." << endl;
+                err_stream << "Attribute init error: Assignment expression type does not conform to declared Id type." << endl;
                 return Object;
             }
         }
         return inferred_init_type;
     }else{
-        return *declared_type;
+        return declared_type;
     }
 }
 
@@ -497,13 +498,37 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     std::set<Symbol> formal_names;
 
+    // Check the method exists
+    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    if(lookup != NULL){
+        declared_type = lookup->front();
+    }else{
+        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: Did not find method '"<< name->get_string();
+        err_stream << "'' in the current scope.\n" << endl;
+        return Object;
+    }
+
     // Enter a new scope, add formals to it, recurse on the body and exit scope
     classtable->objectST.enterscope();
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_name = formals->nth(i)->getName();
-        Symbol formal_type = formals->nth(i)->getType();
+        Symbol formal_declared_type = formals->nth(i)->getType();
 
-        //Check that the identifiers in the formal params are distinct
+        // Check that the types of the formals have been prevously declared
+        Symbol formal_inferred_type = formals->nth(i)->typeCheck(classtable);
+        if(!classtable->isDescendantOf(formal_declared_type, formal_inferred_type)){
+            // The type of the formal was not declared before
+            //(already caught by formal_class::typeCheck)
+            ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Error: In method '" << name->get_string();
+            err_stream << "', the type '" << type_decl->get_string();
+            err_stream << "' of formal '" << formal_name->get_string();
+            err_stream << "'' was not defined.\n" << endl;
+            return Object;
+        }
+
+        // Check that the identifiers in the formal params are distinct
         if(formal_names.find(formal_name) != formal_names.end()){
             if(_DEBUG) {
                 printf("Formal error: %s is not a distinct formal identifier for method %s",
@@ -512,7 +537,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
             }
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Formal error: " << formal_name->get_string();
-            err_stream << " is not a distinct formal identifier for method " << name->get_string() << endl;
+            err_stream << " is not a distinct formal identifier for method ";
+            err_stream << name->get_string() << endl;
         }
         formal_names.insert(formal_name);
 
@@ -523,18 +549,28 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
-    // Check the inferred type against the declared return type
-    if(inferred_return_type == return_type){
-        return inferred_return_type;
+    // Check the inferred type conforms to the declared return type
+    if(classtable->isDescendantOf(return_type, inferred_return_type)){
+        return return_type;
     }else{
-        // TODO: maybe an error here?
+        err_stream << "Method error: '" << name->get_string();
+        err_stream << "' returns type '" << inferred_return_type->get_string();
+        err_stream << "' but type '" << return_type->get_string();
+        err_stream << "' was declared."<< endl;
         return Object;
     }
 }
 
 Symbol formal_class::typeCheck(ClassTable* classtable){
-    // TODO
-    return Object;
+    Symbol curr_class = classtable->getCurrentClass();
+    // Only checks if the type of the formal was previously defined
+    if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
+        return type_decl;
+    }else{
+        ostream& err_stream = semant_error(classtable->symb_class_map[curr_class]);
+        err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined.\n" << endl;
+        return Object;
+    }
 }
 
 Symbol branch_class::typeCheck(ClassTable* classtable) {
