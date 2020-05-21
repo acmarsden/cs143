@@ -389,19 +389,23 @@ void ClassTable::check_features(Symbol curr_class) {
 bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
     // Starting at parent, recursively checks its children to see if they
     // contain query_type
-    std::vector<Symbol> curr_children = children[parent];
-    for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-        Symbol child_type = *it;
-        if(child_type==query_type){
-            //query_type does indeed inherit from parent
-            return true;
+    if(parent == query_type){
+        return true;
+    }else{
+        std::vector<Symbol> curr_children = children[parent];
+        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+            Symbol child_type = *it;
+            if(child_type==query_type){
+                //query_type does indeed inherit from parent
+                return true;
+            }
+            else{
+                return isDescendantOf(child_type, query_type);
+            }
         }
-        else{
-            return isDescendantOf(child_type, query_type);
-        }
+        //Should return false if you have no children since we already checked that you weren't query_type
+        return false;
     }
-    //Should return false if you have no children since we already checked that you weren't query_type
-    return false;
 }
 
 void attr_class::addToScope(ClassTable* classtable) {
