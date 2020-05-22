@@ -9,7 +9,7 @@ class A {
 
 class B {
 a : A <- (new A).copy();
-b : Object;
+b : Int;
 
 testb(hd : Object, t1 : String) : Object { 
     { 

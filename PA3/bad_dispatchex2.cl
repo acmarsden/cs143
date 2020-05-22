@@ -1,7 +1,7 @@
 (* Expression does not inherit from a class with the method *)
 class A {
-    test(x : Object, y : Int) : Bool {
-        true
+    test(x : Object, y : Int) : Object {
+        x
     };
 
     copy(): SELF_TYPE {self };
@@ -9,9 +9,9 @@ class A {
 
 class B {
 a : A <- (new A).copy();
-b : Object;
+b : Int;
 
-testb(hd : Object, t1 : String) : Object { 
+testb(hd : Object, t1 : String) : Bool { 
     { 
         b <- hd;
         a.test(b,3);
