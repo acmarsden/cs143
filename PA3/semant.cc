@@ -664,7 +664,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         classtable->objectST.addid(formal_name, &formal_declared_type);
     }
     //TODO: WHY DO WE ADD EXPR TO THE SCOPE BEFORE CHECKING ITS TYPE?
-    expr->addToScope(classtable);
+    //expr->addToScope(classtable);
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
@@ -716,6 +716,8 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get O(Id), i.e. the type the environment gives to the id
     Symbol* declared_type = classtable->objectST.probe(name);
+    Symbol declared_type_deref = *declared_type;
+    printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
@@ -878,6 +880,8 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
     Expression curr_expr;
     for(int i=body->first(); body->more(i); i=body->next(i)) {
         curr_expr = body->nth(i);
+        //Though we don't use we do need to typecheck
+        Symbol curr_type = curr_expr->typeCheck(classtable);
     }
     return curr_expr->typeCheck(classtable);
 }
