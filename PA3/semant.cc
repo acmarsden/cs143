@@ -434,6 +434,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
                 objectST.enterscope();
                 methodST.enterscope();
                 run_type_checks_r(*it, visited);
+                if(_DEBUG) printf("Dumping objectST\n");
                 if(_DEBUG) objectST.dump();
                 objectST.exitscope();
                 methodST.exitscope();
@@ -619,8 +620,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         std::vector<Symbol> signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
-        printf("Dump of Method Symbol Table: \n");
-        classtable->methodST.dump();
+        if(_DEBUG) printf("Dump of Method Symbol Table: \n");
+        if(_DEBUG) classtable->methodST.dump();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
         err_stream << "' in the current scope." << endl;
@@ -712,8 +713,11 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
+    if(_DEBUG) printf("Type checking an assignment \n");
     Symbol curr_class = classtable->getCurrentClass();
     // First get O(Id), i.e. the type the environment gives to the id
+    if(_DEBUG) printf("looking for %s in scope \n", name->get_string());
+    if(_DEBUG) classtable->objectST.dump();
     Symbol* declared_type = classtable->objectST.probe(name);
     Symbol declared_type_deref = *declared_type;
     printf("The declared type is '%s' \n", declared_type_deref->get_string());
@@ -876,13 +880,18 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
+    if(_DEBUG) printf("Type checking a block\n");
     Expression curr_expr;
     for(int i=body->first(); body->more(i); i=body->next(i)) {
         curr_expr = body->nth(i);
         //Though we don't use we do need to typecheck
+        if(_DEBUG) printf("Type checking first expression in block\n");
         Symbol curr_type = curr_expr->typeCheck(classtable);
     }
-    return curr_expr->typeCheck(classtable);
+    if(_DEBUG) printf("Type checking the last expr in  block\n");
+    Symbol inferred_type = curr_expr->typeCheck(classtable);
+    if(_DEBUG) printf("Block resolved to type %s\n", inferred_type->get_string());
+    return inferred_type;
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
@@ -1156,7 +1165,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = false;
+    _DEBUG = true;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
