@@ -451,8 +451,8 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
     }
     if(curr_signature.size()<1){
         ostream& err_stream = semant_error(symb_class_map[curr_type]);
-        err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string()
-            << "' does not have method '" << method_name->get_string() << "'" <<  endl;
+        err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string();
+        err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
     }
 
     return curr_signature;
@@ -462,12 +462,12 @@ void method_class::addToScope(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
 
     std::vector<Symbol> data;
-    if(return_type == SELF_TYPE) {
-        data.push_back(classtable->getCurrentClass());
-    }else{
-        data.push_back(return_type);
-    }
-
+    //if(return_type == SELF_TYPE) {
+   //     data.push_back(classtable->getCurrentClass());
+    //}else{
+    //    data.push_back(return_type);
+    //}
+    data.push_back(return_type);
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
@@ -494,6 +494,9 @@ void method_class::addToScope(ClassTable* classtable) {
         if(!matches){
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Method formals list or return type does not conform to parent definition" << endl;
+            err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string(); 
+            err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
+            err_stream << "'. Return type is '" << return_type->get_string() << endl; 
         }
     }
     // If it did not find a match, we are OK, since it is the first time it is
@@ -523,7 +526,6 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     Symbol declared_type;
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
-        // will already have SELF_TYPE resolved
         declared_type = *lookup;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -536,6 +538,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     if(inferred_init_type != No_type){
         // Check that the type of the expression conforms to declared_type
         // i.e. that inferred_assign_type inherits from declared_type
+        if(declared_type == SELF_TYPE) declared_type = curr_class;
         if(declared_type!=inferred_init_type){
             bool inheritance_found = classtable->isDescendantOf(declared_type, inferred_init_type);
             if(!inheritance_found){
@@ -560,13 +563,15 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     //OLD: std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
-        // will already have SELF_TYPE resolved
         std::vector<Symbol> signature = classtable->getSignature(curr_class, name);
         declared_return_type = signature[0];
     }else{
+        printf("Dump of Method Symbol Table: \n");
+        classtable->methodST.dump();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
-        err_stream << "'' in the current scope." << endl;
+        err_stream << "' in the current scope." << endl;
+        err_stream << "The class calling is '" << curr_class->get_string() << endl;
         return Object;
     }
 
@@ -605,11 +610,15 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 
         classtable->objectST.addid(formal_name, &formal_declared_type);
     }
-
+    //TODO: WHY DO WE ADD EXPR TO THE SCOPE BEFORE CHECKING ITS TYPE?
     expr->addToScope(classtable);
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
-
+    
+    // New idea for SELF_TYPE:
+    if(declared_return_type == SELF_TYPE){
+        declared_return_type = curr_class;
+    }
     // Check the inferred type conforms to the declared return type
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
         return declared_return_type;
@@ -677,8 +686,9 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     // This part is what makes it STATIC DISPATCH
     if(!classtable->isDescendantOf(type_name, inferred_expr_type)){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string()
-            << "' does not conform to type name '" << type_name->get_string() << "' for method '" << name->get_string() << "'" << endl;
+        err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string();
+        err_stream << "' does not conform to type name '" << type_name->get_string() << "' for method '";
+        err_stream << name->get_string() << "'" << endl;
     }
     // Check that method with "name" is implemented as a method of some parent of the declared type_name
     std::vector<Symbol> curr_signature = classtable->getSignature(type_name, name);
@@ -692,15 +702,15 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
             if(_DEBUG) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string()
-                << "' method implementation does not match formals type list. " << endl;
+            err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
+            err_stream << "' method implementation does not match formals type list. " << endl;
         }
         ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
     if(curr_signature[0] == SELF_TYPE) {
-        return curr_class;
+        return inferred_expr_type;
     }
     else{
         return curr_signature[0];
@@ -713,6 +723,8 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
+    if(_DEBUG) printf("Method Dispatch: Expression of type %s is calling method %s'n", 
+            curr_class->get_string(), inferred_expr_type->get_string());
     if(inferred_expr_type == SELF_TYPE){
         inferred_expr_type = classtable->getCurrentClass();
     }
@@ -732,15 +744,18 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
             if(_DEBUG) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_curr_expr_type->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '"
-                << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;
+            err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
+            err_stream << inferred_expr_type->get_string();
+            err_stream << "' do not match the formal types declared for method implementation." << endl;
             }
             ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
+    // Now once that we know that the expr calling the method inherits from a class which implements the method, 
+    // if the return type is self type then we set the return type to be the type of the expression making the method call.
     if(curr_signature[0] == SELF_TYPE) {
-        return curr_class;
+        return inferred_expr_type;
     }
     else{
         return curr_signature[0];
@@ -823,8 +838,8 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     }
     if(classtable->children.find(var_type) == classtable->children.end()) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Let error: Declared type of variable: '" << type_decl->get_string()
-            << "' is not defined." << endl;
+        err_stream << "Let error: Declared type of variable: '" << type_decl->get_string();
+        err_stream << "' is not defined." << endl;
         }
 
     // Check if there is initialization
@@ -833,8 +848,8 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
         // Ensure initialization type conforms to the declared type of variable
         if(!classtable->isDescendantOf(var_type, inferred_init_type)){
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string()
-                << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
+            err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string();
+            err_stream << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
         }
     }
 
