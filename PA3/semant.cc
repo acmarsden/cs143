@@ -678,9 +678,9 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     classtable->objectST.exitscope();
 
     // New idea for SELF_TYPE:
-    if(declared_return_type == SELF_TYPE){
-        declared_return_type = curr_class;
-    }
+    //if(declared_return_type == SELF_TYPE){
+    //    declared_return_type = curr_class;
+    //}
     // Check the inferred type conforms to the declared return type
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
         return declared_return_type;
