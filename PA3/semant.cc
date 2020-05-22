@@ -1023,7 +1023,16 @@ Symbol no_expr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
-    return Object;
+    Symbol curr_class = classtable->getCurrentClass();
+    if(name == self){
+        return curr_class;
+    }
+    Symbol* lookup = classtable->objectST.lookup(name);
+    if(lookup != NULL){
+        return *lookup;
+    }else{
+        return Object;
+    }
 }
 
 
