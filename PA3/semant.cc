@@ -1167,8 +1167,8 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     if(name == self){
         if(_DEBUG) printf("Resolving self to be: %s\n", curr_class->get_string());
-        set_type(curr_class);
-        return get_type();
+        set_type(SELF_TYPE);
+        return curr_class;
     }
     if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
     if(_DEBUG) classtable->objectST.dump();
