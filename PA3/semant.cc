@@ -436,15 +436,38 @@ void attr_class::addToScope(ClassTable* classtable) {
     }
 }
 
+std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
+    Symbol curr_type = getCurrentClass();
+    std::vector<Symbol> curr_signature = classMethods[curr_type][method_name];
+    bool still_searching_for_method = true;
+    while(still_searching_for_method){
+        if(curr_signature.size()>0 || curr_type == Object){
+            still_searching_for_method = false;
+        }
+        else{
+            curr_type = symb_class_map[curr_type]->getParent();
+            curr_signature = classMethods[curr_type][method_name];
+        }
+    }
+    if(curr_signature.size()<1){
+        ostream& err_stream = semant_error(symb_class_map[curr_type]);
+        err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string()
+            << "' does not have method '" << method_name->get_string() << "'" <<  endl;
+    }
+
+    return curr_signature;
+}
+
 void method_class::addToScope(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
+    
     std::vector<Symbol> data;
     if(return_type == SELF_TYPE) {
         data.push_back(classtable->getCurrentClass());
     }else{
         data.push_back(return_type);
     }
-
+    
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
@@ -456,12 +479,15 @@ void method_class::addToScope(ClassTable* classtable) {
     }
 
     // Check for a previous definition of this method in the class hierarchy
-    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    //OLD: std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // If it did find a match, the defintions must conform
         bool matches = true;
+        //Now we need to get the rest of the signature
+        std::vector<Symbol> old_signature = classtable->getSignature(name);
         for(uint i=0; i<data.size(); ++i){
-            if(data[i] != (*lookup)[i]){
+            if(data[i] != old_signature[i]){
                 matches = false;
             }
         }
@@ -474,7 +500,7 @@ void method_class::addToScope(ClassTable* classtable) {
     // defined in the class hierarchy
 
     // Now add it to the present scope
-    classtable->methodST.addid(name, &data);
+    classtable->methodST.addid(name, &(data[0]));
     // and add the method signature to this scope-independent data structure
     classtable->classMethods[curr_class][name] = data;
 }
@@ -531,10 +557,13 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol declared_return_type;
 
     // Check the method exists
-    std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    //OLD: std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
+    Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        declared_return_type = lookup->front();
+        // now get the signature
+        std::vector<Symbol> signature = classtable->getSignature(name);
+        declared_return_type = signature[0];
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
