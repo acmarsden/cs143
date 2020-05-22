@@ -732,8 +732,9 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Assign error: Expression type '" << inferred_assign_type->get_string();
-            err_stream << "' does not conform to declared Id type '" << (*declared_type)->get_string();
+            err_stream << "Assign error: Type '" << inferred_assign_type->get_string();
+            err_stream << "' of assigned expression  does not conform to declared type '";
+            err_stream << (*declared_type)->get_string() << "' of identifier '" << name->get_string();
             err_stream << "'." << endl;
             return Object;
     }
@@ -1050,10 +1051,13 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
     // Implement "wrinkle" that if any expr is of type Int, String, or Bool then both must be.
     if(inferred_e1_type == Int || inferred_e1_type == Str || inferred_e1_type == Bool
             || inferred_e2_type == Int || inferred_e2_type == Str || inferred_e2_type == Bool){
-        if(_DEBUG) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
-    }
+        if(inferred_e1_type != inferred_e2_type){
+            if(_DEBUG) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
+            if(_DEBUG) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
+        }
+    }   
     return Bool;
 }
 
@@ -1068,9 +1072,9 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
         return Bool;
     }
     else{
-        if(_DEBUG) printf("Expression eq_class error: Cannot compare non-integer expressions \n");
+        if(_DEBUG) printf("Expression leq_class error: Cannot compare non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Expression eq_class error: Cannot compare non-integer expressions" << endl;
+        err_stream << "Expression leq_class error: Cannot compare non-integer expressions" << endl;
         return Object;
     }
 }
@@ -1174,7 +1178,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = true;
+    _DEBUG = false;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
