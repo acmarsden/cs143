@@ -32,6 +32,7 @@ private:
     bool has_cycle_bfs();
     void run_type_checks_r(Symbol, std::set<Symbol>*);
     void check_features(Symbol);
+    void addSignature(Class_);
 public:
     ClassTable(Classes);
     SymbolTable<Symbol, Symbol> objectST;
