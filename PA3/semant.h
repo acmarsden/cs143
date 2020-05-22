@@ -35,9 +35,10 @@ private:
 public:
     ClassTable(Classes);
     SymbolTable<Symbol, Symbol> objectST;
-    SymbolTable<Symbol, std::vector<Symbol> > methodST;
+    SymbolTable<Symbol, Symbol > methodST;
     std::map<Symbol, std::vector<Symbol> > children;
     std::map<Symbol, std::map<Symbol, std::vector<Symbol> > > classMethods;
+    std::vector<Symbol> getSignature(Symbol);
     std::map<Symbol, Class_> symb_class_map;
     void run_type_checks();
     bool has_cycle() {return _has_cycle;}
