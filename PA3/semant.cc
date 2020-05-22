@@ -524,8 +524,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        std::vector<Symbol> signature = classtable->getSignature(curr_class, name);
-        declared_type = signature[0];
+        declared_type = *lookup;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope." << endl;
@@ -562,7 +561,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        declared_return_type = *lookup;
+        std::vector<Symbol> signature = classtable->getSignature(curr_class, name);
+        declared_return_type = signature[0];
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
