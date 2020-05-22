@@ -291,7 +291,7 @@ void ClassTable::install_basic_classes() {
     addSignature(IO_class);
     addSignature(Int_class);
     addSignature(Bool_class);
-    addSignature(Str_class); 
+    addSignature(Str_class);
 }
 
 // Helper functions
@@ -302,6 +302,7 @@ bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
         return true;
     }else{
         std::vector<Symbol> curr_children = children[parent];
+        bool is_descendant;
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
             Symbol child_type = *it;
             if(child_type==query_type){
@@ -309,7 +310,9 @@ bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
                 return true;
             }
             else{
-                return isDescendantOf(child_type, query_type);
+                if(isDescendantOf(child_type, query_type)){
+                    return true;
+                }
             }
         }
         //Should return false if you have no children since we already checked that you weren't query_type
