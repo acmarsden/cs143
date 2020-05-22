@@ -608,12 +608,8 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
             }
         }
 
-        //Annotate AST
-        type_decl = idtable.add_string(inferred_init_type->get_string());
         return inferred_init_type;
     }else{
-        //Annotate AST
-        type_decl = idtable.add_string(declared_type->get_string());
         return declared_type;
     }
 }
@@ -687,8 +683,6 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     }
     // Check the inferred type conforms to the declared return type
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
-        //Annotate AST
-        return_type = idtable.add_string(declared_return_type->get_string());
         return declared_return_type;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -704,8 +698,6 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     // Only checks if the type of the formal was previously defined
     if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
-        //Annotate AST
-        idtable.add_string(type_decl->get_string());
         return type_decl;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -725,6 +717,7 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
     if(classtable->symb_class_map.find(type_decl) == classtable->symb_class_map.end()){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
+        return Object;
     }
     return expr_inferred_type;
 }
@@ -750,10 +743,11 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
             err_stream << "' of assigned expression  does not conform to declared type '";
             err_stream << (*declared_type)->get_string() << "' of identifier '" << name->get_string();
             err_stream << "'." << endl;
-            return Object;
+            set_type(Object);
+            return get_type();
     }
-    else return inferred_assign_type;
-
+    else set_type(inferred_assign_type);
+    return get_type();
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
@@ -767,6 +761,8 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string();
         err_stream << "' does not conform to type name '" << type_name->get_string() << "' for method '";
         err_stream << name->get_string() << "'" << endl;
+        set_type(Object);
+        return get_type();
     }
     // Check that method with "name" is implemented as a method of some parent of the declared type_name
     std::vector<Symbol> curr_signature = classtable->getSignature(type_name, name);
@@ -782,17 +778,20 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
             err_stream << "' method implementation does not match formals type list. " << endl;
+            set_type(Object);
+            return get_type();
         }
         ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
     if(curr_signature[0] == SELF_TYPE) {
-        return inferred_expr_type;
+        set_type(inferred_expr_type);
     }
     else{
-        return curr_signature[0];
+        set_type(curr_signature[0]);
     }
+    return get_type();
 }
 
 
@@ -825,7 +824,9 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
             err_stream << inferred_expr_type->get_string();
             err_stream << "' do not match the formal types declared for method implementation." << endl;
-            }
+            set_type(Object);
+            return get_type();    
+        }
             ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
@@ -834,12 +835,13 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     // if the return type is self type then we set the return type to be the type of the expression making the method call.
     if(curr_signature[0] == SELF_TYPE) {
         if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
-        return inferred_expr_type;
+        set_type(inferred_expr_type);
     }
     else{
         if(_DEBUG) printf("Dispatch type is: '%s'\n", curr_signature[0]->get_string());
-        return curr_signature[0];
+        set_type(curr_signature[0]);
     }
+    return get_type();
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
@@ -863,8 +865,8 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
         return_type = classtable->compute_join(symbol_vec);
         if(_DEBUG) printf("IF: join resolved to type %s.\n", return_type->get_string());
     }
-
-    return return_type;
+    set_type(return_type);
+    return get_type();
 }
 
 Symbol loop_class::typeCheck(ClassTable* classtable) {
@@ -875,7 +877,8 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Loop Error: the predicate type '" << pred_type->get_string() <<  "' is not of type Bool." << endl;
     }
-    return Object;
+    set_type(Object);
+    return get_type();
 }
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
@@ -898,10 +901,13 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
             if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
+            set_type(Object);
+            return get_type();
         }
     }
     Symbol return_type = classtable->compute_join(expr_types_vec);
-    return return_type;
+    set_type(return_type);
+    return get_type();
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
@@ -916,13 +922,13 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
     if(_DEBUG) printf("Type checking the last expr in  block\n");
     Symbol inferred_type = curr_expr->typeCheck(classtable);
     if(_DEBUG) printf("Block resolved to type %s\n", inferred_type->get_string());
-    return inferred_type;
+    set_type(inferred_type);
+    return get_type();
 }
 
 Symbol let_class::typeCheck(ClassTable* classtable) {
 
     Symbol curr_class = classtable->getCurrentClass();
-    //TODO: Compute T_0' using SELFTYPE on type_decl
     // Check that type_decl is defined.
     Symbol var_type = type_decl;
     if(var_type == SELF_TYPE){
@@ -932,7 +938,9 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Let error: Declared type of variable: '" << type_decl->get_string();
         err_stream << "' is not defined." << endl;
-        }
+        set_type(Object);
+        return get_type();    
+    }
 
     // Check if there is initialization
     Symbol inferred_init_type = init->typeCheck(classtable);
@@ -942,6 +950,8 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string();
             err_stream << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
+            set_type(Object);
+            return get_type();
         }
     }
 
@@ -950,8 +960,9 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     classtable->objectST.addid(identifier, &var_type);
     Symbol body_inferred_type = body->typeCheck(classtable);
     classtable->objectST.exitscope();
-
-    return body_inferred_type;
+    
+    set_type(body_inferred_type);
+    return get_type();
 }
 
 Symbol plus_class::typeCheck(ClassTable* classtable) {
@@ -962,14 +973,16 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Int;
+        set_type(Int);
     }
     else{
         if(_DEBUG) printf("Expression plus_class error: Cannot add non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression plus_class error: Cannot add non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol sub_class::typeCheck(ClassTable* classtable) {
@@ -980,14 +993,16 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Int;
+        set_type(Int);
     }
     else{
         if(_DEBUG) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression sub_class error: Cannot subtract non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol mul_class::typeCheck(ClassTable* classtable) {
@@ -998,14 +1013,16 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Int;
+        set_type(Int);
     }
     else{
         if(_DEBUG)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression mul_class error: Cannot multiply non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol divide_class::typeCheck(ClassTable* classtable) {
@@ -1016,14 +1033,16 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Int;
+        set_type(Int);
     }
     else{
         if(_DEBUG) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression divide_class error: Cannot divide non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol neg_class::typeCheck(ClassTable* classtable) {
@@ -1032,14 +1051,16 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e1_type = e1->typeCheck(classtable);
 
     if(inferred_e1_type == Int) {
-        return Int;
+        set_type(Int);
     }
     else{
         if(_DEBUG) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression neg_class error: Cannot negate a non-integer expression" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol lt_class::typeCheck(ClassTable* classtable) {
@@ -1050,14 +1071,16 @@ Symbol lt_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Bool;
+        set_type(Bool);
     }
     else{
         if(_DEBUG) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression lt_class error: Cannot compare non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol eq_class::typeCheck(ClassTable* classtable) {
@@ -1075,9 +1098,12 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
             if(_DEBUG) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
+            set_type(Object);
+            return get_type();
         }
-    }   
-    return Bool;
+    }
+    set_type(Bool);  
+    return get_type();
 }
 
 Symbol leq_class::typeCheck(ClassTable* classtable) {
@@ -1088,50 +1114,57 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_e2_type = e2->typeCheck(classtable);
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
-        return Bool;
+        set_type(Bool);
     }
     else{
         if(_DEBUG) printf("Expression leq_class error: Cannot compare non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression leq_class error: Cannot compare non-integer expressions" << endl;
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 Symbol comp_class::typeCheck(ClassTable* classtable) {
-    return e1->typeCheck(classtable);
+    set_type(e1->typeCheck(classtable));
+    return get_type();
 }
 
 
 Symbol int_const_class::typeCheck(ClassTable* classtable) {
-    return Int;
+    set_type(Int);
+    return get_type();
 }
 
 Symbol bool_const_class::typeCheck(ClassTable* classtable) {
-    return Bool;
+    set_type(Bool);
+    return get_type();
 }
 
 Symbol string_const_class::typeCheck(ClassTable* classtable) {
-    return Str;
+    set_type(Str);
+    return get_type();
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
     if(type_name==SELF_TYPE){
-        return classtable->getCurrentClass();
+        set_type(classtable->getCurrentClass());
     }
     else{
-        return type_name;
+        set_type(type_name);
     }
+    return get_type();
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
     set_type(Bool);
-    return Bool;
+    return get_type();
 }
 
 Symbol no_expr_class::typeCheck(ClassTable* classtable) {
     set_type(No_type);
-    return No_type;
+    return get_type();
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
@@ -1139,17 +1172,19 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     if(name == self){
         if(_DEBUG) printf("Resolving self to be: %s\n", curr_class->get_string());
-        return curr_class;
+        set_type(curr_class);
     }
     if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
     if(_DEBUG) classtable->objectST.dump();
     Symbol* lookup = classtable->objectST.lookup(name);
     if(lookup != NULL){
         if(_DEBUG) printf("The type of %s in the ST is %s\n", name->get_string(), (*lookup)->get_string());
-        return *lookup;
+        set_type(*lookup);
     }else{
-        return Object;
+        set_type(Object);
+        return get_type();
     }
+    return get_type();
 }
 
 
