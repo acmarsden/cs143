@@ -10,32 +10,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : A
 ---
 >       : SELF_TYPE
-311c311
-<                     : _no_type
----
->                     : Int
-315,317c315,317
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                     : Int
->                   : Int
->                 : Int
-326c326
-<                     : _no_type
----
->                     : Int
-330,333c330,333
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
----
->                     : Int
->                   : Int
->                 : Int
->               : Int
 554c554
 <             : D
 ---
@@ -64,58 +38,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <               : A2I
 ---
 >               : SELF_TYPE
-1367c1367
-<                         : _no_type
----
->                         : Int
-1371,1372c1371,1372
-<                         : _no_type
-<                       : _no_type
----
->                         : Int
->                       : Int
 1378c1378
-<                         : _no_type
+<                         : A2I
 ---
 >                         : SELF_TYPE
-1386c1386
-<                           : _no_type
----
->                           : String
-1392c1392
-<                           : _no_type
----
->                           : Int
-1396c1396
-<                           : _no_type
----
->                           : Int
-1398c1398
-<                         : _no_type
----
->                         : String
-1400,1402c1400,1402
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
----
->                       : Int
->                     : Int
->                   : Int
-1411c1411
-<                       : _no_type
----
->                       : Int
-1415,1418c1415,1418
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                       : Int
->                     : Int
->                   : Int
->                 : Int
 1471c1471
 <             : A2I
 ---
@@ -376,10 +302,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <                 : Main
 ---
 >                 : SELF_TYPE
-2231c2231
-<         : _no_type
----
->         : A
 2241c2241
 <             : Main
 ---
@@ -451,709 +373,193 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >         : SELF_TYPE
 >       : SELF_TYPE
 2432c2432
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
-2438c2438
-<               : _no_type
----
->               : String
 2440c2440
-<             : _no_type
+<             : Main
 ---
 >             : SELF_TYPE
 2446c2446
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
-2452c2452
-<               : _no_type
----
->               : A
 2454c2454
-<             : _no_type
+<             : Main
 ---
 >             : SELF_TYPE
 2462c2462
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-2470c2470
-<                   : _no_type
----
->                   : A
-2474c2474
-<                 : _no_type
----
->                 : Int
-2476c2476
-<               : _no_type
----
->               : Bool
 2482c2482
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-2488c2488
-<                 : _no_type
----
->                 : String
 2490c2490
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
 2496c2496
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-2502c2502
-<                 : _no_type
----
->                 : String
 2504,2505c2504,2505
-<               : _no_type
-<             : _no_type
+<               : Main
+<             : Main
 ---
 >               : SELF_TYPE
 >             : SELF_TYPE
 2511c2511
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
-2517c2517
-<               : _no_type
----
->               : A
 2519c2519
-<             : _no_type
+<             : Main
 ---
 >             : SELF_TYPE
 2528c2528
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-2532,2533c2532,2533
-<               : _no_type
-<             : _no_type
----
->               : String
->             : String
-2541c2541
-<                 : _no_type
----
->                 : String
-2545,2546c2545,2546
-<                 : _no_type
-<               : _no_type
----
->                 : String
->               : Bool
-2557c2557
-<                     : _no_type
----
->                     : A
 2565c2565
-<                       : _no_type
+<                       : Main
 ---
 >                       : SELF_TYPE
-2569c2569
-<                     : _no_type
----
->                     : Int
-2571,2572c2571,2572
-<                   : _no_type
-<                 : _no_type
----
->                   : A
->                 : A
-2581c2581
-<                     : _no_type
----
->                     : B
-2589c2589
-<                       : _no_type
----
->                       : A
-2593c2593
-<                     : _no_type
----
->                     : Int
-2599c2599
-<                       : _no_type
----
->                       : A
-2603c2603
-<                     : _no_type
----
->                     : Int
-2605,2607c2605,2607
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
----
->                   : B
->                 : B
->               : B
-2615c2615
-<                   : _no_type
----
->                   : String
-2619,2620c2619,2620
-<                   : _no_type
-<                 : _no_type
----
->                   : String
->                 : Bool
-2626c2626
-<                   : _no_type
----
->                   : A
-2639c2639
-<                         : _no_type
----
->                         : C
-2647c2647
-<                           : _no_type
----
->                           : C
-2651c2651
-<                         : _no_type
----
->                         : Int
-2653,2654c2653,2654
-<                       : _no_type
-<                     : _no_type
----
->                       : A
->                     : A
-2667c2667
-<                         : _no_type
----
->                         : A
-2675c2675
-<                           : _no_type
----
->                           : A
-2679c2679
-<                         : _no_type
----
->                         : Int
-2681,2682c2681,2682
-<                       : _no_type
-<                     : _no_type
----
->                       : C
->                     : C
 2694c2694
-<                         : _no_type
+<                         : Main
 ---
 >                         : SELF_TYPE
-2700c2700
-<                         : _no_type
----
->                         : String
 2702c2702
-<                       : _no_type
+<                       : Main
 ---
 >                       : SELF_TYPE
 2708c2708
-<                         : _no_type
+<                         : Main
 ---
 >                         : SELF_TYPE
-2712c2712
-<                       : _no_type
----
->                       : Object
-2716,2718c2716,2718
-<                       : _no_type
-<                     : _no_type
-<                 : _no_type
----
->                       : Int
->                     : Int
->                 : Object
-2726c2726
-<                     : _no_type
----
->                     : String
-2730,2731c2730,2731
-<                     : _no_type
-<                   : _no_type
----
->                     : String
->                   : Bool
-2742c2742
-<                         : _no_type
----
->                         : A
 2750c2750
-<                           : _no_type
+<                           : Main
 ---
 >                           : SELF_TYPE
-2754c2754
-<                         : _no_type
----
->                         : Int
-2756,2757c2756,2757
-<                       : _no_type
-<                     : _no_type
----
->                       : A
->                     : A
-2766c2766
-<                         : _no_type
----
->                         : D
-2774c2774
-<                           : _no_type
----
->                           : A
-2778c2778
-<                         : _no_type
----
->                         : Int
-2784c2784
-<                           : _no_type
----
->                           : A
-2788c2788
-<                         : _no_type
----
->                         : Int
-2790,2792c2790,2792
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
----
->                       : D
->                     : D
->                   : D
-2800c2800
-<                       : _no_type
----
->                       : String
-2804,2805c2804,2805
-<                       : _no_type
-<                     : _no_type
----
->                       : String
->                     : Bool
-2814c2814
-<                         : _no_type
----
->                         : C
-2823c2823
-<                           : _no_type
----
->                           : A
-2827c2827
-<                         : _no_type
----
->                         : Int
-2829,2830c2829,2830
-<                       : _no_type
-<                     : _no_type
----
->                       : E
->                     : E
-2838c2838
-<                         : _no_type
----
->                         : String
-2842,2843c2842,2843
-<                         : _no_type
-<                       : _no_type
----
->                         : String
->                       : Bool
-2852c2852
-<                           : _no_type
----
->                           : C
-2861c2861
-<                             : _no_type
----
->                             : A
-2865c2865
-<                           : _no_type
----
->                           : Int
-2867,2868c2867,2868
-<                         : _no_type
-<                       : _no_type
----
->                         : E
->                       : E
-2876c2876
-<                           : _no_type
----
->                           : String
-2880,2881c2880,2881
-<                           : _no_type
-<                         : _no_type
----
->                           : String
->                         : Bool
-2890c2890
-<                             : _no_type
----
->                             : C
-2899c2899
-<                               : _no_type
----
->                               : A
-2903c2903
-<                             : _no_type
----
->                             : Int
-2905,2906c2905,2906
-<                           : _no_type
-<                         : _no_type
----
->                           : E
->                         : E
-2914c2914
-<                             : _no_type
----
->                             : String
-2918,2919c2918,2919
-<                             : _no_type
-<                           : _no_type
----
->                             : String
->                           : Bool
-2927c2927
-<                               : _no_type
----
->                               : D
-2935c2935
-<                                 : _no_type
----
->                                 : A
-2939c2939
-<                               : _no_type
----
->                               : Int
-2941c2941
-<                             : _no_type
----
->                             : Bool
 2949c2949
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-2955c2955
-<                                 : _no_type
----
->                                 : String
 2957c2957
-<                               : _no_type
+<                               : Main
 ---
 >                               : SELF_TYPE
 2963c2963
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-2969c2969
-<                                 : _no_type
----
->                                 : A
 2971c2971
-<                               : _no_type
+<                               : Main
 ---
 >                               : SELF_TYPE
 2977c2977
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-2983c2983
-<                                 : _no_type
----
->                                 : String
 2985,2986c2985,2986
-<                               : _no_type
-<                             : _no_type
+<                               : Main
+<                             : Main
 ---
 >                               : SELF_TYPE
 >                             : SELF_TYPE
 2994c2994
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-3000c3000
-<                                 : _no_type
----
->                                 : String
 3002c3002
-<                               : _no_type
+<                               : Main
 ---
 >                               : SELF_TYPE
 3008c3008
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-3014c3014
-<                                 : _no_type
----
->                                 : A
 3016c3016
-<                               : _no_type
+<                               : Main
 ---
 >                               : SELF_TYPE
 3022c3022
-<                                 : _no_type
+<                                 : Main
 ---
 >                                 : SELF_TYPE
-3028c3028
-<                                 : _no_type
----
->                                 : String
 3030,3032c3030,3032
-<                               : _no_type
-<                             : _no_type
-<                           : _no_type
+<                               : Main
+<                             : Main
+<                           : Main
 ---
 >                               : SELF_TYPE
 >                             : SELF_TYPE
 >                           : SELF_TYPE
-3040c3040
-<                               : _no_type
----
->                               : String
-3044,3045c3044,3045
-<                               : _no_type
-<                             : _no_type
----
->                               : String
->                             : Bool
-3063c3063
-<                                     : _no_type
----
->                                     : E
-3071c3071
-<                                       : _no_type
----
->                                       : A
-3075c3075
-<                                     : _no_type
----
->                                     : Int
-3077,3078c3077,3078
-<                                   : _no_type
-<                                 : _no_type
----
->                                   : A
->                                 : A
-3090c3090
-<                                       : _no_type
----
->                                       : A
-3094c3094
-<                                     : _no_type
----
->                                     : Int
-3102c3102
-<                                         : _no_type
----
->                                         : A
-3106c3106
-<                                       : _no_type
----
->                                       : Int
-3110,3112c3110,3112
-<                                       : _no_type
-<                                     : _no_type
-<                                   : _no_type
----
->                                       : Int
->                                     : Int
->                                   : Int
 3120c3120
-<                                       : _no_type
+<                                       : Main
 ---
 >                                       : SELF_TYPE
-3126c3126
-<                                       : _no_type
----
->                                       : String
 3128c3128
-<                                     : _no_type
+<                                     : Main
 ---
 >                                     : SELF_TYPE
 3134c3134
-<                                       : _no_type
+<                                       : Main
 ---
 >                                       : SELF_TYPE
-3140c3140
-<                                       : _no_type
----
->                                       : A
 3142c3142
-<                                     : _no_type
+<                                     : Main
 ---
 >                                     : SELF_TYPE
 3148c3148
-<                                       : _no_type
+<                                       : Main
 ---
 >                                       : SELF_TYPE
-3154c3154
-<                                       : _no_type
----
->                                       : String
 3156c3156
-<                                     : _no_type
+<                                     : Main
 ---
 >                                     : SELF_TYPE
 3162c3162
-<                                       : _no_type
+<                                       : Main
 ---
 >                                       : SELF_TYPE
-3168c3168
-<                                       : _no_type
----
->                                       : A
 3170c3170
-<                                     : _no_type
+<                                     : Main
 ---
 >                                     : SELF_TYPE
 3176c3176
-<                                       : _no_type
+<                                       : Main
 ---
 >                                       : SELF_TYPE
-3182c3182
-<                                       : _no_type
----
->                                       : String
 3184c3184
-<                                     : _no_type
+<                                     : Main
 ---
 >                                     : SELF_TYPE
-3192c3192
-<                                       : _no_type
----
->                                       : A2I
 3200c3200
-<                                           : _no_type
+<                                           : Main
 ---
 >                                           : SELF_TYPE
-3208c3208
-<                                             : _no_type
----
->                                             : A2I
-3214c3214
-<                                             : _no_type
----
->                                             : Int
-3216c3216
-<                                           : _no_type
----
->                                           : String
 3218c3218
-<                                         : _no_type
+<                                         : Main
 ---
 >                                         : SELF_TYPE
 3224c3224
-<                                           : _no_type
+<                                           : Main
 ---
 >                                           : SELF_TYPE
-3230c3230
-<                                           : _no_type
----
->                                           : String
 3232,3236c3232,3236
-<                                         : _no_type
-<                                       : _no_type
-<                                     : _no_type
-<                                   : _no_type
-<                                 : _no_type
+<                                         : Main
+<                                       : Main
+<                                     : Main
+<                                   : Main
+<                                 : Main
 ---
 >                                         : SELF_TYPE
 >                                       : SELF_TYPE
 >                                     : SELF_TYPE
 >                                   : SELF_TYPE
 >                                 : SELF_TYPE
-3243,3246c3243,3246
-<                                   : _no_type
-<                                 : _no_type
-<                               : _no_type
-<                             : _no_type
----
->                                   : A
->                                 : A
->                               : A
->                             : A
-3254c3254
-<                                 : _no_type
----
->                                 : String
-3258,3259c3258,3259
-<                                 : _no_type
-<                               : _no_type
----
->                                 : String
->                               : Bool
-3266,3267c3266,3267
-<                                 : _no_type
-<                               : _no_type
----
->                                 : A
->                               : A
-3275c3275
-<                                   : _no_type
----
->                                   : String
-3279,3280c3279,3280
-<                                   : _no_type
-<                                 : _no_type
----
->                                   : String
->                                 : Bool
-3287,3288c3287,3288
-<                                   : _no_type
-<                                 : _no_type
----
->                                   : Bool
->                                 : Bool
-3297c3297
-<                                     : _no_type
----
->                                     : A
-3305c3305
-<                                       : _no_type
----
->                                       : A
-3309c3309
-<                                     : _no_type
----
->                                     : Int
-3311,3323c3311,3323
-<                                   : _no_type
-<                                 : _no_type
-<                               : _no_type
-<                             : _no_type
-<                           : _no_type
-<                         : _no_type
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
-<             : _no_type
-<           : _no_type
----
->                                   : A
->                                 : A
->                               : Object
->                             : Object
->                           : Object
->                         : Object
->                       : Object
->                     : Object
->                   : Object
->                 : Object
->               : Object
->             : Object
->           : Object
 
 
 ==============================================================
@@ -1829,18 +1235,18 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <                         #75
 <                         _object
 <                           int
-<                         : _no_type
+<                         : Int
 <                         #75
 <                         _int
 <                           10
-<                         : _no_type
-<                       : _no_type
+<                         : Int
+<                       : Int
 <                       #75
 <                       _dispatch
 <                         #75
 <                         _object
 <                           self
-<                         : _no_type
+<                         : A2I
 <                         c2i
 <                         (
 <                         #75
@@ -1848,23 +1254,23 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <                           #75
 <                           _object
 <                             s
-<                           : _no_type
+<                           : String
 <                           substr
 <                           (
 <                           #75
 <                           _object
 <                             i
-<                           : _no_type
+<                           : Int
 <                           #75
 <                           _int
 <                             1
-<                           : _no_type
+<                           : Int
 <                           )
-<                         : _no_type
+<                         : String
 <                         )
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
+<                       : Int
+<                     : Int
+<                   : Int
 <                   #76
 <                   _assign
 <                     i
@@ -1873,14 +1279,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <                       #76
 <                       _object
 <                         i
-<                       : _no_type
+<                       : Int
 <                       #76
 <                       _int
 <                         1
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
+<                       : Int
+<                     : Int
+<                   : Int
+<                 : Int
 <               : Object
 <             : Object
 <           : Object
@@ -2076,8 +1482,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
-1c1,6
+1,2c1,7
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let error: Declared type of variable: 'A2I' is not defined.
+< Segmentation fault (core dumped)
 ---
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Class A2I of let-bound identifier z is undefined.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used with undefined class A2I.
@@ -2085,6 +1492,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Inferred type Object of initialization of i does not conform to identifier's declared type Int.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch on undefined class A2I.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Inferred type Object of initialization of news does not conform to identifier's declared type String.
+> Compilation halted due to static semantic errors.
 
 
 ==============================================================
@@ -2195,14 +1603,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
-468c468
-<             : _no_type
----
->             : Book
-472c472
-<           : _no_type
----
->           : Book
 482c482
 <               : Cons
 ---
@@ -2285,42 +1685,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <             : CellularAutomaton
 ---
 >             : SELF_TYPE
-439c439
-<                       : _no_type
----
->                       : String
 447c447
-<                         : _no_type
+<                         : CellularAutomaton
 ---
 >                         : SELF_TYPE
-453c453
-<                         : _no_type
----
->                         : Int
-455c455
-<                       : _no_type
----
->                       : String
-457,458c457,458
-<                     : _no_type
-<                   : _no_type
----
->                     : String
->                   : String
-467c467
-<                       : _no_type
----
->                       : Int
-471,474c471,474
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                       : Int
->                     : Int
->                   : Int
->                 : Int
 487,491c487,491
 <               : CellularAutomaton
 <             : CellularAutomaton
@@ -2333,36 +1701,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : SELF_TYPE
 >         : SELF_TYPE
 >       : SELF_TYPE
-568c568
-<                 : _no_type
----
->                 : CellularAutomaton
-572c572
-<               : _no_type
----
->               : CellularAutomaton
-578c578
-<                 : _no_type
----
->                 : CellularAutomaton
-582c582
-<               : _no_type
----
->               : CellularAutomaton
-591c591
-<                   : _no_type
----
->                   : Int
-595,598c595,598
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                   : Int
->                 : Int
->               : Int
->             : Int
 604,605c604,605
 <         : Main
 <       : Main
@@ -2637,104 +1975,26 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <               : Parse
 ---
 >               : SELF_TYPE
-964c964
-<                   : _no_type
----
->                   : Graph
 972c972
-<                     : _no_type
+<                     : Parse
 ---
 >                     : SELF_TYPE
-978c978
-<                     : _no_type
----
->                     : String
-980c980
-<                   : _no_type
----
->                   : Vertice
-982c982
-<                 : _no_type
----
->                 : Object
 991c991
-<                     : _no_type
+<                     : Parse
 ---
 >                     : SELF_TYPE
-995,997c995,997
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
----
->                   : String
->                 : String
->               : String
 1031c1031
 <             : Parse
 ---
 >             : SELF_TYPE
 1077c1077
-<                   : _no_type
+<                   : Parse
 ---
 >                   : SELF_TYPE
-1083c1083
-<                   : _no_type
----
->                   : String
-1085c1085
-<                 : _no_type
----
->                 : Int
 1095c1095
-<                     : _no_type
+<                     : Parse
 ---
 >                     : SELF_TYPE
-1101c1101
-<                     : _no_type
----
->                     : String
-1103c1103
-<                   : _no_type
----
->                   : Int
-1109c1109
-<                     : _no_type
----
->                     : Vertice
-1117c1117
-<                       : _no_type
----
->                       : Edge
-1125c1125
-<                         : _no_type
----
->                         : Vertice
-1129c1129
-<                       : _no_type
----
->                       : Int
-1133c1133
-<                       : _no_type
----
->                       : Int
-1137c1137
-<                       : _no_type
----
->                       : Int
-1139c1139
-<                     : _no_type
----
->                     : Edge
-1141,1144c1141,1144
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                   : Vertice
->                 : Vertice
->               : Vertice
->             : Vertice
 1337c1337
 <                               : Parse
 ---
@@ -2751,218 +2011,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <               : Parse
 ---
 >               : SELF_TYPE
-1613c1613
-<                     : _no_type
----
->                     : String
-1619c1619
-<                     : _no_type
----
->                     : Int
-1623c1623
-<                     : _no_type
----
->                     : Int
-1625c1625
-<                   : _no_type
----
->                   : String
-1633c1633
-<                       : _no_type
----
->                       : String
-1637,1638c1637,1638
-<                       : _no_type
-<                     : _no_type
----
->                       : String
->                     : Bool
-1649c1649
-<                           : _no_type
----
->                           : String
-1657c1657
-<                             : _no_type
----
->                             : Int
-1661,1662c1661,1662
-<                             : _no_type
-<                           : _no_type
----
->                             : Int
->                           : Int
-1672c1672
-<                                 : _no_type
----
->                                 : String
-1676c1676
-<                               : _no_type
----
->                               : Int
-1680,1681c1680,1681
-<                               : _no_type
-<                             : _no_type
----
->                               : Int
->                             : Int
-1685,1686c1685,1686
-<                             : _no_type
-<                           : _no_type
----
->                             : Int
->                           : Int
-1688,1689c1688,1689
-<                         : _no_type
-<                       : _no_type
----
->                         : String
->                       : String
-1696,1698c1696,1698
-<                         : _no_type
-<                       : _no_type
-<                     : _no_type
----
->                         : Int
->                       : Int
->                     : Int
-1706c1706
-<                         : _no_type
----
->                         : String
-1710,1711c1710,1711
-<                         : _no_type
-<                       : _no_type
----
->                         : String
->                       : Bool
-1722c1722
-<                             : _no_type
----
->                             : String
-1730c1730
-<                               : _no_type
----
->                               : Int
-1734,1735c1734,1735
-<                               : _no_type
-<                             : _no_type
----
->                               : Int
->                             : Int
-1745c1745
-<                                   : _no_type
----
->                                   : String
-1749c1749
-<                                 : _no_type
----
->                                 : Int
-1753,1754c1753,1754
-<                                 : _no_type
-<                               : _no_type
----
->                                 : Int
->                               : Int
-1758,1759c1758,1759
-<                               : _no_type
-<                             : _no_type
----
->                               : Int
->                             : Int
-1761,1762c1761,1762
-<                           : _no_type
-<                         : _no_type
----
->                           : String
->                         : String
-1769,1771c1769,1771
-<                           : _no_type
-<                         : _no_type
-<                       : _no_type
----
->                           : Int
->                         : Int
->                       : Int
-1784c1784
-<                               : _no_type
----
->                               : Int
-1788,1789c1788,1789
-<                               : _no_type
-<                             : _no_type
----
->                               : Int
->                             : Int
 1795c1795
-<                               : _no_type
+<                               : Parse
 ---
 >                               : SELF_TYPE
-1803c1803
-<                                 : _no_type
----
->                                 : String
-1809c1809
-<                                 : _no_type
----
->                                 : Int
-1813c1813
-<                                 : _no_type
----
->                                 : Int
-1815c1815
-<                               : _no_type
----
->                               : String
-1817,1819c1817,1819
-<                             : _no_type
-<                           : _no_type
-<                         : _no_type
----
->                             : Int
->                           : Int
->                         : Int
-1828c1828
-<                             : _no_type
----
->                             : Int
-1832,1834c1832,1834
-<                             : _no_type
-<                           : _no_type
-<                         : _no_type
----
->                             : Int
->                           : Int
->                         : Int
-1842c1842
-<                             : _no_type
----
->                             : Int
-1846,1847c1846,1847
-<                             : _no_type
-<                           : _no_type
----
->                             : Int
->                           : Bool
-1854,1855c1854,1855
-<                             : _no_type
-<                           : _no_type
----
->                             : String
->                           : String
-1859,1864c1859,1864
-<                           : _no_type
-<                         : _no_type
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                           : String
->                         : String
->                       : String
->                     : Object
->                   : Object
->                 : Object
 1890c1890
 <         : Main
 ---
@@ -2972,7 +2024,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl 
 18c18
-<         : _no_type
+<         : Foo
 ---
 >         : SELF_TYPE
 80c80
@@ -2992,7 +2044,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 183c183
-<         : _no_type
+<         : Razz
 ---
 >         : SELF_TYPE
 251c251
@@ -3004,7 +2056,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >           : SELF_TYPE
 292c292
-<         : _no_type
+<         : Bazz
 ---
 >         : SELF_TYPE
 335c335
@@ -3246,29 +2298,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >                   : SELF_TYPE
 1028c1028
-<                 : _no_type
+<                 : Variable
 ---
 >                 : SELF_TYPE
-1034c1034
-<                 : _no_type
----
->                 : String
 1036c1036
-<               : _no_type
+<               : Variable
 ---
 >               : SELF_TYPE
-1045c1045
-<                   : _no_type
----
->                   : VarList
-1049,1051c1049,1051
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                 : VarList
->               : VarList
->             : VarList
 1072c1072
 <                 : Variable
 ---
@@ -3523,10 +2559,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
-1807c1807
-<         : _no_type
----
->         : Expr
 1977c1977
 <           : App
 ---
@@ -3661,64 +2693,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <         : Main
 ---
 >         : SELF_TYPE
-2578c2578
-<                       : _no_type
----
->                       : Expr
-2582,2583c2582,2583
-<                     : _no_type
-<                   : _no_type
----
->                     : Expr
->                   : Expr
-2591c2591
-<                       : _no_type
----
->                       : Expr
-2595,2596c2595,2596
-<                       : _no_type
-<                     : _no_type
----
->                       : Expr
->                     : Bool
-2603,2604c2603,2604
-<                       : _no_type
-<                     : _no_type
----
->                       : Bool
->                     : Bool
-2613,2614c2613,2614
-<                         : _no_type
-<                       : _no_type
----
->                         : Expr
->                       : Expr
 2620c2620
-<                         : _no_type
+<                         : Main
 ---
 >                         : SELF_TYPE
-2626c2626
-<                         : _no_type
----
->                         : String
 2628c2628
-<                       : _no_type
+<                       : Main
 ---
 >                       : SELF_TYPE
-2634c2634
-<                         : _no_type
----
->                         : Expr
-2638,2641c2638,2641
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                       : Expr
->                     : Expr
->                   : Object
->                 : Object
 2648c2648
 <                 : Main
 ---
@@ -3883,66 +2865,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <           : Main
 ---
 >           : SELF_TYPE
-3013c3013
-<                 : _no_type
----
->                 : LambdaListRef
-3017c3017
-<               : _no_type
----
->               : VarList
-3027c3027
-<                   : _no_type
----
->                   : LambdaListRef
-3031c3031
-<                 : _no_type
----
->                 : Lambda
-3041c3041
-<                     : _no_type
----
->                     : LambdaListRef
-3045c3045
-<                   : _no_type
----
->                   : Int
-3053c3053
-<                       : _no_type
----
->                       : LambdaListRef
-3057c3057
-<                     : _no_type
----
->                     : LambdaListRef
-3063c3063
-<                       : _no_type
----
->                       : Lambda
-3069c3069
-<                       : _no_type
----
->                       : Int
-3073c3073
-<                       : _no_type
----
->                       : VarList
-3077c3077
-<                       : _no_type
----
->                       : LambdaListRef
-3079,3083c3079,3083
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                     : Lambda
->                   : Lambda
->                 : Lambda
->               : Lambda
->             : Lambda
 3090c3090
 <             : Main
 ---
@@ -4270,55 +3192,21 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >             : SELF_TYPE
 462c462
-<                   : _no_type
+<                   : CellularAutomaton
 ---
 >                   : SELF_TYPE
-470c470
-<                     : _no_type
----
->                     : String
-476c476
-<                     : _no_type
----
->                     : Int
-480c480
-<                     : _no_type
----
->                     : Int
-482c482
-<                   : _no_type
----
->                   : String
 484c484
-<                 : _no_type
+<                 : CellularAutomaton
 ---
 >                 : SELF_TYPE
 490c490
-<                   : _no_type
+<                   : CellularAutomaton
 ---
 >                   : SELF_TYPE
-496c496
-<                   : _no_type
----
->                   : String
 498c498
-<                 : _no_type
+<                 : CellularAutomaton
 ---
 >                 : SELF_TYPE
-507c507
-<                     : _no_type
----
->                     : Int
-511,514c511,514
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
----
->                     : Int
->                   : Int
->                 : Int
->               : Int
 521c521
 <               : CellularAutomaton
 ---
@@ -4417,42 +3305,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <             : CellularAutomaton
 ---
 >             : SELF_TYPE
-1678c1678
-<                       : _no_type
----
->                       : String
 1686c1686
-<                         : _no_type
+<                         : CellularAutomaton
 ---
 >                         : SELF_TYPE
-1692c1692
-<                         : _no_type
----
->                         : Int
-1694c1694
-<                       : _no_type
----
->                       : String
-1696,1697c1696,1697
-<                     : _no_type
-<                   : _no_type
----
->                     : String
->                   : String
-1706c1706
-<                       : _no_type
----
->                       : Int
-1710,1713c1710,1713
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                       : Int
->                     : Int
->                   : Int
->                 : Int
 1726,1730c1726,1730
 <               : CellularAutomaton
 <             : CellularAutomaton
@@ -4737,86 +3593,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <                   : Main
 ---
 >                   : SELF_TYPE
-2754,2755c2754,2755
-<                     : _no_type
-<                   : _no_type
----
->                     : Bool
->                   : Bool
 2764c2764
-<                       : _no_type
+<                       : Main
 ---
 >                       : SELF_TYPE
-2768,2769c2768,2769
-<                     : _no_type
-<                   : _no_type
----
->                     : String
->                   : String
-2778c2778
-<                       : _no_type
----
->                       : CellularAutomaton
-2784c2784
-<                       : _no_type
----
->                       : String
-2786,2787c2786,2787
-<                     : _no_type
-<                   : _no_type
----
->                     : CellularAutomaton
->                   : CellularAutomaton
-2793c2793
-<                     : _no_type
----
->                     : CellularAutomaton
-2797c2797
-<                   : _no_type
----
->                   : CellularAutomaton
-2803c2803
-<                     : _no_type
----
->                     : Bool
 2811c2811
-<                         : _no_type
+<                         : Main
 ---
 >                         : SELF_TYPE
-2815c2815
-<                       : _no_type
----
->                       : Bool
-2823c2823
-<                           : _no_type
----
->                           : CellularAutomaton
-2827c2827
-<                         : _no_type
----
->                         : CellularAutomaton
-2833c2833
-<                           : _no_type
----
->                           : CellularAutomaton
-2837,2838c2837,2838
-<                         : _no_type
-<                       : _no_type
----
->                         : CellularAutomaton
->                       : CellularAutomaton
-2845,2849c2845,2849
-<                         : _no_type
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
-<                 : _no_type
----
->                         : Bool
->                       : Bool
->                     : Object
->                   : Object
->                 : Object
 2854,2858c2854,2858
 <               : Main
 <             : Main
@@ -4886,29 +3670,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >             : SELF_TYPE
 357c357
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
-363c363
-<               : _no_type
----
->               : List
-365c365
-<             : _no_type
----
->             : Object
-374c374
-<                 : _no_type
----
->                 : List
-378,380c378,380
-<               : _no_type
-<             : _no_type
-<           : _no_type
----
->               : List
->             : List
->           : List
 
 
 ==============================================================
@@ -5063,178 +3827,24 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <         : Main
 ---
 >         : SELF_TYPE
-85c85
-<               : _no_type
----
->               : Int
-89,91c89,91
-<               : _no_type
-<             : _no_type
-<           : _no_type
----
->               : Int
->             : Int
->           : Int
-98,99c98,99
-<             : _no_type
-<           : _no_type
----
->             : Int
->           : Int
-109c109
-<                 : _no_type
----
->                 : Int
-115c115
-<                   : _no_type
----
->                   : Int
-119,121c119,121
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
----
->                   : Int
->                 : Int
->               : Bool
-125c125
-<               : _no_type
----
->               : Bool
-135c135
-<                     : _no_type
----
->                     : Int
-141c141
-<                       : _no_type
----
->                       : Int
-147c147
-<                         : _no_type
----
->                         : Int
-151,154c151,154
-<                         : _no_type
-<                       : _no_type
-<                     : _no_type
-<                   : _no_type
----
->                         : Int
->                       : Int
->                     : Int
->                   : Int
-158,159c158,159
-<                   : _no_type
-<                 : _no_type
----
->                   : Int
->                 : Bool
-163c163
-<                 : _no_type
----
->                 : Bool
-167,169c167,169
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                 : Bool
->               : Bool
->             : Bool
-178c178
-<                 : _no_type
----
->                 : Int
-182,185c182,185
-<                 : _no_type
-<               : _no_type
-<             : _no_type
-<           : _no_type
----
->                 : Int
->               : Int
->             : Int
->           : Object
-193c193
-<               : _no_type
----
->               : Int
-199c199
-<                 : _no_type
----
->                 : Int
-203,205c203,205
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                 : Int
->               : Int
->             : Bool
-214,215c214,215
-<                 : _no_type
-<               : _no_type
----
->                 : Int
->               : Int
 221c221
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-227c227
-<                 : _no_type
----
->                 : Int
 229c229
-<               : _no_type
+<               : Main
 ---
 >               : SELF_TYPE
 235c235
-<                 : _no_type
+<                 : Main
 ---
 >                 : SELF_TYPE
-241c241
-<                 : _no_type
----
->                 : String
 243,244c243,244
-<               : _no_type
-<             : _no_type
+<               : Main
+<             : Main
 ---
 >               : SELF_TYPE
 >             : SELF_TYPE
-248,249c248,249
-<             : _no_type
-<           : _no_type
----
->             : Int
->           : Object
-257c257
-<               : _no_type
----
->               : Int
-261,262c261,262
-<               : _no_type
-<             : _no_type
----
->               : Int
->             : Bool
-268c268
-<               : _no_type
----
->               : String
-272c272
-<             : _no_type
----
->             : Object
-276,278c276,278
-<             : _no_type
-<           : _no_type
-<         : _no_type
----
->             : String
->           : Object
->         : Object
 
 
 ==============================================================
@@ -5317,38 +3927,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <         : Nil
 ---
 >         : SELF_TYPE
-612c612
-<                   : _no_type
----
->                   : Cons
-618c618
-<                   : _no_type
----
->                   : Int
-622c622
-<                   : _no_type
----
->                   : List
-624,625c624,625
-<                 : _no_type
-<               : _no_type
----
->                 : Cons
->               : Cons
-634c634
-<                   : _no_type
----
->                   : Int
-638,641c638,641
-<                   : _no_type
-<                 : _no_type
-<               : _no_type
-<             : _no_type
----
->                   : Int
->                 : Int
->               : Int
->             : Int
 660c660
 <           : Main
 ---

@@ -872,12 +872,14 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Loop Error: the predicate type '" << pred_type->get_string() <<  "' is not of type Bool." << endl;
     }
+    body->typeCheck(classtable);
     set_type(Object);
     return get_type();
 }
 
 Symbol typcase_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
+    expr->typeCheck(classtable);
     //Iterate over the cases
     std::vector<Symbol> expr_types_vec;
     std::set<Symbol> declared_types_set;
@@ -916,6 +918,7 @@ Symbol block_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_type = curr_expr->typeCheck(classtable);
     if(_DEBUG) printf("Block resolved to type %s\n", inferred_type->get_string());
     set_type(inferred_type);
+    if(_DEBUG) printf("Type was set to %s\n", get_type()->get_string());
     return get_type();
 }
 
