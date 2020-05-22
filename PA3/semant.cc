@@ -1125,10 +1125,12 @@ Symbol new__class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
+    set_type(Bool);
     return Bool;
 }
 
 Symbol no_expr_class::typeCheck(ClassTable* classtable) {
+    set_type(No_type);
     return No_type;
 }
 
