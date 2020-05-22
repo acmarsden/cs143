@@ -437,9 +437,12 @@ void attr_class::addToScope(ClassTable* classtable) {
 }
 
 std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
+    if(_DEBUG) printf("Called getSignature on class '%s'\n", class_name->get_string());
     std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
     while(still_searching_for_method){
+        if(_DEBUG) printf("Searching for method in class %s\n", class_name->get_string());
+        if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
         if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
         }
@@ -449,7 +452,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
         }
     }
     if(curr_signature.size()<1){
-        ostream& err_stream = semant_error(symb_class_map[curr_type]);
+        ostream& err_stream = semant_error(symb_class_map[class_name]);
         err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string();
         err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
     }
@@ -458,7 +461,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
 }
 
 std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
-    if(DEBUG_) printf("Called getSignature on current class");
+    if(_DEBUG) printf("Called getSignature on current class\n");
     return getSignature(getCurrentClass(), method_name);
 }
 
@@ -509,6 +512,7 @@ void method_class::addToScope(ClassTable* classtable) {
     // Now add it to the present scope
     classtable->methodST.addid(name, &(data[0]));
     // and add the method signature to this scope-independent data structure
+    if(_DEBUG) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
     classtable->classMethods[curr_class][name] = data;
 }
 
@@ -761,9 +765,11 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     // Now once that we know that the expr calling the method inherits from a class which implements the method, 
     // if the return type is self type then we set the return type to be the type of the expression making the method call.
     if(curr_signature[0] == SELF_TYPE) {
+        if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
         return inferred_expr_type;
     }
     else{
+        if(_DEBUG) printf("Dispatch type is: '%s'\n", curr_signature[0]->get_string());
         return curr_signature[0];
     }
 }
@@ -1104,7 +1110,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = false;
+    _DEBUG = true;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
