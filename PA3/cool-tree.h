@@ -211,8 +211,9 @@ public:
    Symbol getName() {return name;}
    Symbol getType() {return return_type;}
    bool isAttribute() {return false;}
-   Symbol typeCheck(ClassTable*);
+   void collectSignature(ClassTable*);
    void addToScope(ClassTable*);
+   Symbol typeCheck(ClassTable*);
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS

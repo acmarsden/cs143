@@ -94,7 +94,6 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         Class_ curr_class = classes->nth(i);
         if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
-        Features feature_list = classes->nth(i)->getFeatures();
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
 
@@ -112,6 +111,15 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
             err_stream << "Class '" << node->get_string() << "' is multiply defined."<<endl;
         }else{
             symb_class_map[node] = curr_class;
+        }
+
+        // Now loop over features and collect method signatures
+        Features feature_list = classes->nth(i)->getFeatures();
+        for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+            Feature curr_feature = feature_list->nth(i);
+            if(!curr_feature->isAttribute()){
+                curr_feature->collectSignature(this);
+            }
         }
     }
 
@@ -275,39 +283,56 @@ void ClassTable::install_basic_classes() {
     symb_class_map[Str] = Str_class;
 }
 
-void ClassTable::run_type_checks()
-{
-    // Traverse the inheritance tree in DFS order
-    // This guarantees that methodST at any given point only has
-    // members of the present class or its ancestors
-    std::set<Symbol> visited;
-    // enter scope
-    objectST.enterscope();
-    methodST.enterscope();
-    run_type_checks_r(Object, &visited);
-    objectST.exitscope();
-    methodST.exitscope();
-}
-
-void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
-{
-    visited->insert(curr_class);
-    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
-    check_features(curr_class);
-    if(children[curr_class].size() != 0){
-        std::vector<Symbol> curr_children = children[curr_class];
+// Helper functions
+bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
+    // Starting at parent, recursively checks its children to see if they
+    // contain query_type
+    if(parent == query_type){
+        return true;
+    }else{
+        std::vector<Symbol> curr_children = children[parent];
         for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-            if(visited->find(*it) == visited->end()){
-                // enter scope
-                objectST.enterscope();
-                methodST.enterscope();
-                run_type_checks_r(*it, visited);
-                if(_DEBUG) objectST.dump();
-                objectST.exitscope();
-                methodST.exitscope();
+            Symbol child_type = *it;
+            if(child_type==query_type){
+                //query_type does indeed inherit from parent
+                return true;
+            }
+            else{
+                return isDescendantOf(child_type, query_type);
             }
         }
+        //Should return false if you have no children since we already checked that you weren't query_type
+        return false;
     }
+}
+
+std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
+    if(_DEBUG) printf("Called getSignature on class '%s'\n", class_name->get_string());
+    std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
+    bool still_searching_for_method = true;
+    while(still_searching_for_method){
+        if(_DEBUG) printf("Searching for method in class %s\n", class_name->get_string());
+        if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
+        if(curr_signature.size()>0 || class_name == Object){
+            still_searching_for_method = false;
+        }
+        else{
+            class_name = symb_class_map[class_name]->getParent();
+            curr_signature = classMethods[class_name][method_name];
+        }
+    }
+    if(curr_signature.size()<1){
+        ostream& err_stream = semant_error(symb_class_map[class_name]);
+        err_stream << "getSignature Error: Class '" << curr_class->get_string();
+        err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
+    }
+
+    return curr_signature;
+}
+
+std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
+    if(_DEBUG) printf("Called getSignature on current class\n");
+    return getSignature(getCurrentClass(), method_name);
 }
 
 Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
@@ -367,6 +392,42 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
     return join_pair;
 }
 
+// Semantic analysis entry point
+void ClassTable::run_type_checks()
+{
+    // Traverse the inheritance tree in DFS order
+    // This guarantees that methodST at any given point only has
+    // members of the present class or its ancestors
+    std::set<Symbol> visited;
+    // enter scope
+    objectST.enterscope();
+    methodST.enterscope();
+    run_type_checks_r(Object, &visited);
+    objectST.exitscope();
+    methodST.exitscope();
+}
+
+void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
+{
+    visited->insert(curr_class);
+    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
+    check_features(curr_class);
+    if(children[curr_class].size() != 0){
+        std::vector<Symbol> curr_children = children[curr_class];
+        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
+            if(visited->find(*it) == visited->end()){
+                // enter scope
+                objectST.enterscope();
+                methodST.enterscope();
+                run_type_checks_r(*it, visited);
+                if(_DEBUG) objectST.dump();
+                objectST.exitscope();
+                methodST.exitscope();
+            }
+        }
+    }
+}
+
 void ClassTable::check_features(Symbol curr_class) {
     this->current_class = curr_class;
     Features feature_list = symb_class_map[curr_class]->getFeatures();
@@ -386,26 +447,29 @@ void ClassTable::check_features(Symbol curr_class) {
     }
 }
 
-bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
-    // Starting at parent, recursively checks its children to see if they
-    // contain query_type
-    if(parent == query_type){
-        return true;
-    }else{
-        std::vector<Symbol> curr_children = children[parent];
-        for(auto it=curr_children.begin(); it!=curr_children.end(); ++it){
-            Symbol child_type = *it;
-            if(child_type==query_type){
-                //query_type does indeed inherit from parent
-                return true;
-            }
-            else{
-                return isDescendantOf(child_type, query_type);
-            }
+void method_class::collectSignature(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
+    std::vector<Symbol> data;
+
+    //if(return_type == SELF_TYPE) {
+    //     data.push_back(classtable->getCurrentClass());
+    //}else{
+    //    data.push_back(return_type);
+    //}
+    data.push_back(return_type);
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
+        Symbol formal_type = formals->nth(i)->getType();
+        if(formal_type == SELF_TYPE) {
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Formal '" << formals->nth(i)->getName()->get_string();
+             err_stream << "' was declared to be SELF_TYPE which is not allowed" << endl;
         }
-        //Should return false if you have no children since we already checked that you weren't query_type
-        return false;
+        data.push_back(formal_type);
     }
+
+    // and add the method signature to this scope-independent data structure
+    if(_DEBUG) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
+    classtable->classMethods[curr_class][name] = data;
 }
 
 void attr_class::addToScope(ClassTable* classtable) {
@@ -436,39 +500,10 @@ void attr_class::addToScope(ClassTable* classtable) {
     }
 }
 
-std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
-    if(_DEBUG) printf("Called getSignature on class '%s'\n", class_name->get_string());
-    std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
-    bool still_searching_for_method = true;
-    while(still_searching_for_method){
-        if(_DEBUG) printf("Searching for method in class %s\n", class_name->get_string());
-        if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
-        if(curr_signature.size()>0 || class_name == Object){
-            still_searching_for_method = false;
-        }
-        else{
-            class_name = symb_class_map[class_name]->getParent();
-            curr_signature = classMethods[class_name][method_name];
-        }
-    }
-    if(curr_signature.size()<1){
-        ostream& err_stream = semant_error(symb_class_map[class_name]);
-        err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string();
-        err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
-    }
-
-    return curr_signature;
-}
-
-std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
-    if(_DEBUG) printf("Called getSignature on current class\n");
-    return getSignature(getCurrentClass(), method_name);
-}
-
 void method_class::addToScope(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
-
     std::vector<Symbol> data;
+
     //if(return_type == SELF_TYPE) {
    //     data.push_back(classtable->getCurrentClass());
     //}else{
@@ -486,7 +521,6 @@ void method_class::addToScope(ClassTable* classtable) {
     }
 
     // Check for a previous definition of this method in the class hierarchy
-    //OLD: std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // If it did find a match, the defintions must conform
@@ -501,9 +535,9 @@ void method_class::addToScope(ClassTable* classtable) {
         if(!matches){
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Method formals list or return type does not conform to parent definition" << endl;
-            err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string(); 
+            err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string();
             err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
-            err_stream << "'. Return type is '" << return_type->get_string() << endl; 
+            err_stream << "'. Return type is '" << return_type->get_string() << endl;
         }
     }
     // If it did not find a match, we are OK, since it is the first time it is
@@ -511,9 +545,6 @@ void method_class::addToScope(ClassTable* classtable) {
 
     // Now add it to the present scope
     classtable->methodST.addid(name, &(data[0]));
-    // and add the method signature to this scope-independent data structure
-    if(_DEBUG) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
-    classtable->classMethods[curr_class][name] = data;
 }
 
 void formal_class::addToScope(ClassTable* classtable) {
@@ -568,12 +599,10 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol declared_return_type;
 
     // Check the method exists
-    //OLD: std::vector<Symbol>* lookup = classtable->methodST.lookup(name);
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
-        std::vector<Symbol> signature = classtable->getSignature(curr_class, name);
         // will already have SELF_TYPE resolved
-        //std::vector<Symbol> signature = classtable->getSignature(name);
+        std::vector<Symbol> signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
         printf("Dump of Method Symbol Table: \n");
@@ -624,7 +653,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     expr->addToScope(classtable);
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
-    
+
     // New idea for SELF_TYPE:
     if(declared_return_type == SELF_TYPE){
         declared_return_type = curr_class;
@@ -733,7 +762,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
-    if(_DEBUG) printf("Method Dispatch: Expression of type %s is calling method %s'n", 
+    if(_DEBUG) printf("Method Dispatch: Expression of type %s is calling method %s'n",
             curr_class->get_string(), inferred_expr_type->get_string());
     if(inferred_expr_type == SELF_TYPE){
         inferred_expr_type = classtable->getCurrentClass();
@@ -762,7 +791,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    // Now once that we know that the expr calling the method inherits from a class which implements the method, 
+    // Now once that we know that the expr calling the method inherits from a class which implements the method,
     // if the return type is self type then we set the return type to be the type of the expression making the method call.
     if(curr_signature[0] == SELF_TYPE) {
         if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
