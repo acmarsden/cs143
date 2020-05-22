@@ -718,7 +718,7 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     // First get O(Id), i.e. the type the environment gives to the id
     if(_DEBUG) printf("looking for %s in scope \n", name->get_string());
     if(_DEBUG) classtable->objectST.dump();
-    Symbol* declared_type = classtable->objectST.probe(name);
+    Symbol* declared_type = classtable->objectST.lookup(name);
     Symbol declared_type_deref = *declared_type;
     printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
