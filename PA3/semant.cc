@@ -663,8 +663,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 
         classtable->objectST.addid(formal_name, &formal_declared_type);
     }
-    //TODO: WHY DO WE ADD EXPR TO THE SCOPE BEFORE CHECKING ITS TYPE?
-    //expr->addToScope(classtable);
+    
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
