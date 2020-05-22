@@ -8,6 +8,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : Int
+32c32
+<       A
+---
+>       SELF_TYPE
 41,42c41,42
 <           : _no_type
 <         : _no_type
@@ -20,6 +24,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+55c55
+<       A
+---
+>       SELF_TYPE
 59c59
 <       : _no_type
 ---
@@ -1618,6 +1626,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Bool
 >         : Bool
 >       : Bool
+2225c2225
+<       Main
+---
+>       SELF_TYPE
 2231c2231
 <         : _no_type
 ---
@@ -1696,6 +1708,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >           : SELF_TYPE
 >       : SELF_TYPE
+2348c2348
+<       Main
+---
+>       SELF_TYPE
 2356c2356
 <         : _no_type
 ---
@@ -3773,6 +3789,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
+23c23
+<       CellularAutomaton
+---
+>       SELF_TYPE
 32,33c32,33
 <           : _no_type
 <         : _no_type
@@ -3785,6 +3805,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+42c42
+<       CellularAutomaton
+---
+>       SELF_TYPE
 50c50
 <           : _no_type
 ---
@@ -4043,6 +4067,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : String
 >       : String
+385c385
+<       CellularAutomaton
+---
+>       SELF_TYPE
 402c402
 <             : _no_type
 ---
@@ -4117,6 +4145,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : SELF_TYPE
 >         : SELF_TYPE
 >       : SELF_TYPE
+509c509
+<       Main
+---
+>       SELF_TYPE
 520c520
 <             : _no_type
 ---
@@ -4197,6 +4229,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
+12c12
+<       Main
+---
+>       SELF_TYPE
 22c22
 <           : _no_type
 ---
@@ -4419,6 +4455,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
+12c12
+<       Main
+---
+>       SELF_TYPE
 22c22
 <             : _no_type
 ---
@@ -4447,12 +4487,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <           : _no_type
 ---
 >           : SELF_TYPE
-62,63c62,63
+62c62
 <                 : _no_type
-<               : _no_type
 ---
 >                 : SELF_TYPE
->               : Bool
 67c67
 <             : _no_type
 ---
@@ -4561,6 +4599,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : Int
+151c151
+<       Vertice
+---
+>       SELF_TYPE
 160,161c160,161
 <           : _no_type
 <         : _no_type
@@ -4573,6 +4615,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+174c174
+<       Vertice
+---
+>       SELF_TYPE
 185c185
 <             : _no_type
 ---
@@ -4615,6 +4661,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : Object
 >       : Object
+274c274
+<       Edge
+---
+>       SELF_TYPE
 283,284c283,284
 <           : _no_type
 <         : _no_type
@@ -5893,6 +5943,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : Int
+156c156
+<       Int
+---
+>       Object
 162c162
 <         : _no_type
 ---
@@ -5989,6 +6043,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >           : Bar
 >       : Foo
+329c329
+<       Int
+---
+>       Object
 335c335
 <         : _no_type
 ---
@@ -6063,6 +6121,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
+12c12
+<       Main
+---
+>       SELF_TYPE
 18c18
 <         : _no_type
 ---
@@ -6229,6 +6291,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : VarListNE
+88c88
+<       VarList
+---
+>       SELF_TYPE
 94c94
 <         : _no_type
 ---
@@ -6271,6 +6337,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+186c186
+<       VarListNE
+---
+>       SELF_TYPE
 194c194
 <           : _no_type
 ---
@@ -6475,6 +6545,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : Int
+584c584
+<       LambdaListRef
+---
+>       SELF_TYPE
 593,594c593,594
 <           : _no_type
 <         : _no_type
@@ -6539,6 +6613,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Int
 >         : Int
 >       : Int
+678c678
+<       LambdaListRef
+---
+>       SELF_TYPE
 689c689
 <             : _no_type
 ---
@@ -6555,6 +6633,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+710c710
+<       Expr
+---
+>       SELF_TYPE
 718c718
 <           : _no_type
 ---
@@ -6633,6 +6715,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+831c831
+<       Expr
+---
+>       SELF_TYPE
 839c839
 <           : _no_type
 ---
@@ -6671,6 +6757,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+903c903
+<       Variable
+---
+>       SELF_TYPE
 909c909
 <         : _no_type
 ---
@@ -6707,6 +6797,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : Expr
+971c971
+<       Variable
+---
+>       SELF_TYPE
 979c979
 <         : _no_type
 ---
@@ -6857,6 +6951,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+1196c1196
+<       Lambda
+---
+>       SELF_TYPE
 1204c1204
 <           : _no_type
 ---
@@ -6979,6 +7077,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Lambda
 >         : Lambda
 >       : Lambda
+1377c1377
+<       Lambda
+---
+>       SELF_TYPE
 1385c1385
 <           : _no_type
 ---
@@ -7067,6 +7169,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+1497c1497
+<       Lambda
+---
+>       SELF_TYPE
 1505c1505
 <           : _no_type
 ---
@@ -7231,6 +7337,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+1728c1728
+<       App
+---
+>       SELF_TYPE
 1736c1736
 <           : _no_type
 ---
@@ -7397,6 +7507,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : App
 >         : App
 >       : App
+1969c1969
+<       App
+---
+>       SELF_TYPE
 1977c1977
 <           : _no_type
 ---
@@ -7907,6 +8021,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Expr
 >         : Expr
 >       : Expr
+2668c2668
+<       Main
+---
+>       SELF_TYPE
 2676c2676
 <           : _no_type
 ---
@@ -7945,6 +8063,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+2717c2717
+<       Main
+---
+>       SELF_TYPE
 2725c2725
 <           : _no_type
 ---
@@ -8043,6 +8165,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+2840c2840
+<       Main
+---
+>       SELF_TYPE
 2850c2850
 <           : _no_type
 ---
@@ -8789,6 +8915,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <       : _no_type
 ---
 >       : Int
+55c55
+<       Board
+---
+>       SELF_TYPE
 65c65
 <           : _no_type
 ---
@@ -9021,6 +9151,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : SELF_TYPE
 >         : SELF_TYPE
 >       : SELF_TYPE
+376c376
+<       CellularAutomaton
+---
+>       SELF_TYPE
 385,386c385,386
 <           : _no_type
 <         : _no_type
@@ -9045,6 +9179,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ---
 >         : SELF_TYPE
 >       : SELF_TYPE
+409c409
+<       CellularAutomaton
+---
+>       SELF_TYPE
 417c417
 <         : _no_type
 ---
@@ -10007,6 +10145,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : String
 >         : String
 >       : String
+1623c1623
+<       CellularAutomaton
+---
+>       SELF_TYPE
 1631c1631
 <         : _no_type
 ---
@@ -10871,6 +11013,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Bool
 >         : Bool
 >       : Bool
+2687c2687
+<       Main
+---
+>       SELF_TYPE
 2711c2711
 <                 : _no_type
 ---
@@ -11235,6 +11381,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
+12c12
+<       Main
+---
+>       SELF_TYPE
 22c22
 <           : _no_type
 ---
@@ -11681,6 +11831,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 >           : Bool
 >         : Bool
 >       : Bool
+175c175
+<       Main
+---
+>       SELF_TYPE
 186,188c186,188
 <             : _no_type
 <           : _no_type
