@@ -89,9 +89,9 @@ static void initialize_constants(void)
 
 ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) {
     install_basic_classes();
-
+    Class_ curr_class;
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
-        Class_ curr_class = classes->nth(i);
+        curr_class = classes->nth(i);
         if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
         Symbol node = curr_class->getName();
@@ -126,14 +126,15 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         return;
     }
     // The Main class must have a main method defined
-    if(classMethods[idtable.add_string("Main")].find(idtable.add_string("main")) ==
-       classMethods[idtable.add_string("Main")].end()) {
+    curr_class = symb_class_map[idtable.add_string("Main")];
+    if(classMethods[curr_class->getName()].find(idtable.add_string("main")) ==
+       classMethods[curr_class->getName()].end()) {
         ostream& err_stream = semant_error(curr_class);
         err_stream << "The class 'Main' must have a 'main' method."<<endl;
         return;
     }
     // The main method takes no formal parameters
-    std::vector<Symbol> main_signature = classMethods[idtable.add_string("Main")][idtable.add_string("main")];
+    std::vector<Symbol> main_signature = classMethods[curr_class->getName()][idtable.add_string("main")];
     if(main_signature.size() != 1) {
         ostream& err_stream = semant_error(curr_class);
         err_stream << "The 'Main.main' method must take no formal parameters."<<endl;
