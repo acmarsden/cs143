@@ -602,8 +602,11 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
                 return Object;
             }
         }
+
+        type_decl = idtable.add_string(inferred_init_type->get_string());
         return inferred_init_type;
     }else{
+        type_decl = idtable.add_string(declared_type->get_string());
         return declared_type;
     }
 }
@@ -677,6 +680,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     }
     // Check the inferred type conforms to the declared return type
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
+        //return_type = (*declared_return_type).add_string();
+        return_type = idtable.add_string(declared_return_type->get_string());
         return declared_return_type;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
