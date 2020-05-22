@@ -298,6 +298,12 @@ void ClassTable::install_basic_classes() {
 bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
     // Starting at parent, recursively checks its children to see if they
     // contain query_type
+    if(parent == SELF_TYPE){
+        parent = getCurrentClass();
+    }
+    if(query_type == SELF_TYPE){
+        query_type = getCurrentClass();
+    }
     if(parent == query_type){
         return true;
     }else{
