@@ -38,6 +38,7 @@ public:
     SymbolTable<Symbol, Symbol > methodST;
     std::map<Symbol, std::vector<Symbol> > children;
     std::map<Symbol, std::map<Symbol, std::vector<Symbol> > > classMethods;
+    std::vector<Symbol> getSignature(Symbol);
     std::vector<Symbol> getSignature(Symbol, Symbol);
     std::map<Symbol, Class_> symb_class_map;
     void run_type_checks();
