@@ -436,9 +436,9 @@ void attr_class::addToScope(ClassTable* classtable) {
     }
 }
 
-std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
-    Symbol curr_type = getCurrentClass();
-    std::vector<Symbol> curr_signature = classMethods[curr_type][method_name];
+std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
+    Symbol curr_type = class_name;
+    std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
     while(still_searching_for_method){
         if(curr_signature.size()>0 || curr_type == Object){
@@ -485,7 +485,7 @@ void method_class::addToScope(ClassTable* classtable) {
         // If it did find a match, the defintions must conform
         bool matches = true;
         //Now we need to get the rest of the signature
-        std::vector<Symbol> old_signature = classtable->getSignature(name);
+        std::vector<Symbol> old_signature = classtable->getSignature(curr_class,name);
         for(uint i=0; i<data.size(); ++i){
             if(data[i] != old_signature[i]){
                 matches = false;
@@ -561,9 +561,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        // now get the signature
-        std::vector<Symbol> signature = classtable->getSignature(name);
-        declared_return_type = signature[0];
+        declared_return_type = *lookup;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
@@ -682,23 +680,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             << "' does not conform to type name '" << type_name->get_string() << "' for method '" << name->get_string() << "'" << endl;
     }
     // Check that method with "name" is implemented as a method of some parent of the declared type_name
-    Symbol curr_type = type_name;
-    std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
-    bool still_searching_for_method = true;
-    while(still_searching_for_method){
-        if(curr_signature.size()>0 || curr_type == Object){
-            still_searching_for_method = false;
-        }
-        else{
-            curr_type = classtable->symb_class_map[curr_type]->getParent();
-            curr_signature = classtable->classMethods[curr_type][name];
-        }
-    }
-    if(curr_signature.size()<1){
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string()
-            << "' does not have method '" << name->get_string() << "'" <<  endl;
-    }
+    std::vector<Symbol> curr_signature = classtable->getSignature(type_name, name);
     // Loop through the expressions and get their inferred return types
     int j = 1;
     for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
@@ -735,20 +717,16 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Check that method with "name" is implemented as a method of some parent of the expression type
     Symbol curr_type = inferred_expr_type;
-    std::vector<Symbol> curr_signature = classtable->classMethods[curr_type][name];
+    std::vector<Symbol> curr_signature = classtable->getSignature(inferred_expr_type, name);
     bool still_searching_for_method = true;
     while(still_searching_for_method){
         if(curr_signature.size()>0 || curr_type == Object){
             still_searching_for_method = false;
         }
         else{
-            printf("LOOK FOR METHOD IN INHERITED CLASS.\n");
             curr_type = classtable->symb_class_map[curr_type]->getParent();
             curr_signature = classtable->classMethods[curr_type][name];
         }
-    }
-    for(uint i = 0; i<curr_signature.size(); i++){
-        printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());
     }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
