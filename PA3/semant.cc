@@ -612,12 +612,13 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     std::set<Symbol> formal_names;
     Symbol declared_return_type;
+    std::vector<Symbol> signature;
 
     // Check the method exists
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        std::vector<Symbol> signature = classtable->getSignature(name);
+        signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
         if(_DEBUG) printf("Dump of Method Symbol Table: \n");
@@ -631,9 +632,10 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 
     // Enter a new scope, add formals to it, recurse on the body and exit scope
     classtable->objectST.enterscope();
+    int j = 1;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_name = formals->nth(i)->getName();
-        Symbol formal_declared_type = formals->nth(i)->getType();
+        Symbol formal_declared_type = signature[j];
 
         // Check that the types of the formals have been prevously declared
         Symbol formal_inferred_type = formals->nth(i)->typeCheck(classtable);
@@ -661,8 +663,9 @@ Symbol method_class::typeCheck(ClassTable* classtable){
             err_stream << name->get_string() << endl;
         }
         formal_names.insert(formal_name);
-
-        classtable->objectST.addid(formal_name, &formal_declared_type);
+        if(_DEBUG) printf("Adding to scope name %s of type %s \n", formal_name->get_string(), formal_declared_type->get_string());
+        classtable->objectST.addid(formal_name, &(signature[j]));
+        ++j;
     }
     
     Symbol inferred_return_type = expr->typeCheck(classtable);
@@ -729,7 +732,9 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Assign error: Expression type does not conform to Id type." << endl;
+            err_stream << "Assign error: Expression type '" << inferred_assign_type->get_string();
+            err_stream << "' does not conform to declared Id type '" << (*declared_type)->get_string();
+            err_stream << "'." << endl;
             return Object;
     }
     else return inferred_assign_type;
@@ -1105,12 +1110,16 @@ Symbol no_expr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
+    if(_DEBUG) printf("Type checking a single object id: %s\n", name->get_string());
     Symbol curr_class = classtable->getCurrentClass();
     if(name == self){
         return curr_class;
     }
+    if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
+    if(_DEBUG) classtable->objectST.dump();
     Symbol* lookup = classtable->objectST.lookup(name);
     if(lookup != NULL){
+        if(_DEBUG) printf("The type of %s in the ST is %s\n", name->get_string(), (*lookup)->get_string());
         return *lookup;
     }else{
         return Object;
