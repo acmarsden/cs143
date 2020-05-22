@@ -58,8 +58,9 @@ public:
    virtual Symbol getName() = 0;
    virtual bool isAttribute() = 0;
    virtual Symbol getType() = 0;
-   virtual Symbol typeCheck(ClassTable*) = 0;
+   virtual void collectSignature(ClassTable*) = 0;
    virtual void addToScope(ClassTable*) = 0;
+   virtual Symbol typeCheck(ClassTable*) = 0;
 #ifdef Feature_EXTRAS
    Feature_EXTRAS
 #endif
@@ -241,8 +242,9 @@ public:
    Symbol getName() {return name;}
    Symbol getType() {return type_decl;}
    bool isAttribute() {return true;}
-   Symbol typeCheck(ClassTable*);
    void addToScope(ClassTable*);
+   void collectSignature(ClassTable*){return;}
+   Symbol typeCheck(ClassTable*);
 
 #ifdef Feature_SHARED_EXTRAS
    Feature_SHARED_EXTRAS

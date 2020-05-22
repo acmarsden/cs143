@@ -115,6 +115,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
         // Now loop over features and collect method signatures
         Features feature_list = classes->nth(i)->getFeatures();
+        this->current_class = node;
         for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
             Feature curr_feature = feature_list->nth(i);
             if(!curr_feature->isAttribute()){
@@ -311,7 +312,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
     std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
     while(still_searching_for_method){
-        if(_DEBUG) printf("Searching for method in class %s\n", class_name->get_string());
+        if(_DEBUG) printf("Searching for method '%s' in class %s\n", method_name->get_string(), class_name->get_string());
         if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
         if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
@@ -323,7 +324,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
     }
     if(curr_signature.size()<1){
         ostream& err_stream = semant_error(symb_class_map[class_name]);
-        err_stream << "getSignature Error: Class '" << curr_class->get_string();
+        err_stream << "getSignature Error: Class '" << class_name->get_string();
         err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
     }
 
@@ -762,7 +763,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_expr_type = expr->typeCheck(classtable);
-    if(_DEBUG) printf("Method Dispatch: Expression of type %s is calling method %s'n",
+    if(_DEBUG) printf("Method Dispatch: In class '%s' an id that resolved to type '%s' is trying to call a method\n",
             curr_class->get_string(), inferred_expr_type->get_string());
     if(inferred_expr_type == SELF_TYPE){
         inferred_expr_type = classtable->getCurrentClass();
