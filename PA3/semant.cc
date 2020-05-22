@@ -667,7 +667,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         classtable->objectST.addid(formal_name, &(signature[j]));
         ++j;
     }
-    
+
     Symbol inferred_return_type = expr->typeCheck(classtable);
     classtable->objectST.exitscope();
 
@@ -723,7 +723,7 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     if(_DEBUG) classtable->objectST.dump();
     Symbol* declared_type = classtable->objectST.lookup(name);
     Symbol declared_type_deref = *declared_type;
-    printf("The declared type is '%s' \n", declared_type_deref->get_string());
+    if(_DEBUG) printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
