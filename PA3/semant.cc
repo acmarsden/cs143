@@ -587,10 +587,6 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
         declared_type = *lookup;
-        //NEW:
-        if(declared_type == SELF_TYPE){
-            declared_type = curr_class;
-        }
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope." << endl;
@@ -628,7 +624,6 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     // Check the method exists
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
-        // will already have SELF_TYPE resolved
         signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
@@ -1168,7 +1163,7 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
     if(name == self){
         if(_DEBUG) printf("Resolving self to be: %s\n", curr_class->get_string());
         set_type(SELF_TYPE);
-        return curr_class;
+        return get_type();
     }
     if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
     if(_DEBUG) classtable->objectST.dump();
