@@ -4487,12 +4487,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 <           : _no_type
 ---
 >           : SELF_TYPE
-62,63c62,63
+62c62
 <                 : _no_type
-<               : _no_type
 ---
 >                 : SELF_TYPE
->               : Bool
 67c67
 <             : _no_type
 ---
