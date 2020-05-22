@@ -362,15 +362,19 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = Object;
-    join = symbol_vec[0];
+    if(symbol_vec[0] == SELF_TYPE){
+        join = curr_class;
+    }else{ join = symbol_vec[0];}
+
     // Instead of SELF_TYPE we make sure each type in symbol_vec is known to us
-    if(children.find(join) == children.end()) {
-        if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", join->get_string());
-            ostream& err_stream = semant_error(symb_class_map[curr_class]);
-            err_stream << "'compute_join' error: '" << join->get_string() << "'' is not defined" << endl;
-        }
-    seen_symbols.insert(symbol_vec[0]);
+    //if(children.find(join) == children.end()) {
+    //    if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", join->get_string());
+    //        ostream& err_stream = semant_error(symb_class_map[curr_class]);
+    //        err_stream << "'compute_join' error: '" << join->get_string() << "'' is not defined" << endl;
+    //    }
+    seen_symbols.insert(join);
     for(uint i=1; i<symbol_vec.size(); ++i){
+        if(symbol_vec[i] == SELF_TYPE){symbol_vec[i] = curr_class;}
         if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
             // Make sure symbol_vec[i] is known to us
             if(children.find(join) == children.end()) {
@@ -788,12 +792,13 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    if(curr_signature[0] == SELF_TYPE) {
-        set_type(inferred_expr_type);
-    }
-    else{
-        set_type(curr_signature[0]);
-    }
+    //if(curr_signature[0] == SELF_TYPE) {
+    //    set_type(inferred_expr_type);
+    //}
+    //else{
+    //    set_type(curr_signature[0]);
+    //}
+    set_type(curr_signature[0]);
     return get_type();
 }
 
@@ -834,14 +839,15 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
     // Now once that we know that the expr calling the method inherits from a class which implements the method,
     // if the return type is self type then we set the return type to be the type of the expression making the method call.
-    if(curr_signature[0] == SELF_TYPE) {
-        if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
-        set_type(inferred_expr_type);
-    }
-    else{
-        if(_DEBUG) printf("Dispatch type is: '%s'\n", curr_signature[0]->get_string());
-        set_type(curr_signature[0]);
-    }
+    //if(curr_signature[0] == SELF_TYPE) {
+    //    if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
+    //    set_type(inferred_expr_type);
+    //}
+    //else{
+    //    if(_DEBUG) printf("Dispatch type is: '%s'\n", curr_signature[0]->get_string());
+    //    set_type(curr_signature[0]);
+    //}
+    set_type(curr_signature[0]);
     return get_type();
 }
 
