@@ -122,6 +122,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
 
 void ClassTable::addSignature(Class_ class_){
     Features feature_list = class_->getFeatures();
+    this->current_class = class_->getName();
     for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
         Feature curr_feature = feature_list->nth(i);
         if(!curr_feature->isAttribute()){
@@ -290,7 +291,7 @@ void ClassTable::install_basic_classes() {
     addSignature(IO_class);
     addSignature(Int_class);
     addSignature(Bool_class);
-    addSignature(Str_class);
+    addSignature(Str_class); 
 }
 
 // Helper functions
@@ -1149,7 +1150,7 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = true;
+    _DEBUG = false;
     initialize_constants();
 
     /* ClassTable constructor may do some semantic analysis */
