@@ -1,3 +1,10 @@
+class Silly {
+    copy() : SELF_TYPE { self };
+};
+
+class Sally inherits Silly { };
+
+
 class C {
 	a : Int;
 	b : Bool;
@@ -11,7 +18,10 @@ class C {
 };
 
 Class Main {
-	main():C {
-		(new C).init(1,true)
-	};
+    x : Sally <- (new Sally).copy();
+
+    main() : Sally { x };
 };
+
+
+
