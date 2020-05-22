@@ -286,7 +286,7 @@ void ClassTable::run_type_checks()
     methodST.enterscope();
     run_type_checks_r(Object, &visited);
     objectST.exitscope();
-    methodST.enterscope();
+    methodST.exitscope();
 }
 
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
@@ -304,7 +304,7 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
                 run_type_checks_r(*it, visited);
                 if(_DEBUG) objectST.dump();
                 objectST.exitscope();
-                methodST.enterscope();
+                methodST.exitscope();
             }
         }
     }
