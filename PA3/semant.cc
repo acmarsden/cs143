@@ -352,6 +352,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
 Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 //Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
 //Set C_old to be C
+    if(_DEBUG) printf("Computing a join on several Symbols\n");
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = Object;
@@ -380,6 +381,7 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 }
 
 Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
+    if(_DEBUG) printf("Computing a join on pair %s, %s\n", symbolA->get_string(), symbolB->get_string());
     if(symbolA == symbolB) return symbolA;
     //Increment A's ancestors one by one and check against all of B's ancestors
     //First get B's ancestors
@@ -388,14 +390,16 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
     bool found_all_ancestors = false;
     while(!found_all_ancestors){
         if(curr_symbolB == Object) found_all_ancestors = true;
-        b_ancestors.insert(symbolB);
+        b_ancestors.insert(curr_symbolB);
         curr_symbolB = symb_class_map[curr_symbolB]->getParent();
+        if(_DEBUG) printf("JOIN: adding %s to ancestors list\n", curr_symbolB->get_string());
     }
-
+    if(_DEBUG) printf("JOIN: Finished gathering all ancestors of type %s \n", symbolB->get_string());
     Symbol curr_symbolA = symbolA;
     bool found_join = false;
     Symbol join_pair = Object;
     while(!found_join){
+        if(_DEBUG) printf("JOIN: checking %s against ancestors list\n", curr_symbolA->get_string());
         if(b_ancestors.find(curr_symbolA)!=b_ancestors.end()){
             //Found join
             join_pair = curr_symbolA;
@@ -403,6 +407,7 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
         }
         curr_symbolA =  symb_class_map[curr_symbolA]->getParent();
     }
+    if(_DEBUG) printf("Join resolved to type %s\n", join_pair->get_string());
     return join_pair;
 }
 
@@ -834,10 +839,13 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
-
+    if(_DEBUG) printf("Type chcecking an if statement\n");
     Symbol pred_type = pred->typeCheck(classtable);
+    if(_DEBUG) printf("IF: if resolved to type %s \n", pred_type->get_string());
     Symbol then_exp_type = then_exp->typeCheck(classtable);
+    if(_DEBUG) printf("IF: then resolved to type %s \n", then_exp_type->get_string());
     Symbol else_exp_type = else_exp->typeCheck(classtable);
+    if(_DEBUG) printf("IF: else resolved to type %s \n", else_exp_type->get_string());
     Symbol return_type = Object;
     if(pred_type!=Bool){
         if(_DEBUG) printf("If-Statement Error: the predicate is not of type Bool.\n");
@@ -847,7 +855,9 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
         std::vector<Symbol> symbol_vec;
         symbol_vec.push_back(then_exp_type);
         symbol_vec.push_back(else_exp_type);
+        if(_DEBUG) printf("IF: computing join of %s and %s\n", then_exp_type->get_string(), else_exp_type->get_string());
         return_type = classtable->compute_join(symbol_vec);
+        if(_DEBUG) printf("IF: join resolved to type %s.\n", return_type->get_string());
     }
 
     return return_type;
@@ -1122,6 +1132,7 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
     if(_DEBUG) printf("Type checking a single object id: %s\n", name->get_string());
     Symbol curr_class = classtable->getCurrentClass();
     if(name == self){
+        if(_DEBUG) printf("Resolving self to be: %s\n", curr_class->get_string());
         return curr_class;
     }
     if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
