@@ -1,8 +1,37 @@
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/arith.cl 
-1,2c1,3326
-< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:251: Dispatch Error: Expression type 'Object' does not have method 'in_string'.
-< Segmentation fault (core dumped)
+1,31c1,3326
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:251: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:251: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:113: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:113: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:113: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/arith.cl:155: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< Compilation halted due to static semantic errors.
 ---
 > #7
 > _program
@@ -3334,7 +3363,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
-1,22c1,2
+1,25c1
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
@@ -3355,18 +3384,19 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 < /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Dispatch Error: Expression type 'Object' does not have method 'length'.
-< Segmentation fault (core dumped)
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 ---
 > Class Main is not defined.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
-1,2c1,7
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Dispatch Error: Expression type 'Object' does not have method 'out_string'.
-< Segmentation fault (core dumped)
+1c1,6
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let error: Declared type of variable: 'A2I' is not defined.
 ---
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Class A2I of let-bound identifier z is undefined.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used with undefined class A2I.
@@ -3374,18 +3404,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Inferred type Object of initialization of i does not conform to identifier's declared type Int.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch on undefined class A2I.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Inferred type Object of initialization of news does not conform to identifier's declared type String.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
-1,6c1,653
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'initBook' returns type 'Object' but type 'Book' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'print' returns type 'Object' but type 'Book' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method error: 'initArticle' returns type 'Object' but type 'Article' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method error: 'print' returns type 'Object' but type 'Book' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Dispatch Error: Expression type 'Object' does not have method 'init'.
-< Segmentation fault (core dumped)
+1,2c1,653
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:104: Method error: 'print_list' returns type 'Bool' but type 'Object' was declared.
+< Compilation halted due to static semantic errors.
 ---
 > #3
 > _program
@@ -4044,11 +4069,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
-1,4c1,606
-< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'init' returns type 'Object' but type 'CellularAutomaton' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'print' returns type 'Object' but type 'CellularAutomaton' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Dispatch Error: Expression type 'Object' does not have method 'length'.
-< Segmentation fault (core dumped)
+1,7c1,606
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< Compilation halted due to static semantic errors.
 ---
 > #5
 > _program
@@ -4660,9 +4688,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
-1,2c1,323
-< /afs/ir.stanford.edu/class/cs143/examples/complex.cl:1: Dispatch Error: Expression type 'Complex' does not have method 'init'.
-< Segmentation fault (core dumped)
+1,3c1,323
+< /afs/ir.stanford.edu/class/cs143/examples/complex.cl:12: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/complex.cl:12: Method error: 'print' returns type 'Complex' but type 'Object' was declared.
+< Compilation halted due to static semantic errors.
 ---
 > #1
 > _program
@@ -4991,117 +5020,95 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
-1,2c1,97
-< /afs/ir.stanford.edu/class/cs143/examples/cool.cl:1: Dispatch Error: Expression type 'Object' does not have method 'out_string'.
-< Segmentation fault (core dumped)
+22c22
+<             : _no_type
 ---
-> #1
-> _program
->   #1
->   _class
->     Main
->     IO
->     "/afs/ir.stanford.edu/class/cs143/examples/cool.cl"
->     (
->     #2
->     _method
->       main
->       SELF_TYPE
->       #3
->       _block
->         #4
->         _dispatch
->           #4
->           _dispatch
->             #4
->             _object
->               self
 >             : SELF_TYPE
->             out_string
->             (
->             #4
->             _dispatch
->               #4
->               _dispatch
->                 #4
->                 _new
->                   Object
+32c32
+<                 : _no_type
+---
 >                 : Object
->                 type_name
->                 (
->                 )
+36c36
+<               : _no_type
+---
 >               : String
->               substr
->               (
->               #4
->               _int
->                 4
+42c42
+<               : _no_type
+---
 >               : Int
->               #4
->               _int
->                 1
+46c46
+<               : _no_type
+---
 >               : Int
->               )
+48c48
+<             : _no_type
+---
 >             : String
->             )
+50c50
+<           : _no_type
+---
 >           : SELF_TYPE
->           out_string
->           (
->           #5
->           _dispatch
->             #5
->             _dispatch
->               #5
->               _isvoid
->                 #5
->                 _object
->                   self
+62,63c62,63
+<                 : _no_type
+<               : _no_type
+---
 >                 : SELF_TYPE
 >               : Bool
->               type_name
->               (
->               )
+67c67
+<             : _no_type
+---
 >             : String
->             substr
->             (
->             #5
->             _int
->               1
+73c73
+<             : _no_type
+---
 >             : Int
->             #5
->             _int
->               3
+77c77
+<             : _no_type
+---
 >             : Int
->             )
+79c79
+<           : _no_type
+---
 >           : String
->           )
+81c81
+<         : _no_type
+---
 >         : SELF_TYPE
->         #6
->         _dispatch
->           #6
->           _object
->             self
+87c87
+<           : _no_type
+---
 >           : SELF_TYPE
->           out_string
->           (
->           #6
->           _string
->             "\n"
+93c93
+<           : _no_type
+---
 >           : String
->           )
+95,96c95,96
+<         : _no_type
+<       : _no_type
+---
 >         : SELF_TYPE
 >       : SELF_TYPE
->     )
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
-1,6c1,1983
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'outgoing' returns type 'Object' but type 'EList' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'number' returns type 'Object' but type 'Int' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'init' returns type 'Object' but type 'Vertice' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'add_out' returns type 'Object' but type 'Vertice' was declared.
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Dispatch Error: Expression type 'Object' does not have method 'print'.
+1,17c1,1983
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:86: Method error: 'print' returns type 'Edge' but type 'Object' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:116: Method error: 'print' returns type 'EList' but type 'Object' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:194: Method error: 'print' returns type 'VList' but type 'Object' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:249: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
 < Segmentation fault (core dumped)
 ---
 > #38
@@ -7545,44 +7552,25 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
-1,2c1,27
-< /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl:1: Dispatch Error: Expression type 'Object' does not have method 'out_string'.
-< Segmentation fault (core dumped)
+18c18
+<         : _no_type
 ---
-> #1
-> _program
->   #1
->   _class
->     Main
->     IO
->     "/afs/ir.stanford.edu/class/cs143/examples/hello_world.cl"
->     (
->     #2
->     _method
->       main
->       SELF_TYPE
->       #3
->       _dispatch
->         #3
->         _object
->           self
 >         : SELF_TYPE
->         out_string
->         (
->         #3
->         _string
->           "Hello, World.\n"
+24c24
+<         : _no_type
+---
 >         : String
->         )
+26c26
+<       : _no_type
+---
 >       : SELF_TYPE
->     )
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/io.cl 
 1,2c1,178
-< /afs/ir.stanford.edu/class/cs143/examples/io.cl:69: Dispatch Error: Expression type 'Object' does not have method 'out_string'.
-< Segmentation fault (core dumped)
+< /afs/ir.stanford.edu/class/cs143/examples/io.cl:89: Method error: 'main' returns type 'Main' but type 'Object' was declared.
+< Compilation halted due to static semantic errors.
 ---
 > #49
 > _program
@@ -7766,8 +7754,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
-1,2c1,3762
-< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Dispatch Error: Expression type 'VarListNE' does not have method 'init'.
+1c1,3762
 < Segmentation fault (core dumped)
 ---
 > #21
@@ -11536,9 +11523,49 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
-1,2c1,2859
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Dispatch Error: Expression type 'Object' does not have method 'length'.
-< Segmentation fault (core dumped)
+1,42c1,2859
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< Compilation halted due to static semantic errors.
 ---
 > #45
 > _program
@@ -14403,400 +14430,246 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
-1,2c1,383
-< /afs/ir.stanford.edu/class/cs143/examples/list.cl:100: Dispatch Error: Expression type 'Object' does not have method 'isNil'.
-< Segmentation fault (core dumped)
+16c16
+<       : _no_type
 ---
-> #26
-> _program
->   #26
->   _class
->     List
->     Object
->     "/afs/ir.stanford.edu/class/cs143/examples/list.cl"
->     (
->     #29
->     _method
->       isNil
->       Bool
->       #29
->       _bool
->         1
 >       : Bool
->     #35
->     _method
->       head
->       Int
->       #35
->       _block
->         #35
->         _dispatch
->           #35
->           _object
->             self
+28c28
+<           : _no_type
+---
 >           : SELF_TYPE
->           abort
->           (
->           )
+32c32
+<         : _no_type
+---
 >         : Object
->         #35
->         _int
->           0
+36,37c36,37
+<         : _no_type
+<       : _no_type
+---
 >         : Int
 >       : Int
->     #40
->     _method
->       tail
->       List
->       #40
->       _block
->         #40
->         _dispatch
->           #40
->           _object
->             self
+49c49
+<           : _no_type
+---
 >           : SELF_TYPE
->           abort
->           (
->           )
+53c53
+<         : _no_type
+---
 >         : Object
->         #40
->         _object
->           self
+57,58c57,58
+<         : _no_type
+<       : _no_type
+---
 >         : SELF_TYPE
 >       : SELF_TYPE
->     #49
->     _method
->       cons
->       #49
->       _formal
->         i
->         Int
->       List
->       #50
->       _dispatch
->         #50
->         _new
->           Cons
+72c72
+<         : _no_type
+---
 >         : Cons
->         init
->         (
->         #50
->         _object
->           i
+78c78
+<         : _no_type
+---
 >         : Int
->         #50
->         _object
->           self
+82c82
+<         : _no_type
+---
 >         : SELF_TYPE
->         )
+84c84
+<       : _no_type
+---
 >       : List
->     )
->   #70
->   _class
->     Cons
->     List
->     "/afs/ir.stanford.edu/class/cs143/examples/list.cl"
->     (
->     #72
->     _attr
->       car
->       Int
->       #0
->       _no_expr
->       : _no_type
->     #74
->     _attr
->       cdr
->       List
->       #0
->       _no_expr
->       : _no_type
->     #76
->     _method
->       isNil
->       Bool
->       #76
->       _bool
->         0
+113c113
+<       : _no_type
+---
 >       : Bool
->     #78
->     _method
->       head
->       Int
->       #78
->       _object
->         car
+121c121
+<       : _no_type
+---
 >       : Int
->     #80
->     _method
->       tail
->       List
->       #80
->       _object
->         cdr
+129c129
+<       : _no_type
+---
 >       : List
->     #82
->     _method
->       init
->       #82
->       _formal
->         i
->         Int
->       #82
->       _formal
->         rest
->         List
->       List
->       #83
->       _block
->         #84
->         _assign
->           car
->           #84
->           _object
->             i
+150,151c150,151
+<           : _no_type
+<         : _no_type
+---
 >           : Int
 >         : Int
->         #85
->         _assign
->           cdr
->           #85
->           _object
->             rest
+158,159c158,159
+<           : _no_type
+<         : _no_type
+---
 >           : List
 >         : List
->         #86
->         _object
->           self
+163,164c163,164
+<         : _no_type
+<       : _no_type
+---
 >         : SELF_TYPE
 >       : SELF_TYPE
->     )
->   #100
->   _class
->     Main
->     IO
->     "/afs/ir.stanford.edu/class/cs143/examples/list.cl"
->     (
->     #102
->     _attr
->       mylist
->       List
->       #0
->       _no_expr
->       : _no_type
->     #107
->     _method
->       print_list
->       #107
->       _formal
->         l
->         List
->       Object
->       #108
->       _cond
->         #108
->         _dispatch
->           #108
->           _object
->             l
+194c194
+<           : _no_type
+---
 >           : List
->           isNil
->           (
->           )
+198c198
+<         : _no_type
+---
 >         : Bool
->         #108
->         _dispatch
->           #108
->           _object
->             self
+204c204
+<           : _no_type
+---
 >           : SELF_TYPE
->           out_string
->           (
->           #108
->           _string
->             "\n"
+210c210
+<           : _no_type
+---
 >           : String
->           )
+212c212
+<         : _no_type
+---
 >         : SELF_TYPE
->         #109
->         _block
->           #110
->           _dispatch
->             #110
->             _object
->               self
+220c220
+<             : _no_type
+---
 >             : SELF_TYPE
->             out_int
->             (
->             #110
->             _dispatch
->               #110
->               _object
->                 l
+228c228
+<               : _no_type
+---
 >               : List
->               head
->               (
->               )
+232c232
+<             : _no_type
+---
 >             : Int
->             )
+234c234
+<           : _no_type
+---
 >           : SELF_TYPE
->           #111
->           _dispatch
->             #111
->             _object
->               self
+240c240
+<             : _no_type
+---
 >             : SELF_TYPE
->             out_string
->             (
->             #111
->             _string
->               " "
+246c246
+<             : _no_type
+---
 >             : String
->             )
+248c248
+<           : _no_type
+---
 >           : SELF_TYPE
->           #112
->           _dispatch
->             #112
->             _object
->               self
+254c254
+<             : _no_type
+---
 >             : SELF_TYPE
->             print_list
->             (
->             #112
->             _dispatch
->               #112
->               _object
->                 l
+262c262
+<               : _no_type
+---
 >               : List
->               tail
->               (
->               )
+266c266
+<             : _no_type
+---
 >             : List
->             )
+268,270c268,270
+<           : _no_type
+<         : _no_type
+<       : _no_type
+---
 >           : Object
 >         : Object
 >       : Object
->     #126
->     _method
->       main
->       Object
->       #127
->       _block
->         #128
->         _assign
->           mylist
->           #128
->           _dispatch
->             #128
->             _dispatch
->               #128
->               _dispatch
->                 #128
->                 _dispatch
->                   #128
->                   _dispatch
->                     #128
->                     _new
->                       List
+293c293
+<                     : _no_type
+---
 >                     : List
->                     cons
->                     (
->                     #128
->                     _int
->                       1
+299c299
+<                     : _no_type
+---
 >                     : Int
->                     )
+301c301
+<                   : _no_type
+---
 >                   : List
->                   cons
->                   (
->                   #128
->                   _int
->                     2
+307c307
+<                   : _no_type
+---
 >                   : Int
->                   )
+309c309
+<                 : _no_type
+---
 >                 : List
->                 cons
->                 (
->                 #128
->                 _int
->                   3
+315c315
+<                 : _no_type
+---
 >                 : Int
->                 )
+317c317
+<               : _no_type
+---
 >               : List
->               cons
->               (
->               #128
->               _int
->                 4
+323c323
+<               : _no_type
+---
 >               : Int
->               )
+325c325
+<             : _no_type
+---
 >             : List
->             cons
->             (
->             #128
->             _int
->               5
+331c331
+<             : _no_type
+---
 >             : Int
->             )
+333,334c333,334
+<           : _no_type
+<         : _no_type
+---
 >           : List
 >         : List
->         #129
->         _loop
->           #129
->           _comp
->             #129
->             _dispatch
->               #129
->               _object
->                 mylist
+344c344
+<               : _no_type
+---
 >               : List
->               isNil
->               (
->               )
+348,349c348,349
+<             : _no_type
+<           : _no_type
+---
 >             : Bool
 >           : Bool
->           #130
->           _block
->             #131
->             _dispatch
->               #131
->               _object
->                 self
+357c357
+<               : _no_type
+---
 >               : SELF_TYPE
->               print_list
->               (
->               #131
->               _object
->                 mylist
+363c363
+<               : _no_type
+---
 >               : List
->               )
+365c365
+<             : _no_type
+---
 >             : Object
->             #132
->             _assign
->               mylist
->               #132
->               _dispatch
->                 #132
->                 _object
->                   mylist
+374c374
+<                 : _no_type
+---
 >                 : List
->                 tail
->                 (
->                 )
+378,382c378,382
+<               : _no_type
+<             : _no_type
+<           : _no_type
+<         : _no_type
+<       : _no_type
+---
 >               : List
 >             : List
 >           : List
 >         : Object
 >       : Object
->     )
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
-1,2c1,459
-< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:1: Dispatch Error: Expression type 'Complex' does not have method 'init'.
-< Segmentation fault (core dumped)
+1,5c1,459
+< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:20: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:20: Method error: 'print' returns type 'Complex' but type 'Object' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:20: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:20: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< Compilation halted due to static semantic errors.
 ---
 > #1
 > _program
@@ -15261,9 +15134,11 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
-1,2c1,255
-< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Dispatch Error: Expression type 'Object' does not have method 'length'.
-< Segmentation fault (core dumped)
+1,4c1,255
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< Compilation halted due to static semantic errors.
 ---
 > #1
 > _program
@@ -15524,297 +15399,224 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
-1,2c1,280
-< /afs/ir.stanford.edu/class/cs143/examples/primes.cl:27: Attribute init error: Assignment expression type does not conform to declared Id type.
-< Compilation halted due to static semantic errors.
+16c16
+<       : _no_type
 ---
-> #27
-> _program
->   #27
->   _class
->     Main
->     IO
->     "/afs/ir.stanford.edu/class/cs143/examples/primes.cl"
->     (
->     #29
->     _method
->       main
->       Int
->       #30
->       _int
->         0
 >       : Int
->     #33
->     _attr
->       out
->       Int
->       #34
->       _block
->         #35
->         _dispatch
->           #35
->           _object
->             self
+28c28
+<           : _no_type
+---
 >           : SELF_TYPE
->           out_string
->           (
->           #35
->           _string
->             "2 is trivially prime.\n"
+34c34
+<           : _no_type
+---
 >           : String
->           )
+36c36
+<         : _no_type
+---
 >         : SELF_TYPE
->         #36
->         _int
->           2
+40,41c40,41
+<         : _no_type
+<       : _no_type
+---
 >         : Int
 >       : Int
->     #39
->     _attr
->       testee
->       Int
->       #39
->       _object
->         out
+49c49
+<       : _no_type
+---
 >       : Int
->     #41
->     _attr
->       divisor
->       Int
->       #0
->       _no_expr
->       : _no_type
->     #43
->     _attr
->       stop
->       Int
->       #43
->       _int
->         500
+64c64
+<       : _no_type
+---
 >       : Int
->     #45
->     _attr
->       m
->       Object
->       #46
->       _loop
->         #46
->         _bool
->           1
+74c74
+<         : _no_type
+---
 >         : Bool
->         #47
->         _block
->           #49
->           _assign
->             testee
->             #49
->             _plus
->               #49
->               _object
->                 testee
+85c85
+<               : _no_type
+---
 >               : Int
->               #49
->               _int
->                 1
+89,91c89,91
+<               : _no_type
+<             : _no_type
+<           : _no_type
+---
 >               : Int
 >             : Int
 >           : Int
->           #50
->           _assign
->             divisor
->             #50
->             _int
->               2
+98,99c98,99
+<             : _no_type
+<           : _no_type
+---
 >             : Int
 >           : Int
->           #52
->           _loop
->             #53
->             _cond
->               #53
->               _lt
->                 #53
->                 _object
->                   testee
+109c109
+<                 : _no_type
+---
 >                 : Int
->                 #53
->                 _mul
->                   #53
->                   _object
->                     divisor
+115c115
+<                   : _no_type
+---
 >                   : Int
->                   #53
->                   _object
->                     divisor
+119,121c119,121
+<                   : _no_type
+<                 : _no_type
+<               : _no_type
+---
 >                   : Int
 >                 : Int
 >               : Bool
->               #54
->               _bool
->                 0
+125c125
+<               : _no_type
+---
 >               : Bool
->               #55
->               _cond
->                 #55
->                 _eq
->                   #55
->                   _sub
->                     #55
->                     _object
->                       testee
+135c135
+<                     : _no_type
+---
 >                     : Int
->                     #55
->                     _mul
->                       #55
->                       _object
->                         divisor
+141c141
+<                       : _no_type
+---
 >                       : Int
->                       #55
->                       _divide
->                         #55
->                         _object
->                           testee
+147c147
+<                         : _no_type
+---
 >                         : Int
->                         #55
->                         _object
->                           divisor
+151,154c151,154
+<                         : _no_type
+<                       : _no_type
+<                     : _no_type
+<                   : _no_type
+---
 >                         : Int
 >                       : Int
 >                     : Int
 >                   : Int
->                   #55
->                   _int
->                     0
+158,159c158,159
+<                   : _no_type
+<                 : _no_type
+---
 >                   : Int
 >                 : Bool
->                 #56
->                 _bool
->                   0
+163c163
+<                 : _no_type
+---
 >                 : Bool
->                 #57
->                 _bool
->                   1
+167,169c167,169
+<                 : _no_type
+<               : _no_type
+<             : _no_type
+---
 >                 : Bool
 >               : Bool
 >             : Bool
->             #60
->             _assign
->               divisor
->               #60
->               _plus
->                 #60
->                 _object
->                   divisor
+178c178
+<                 : _no_type
+---
 >                 : Int
->                 #60
->                 _int
->                   1
+182,185c182,185
+<                 : _no_type
+<               : _no_type
+<             : _no_type
+<           : _no_type
+---
 >                 : Int
 >               : Int
 >             : Int
 >           : Object
->           #63
->           _cond
->             #63
->             _lt
->               #63
->               _object
->                 testee
+193c193
+<               : _no_type
+---
 >               : Int
->               #63
->               _mul
->                 #63
->                 _object
->                   divisor
+199c199
+<                 : _no_type
+---
 >                 : Int
->                 #63
->                 _object
->                   divisor
+203,205c203,205
+<                 : _no_type
+<               : _no_type
+<             : _no_type
+---
 >                 : Int
 >               : Int
 >             : Bool
->             #65
->             _block
->               #66
->               _assign
->                 out
->                 #66
->                 _object
->                   testee
+214,215c214,215
+<                 : _no_type
+<               : _no_type
+---
 >                 : Int
 >               : Int
->               #67
->               _dispatch
->                 #67
->                 _object
->                   self
+221c221
+<                 : _no_type
+---
 >                 : SELF_TYPE
->                 out_int
->                 (
->                 #67
->                 _object
->                   out
+227c227
+<                 : _no_type
+---
 >                 : Int
->                 )
+229c229
+<               : _no_type
+---
 >               : SELF_TYPE
->               #68
->               _dispatch
->                 #68
->                 _object
->                   self
+235c235
+<                 : _no_type
+---
 >                 : SELF_TYPE
->                 out_string
->                 (
->                 #68
->                 _string
->                   " is prime.\n"
+241c241
+<                 : _no_type
+---
 >                 : String
->                 )
+243,244c243,244
+<               : _no_type
+<             : _no_type
+---
 >               : SELF_TYPE
 >             : SELF_TYPE
->             #71
->             _int
->               0
+248,249c248,249
+<             : _no_type
+<           : _no_type
+---
 >             : Int
 >           : Object
->           #74
->           _cond
->             #74
->             _leq
->               #74
->               _object
->                 stop
+257c257
+<               : _no_type
+---
 >               : Int
->               #74
->               _object
->                 testee
+261,262c261,262
+<               : _no_type
+<             : _no_type
+---
 >               : Int
 >             : Bool
->             #75
->             _dispatch
->               #75
->               _string
->                 "halt"
+268c268
+<               : _no_type
+---
 >               : String
->               abort
->               (
->               )
+272c272
+<             : _no_type
+---
 >             : Object
->             #77
->             _string
->               "continue"
+276,279c276,279
+<             : _no_type
+<           : _no_type
+<         : _no_type
+<       : _no_type
+---
 >             : String
 >           : Object
 >         : Object
 >       : Object
->     )
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
-1,2c1,708
-< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Dispatch Error: Expression type 'Object' does not have method 'init'.
-< Segmentation fault (core dumped)
+1,5c1,708
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:100: Method error: 'rev' returns type 'Nil' but type 'List' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:100: Method error: 'sort' returns type 'Nil' but type 'List' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:100: Dispatch Error: The formal types listed in dispatch call for expression of type 'Cons' do not match the formal types declared for method implementation.
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:100: Method error: 'print_list' returns type 'Bool' but type 'Object' was declared.
+< Compilation halted due to static semantic errors.
 ---
 > #24
 > _program
