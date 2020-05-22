@@ -603,9 +603,11 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
             }
         }
 
+        //Annotate AST
         type_decl = idtable.add_string(inferred_init_type->get_string());
         return inferred_init_type;
     }else{
+        //Annotate AST
         type_decl = idtable.add_string(declared_type->get_string());
         return declared_type;
     }
@@ -680,7 +682,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     }
     // Check the inferred type conforms to the declared return type
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
-        //return_type = (*declared_return_type).add_string();
+        //Annotate AST
         return_type = idtable.add_string(declared_return_type->get_string());
         return declared_return_type;
     }else{
@@ -697,6 +699,8 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     // Only checks if the type of the formal was previously defined
     if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
+        //Annotate AST
+        idtable.add_string(type_decl->get_string());
         return type_decl;
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
