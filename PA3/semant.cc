@@ -114,20 +114,20 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         }
 
         // Now loop over features and collect method signatures
-        addSignature(curr_class);
+        Features feature_list = curr_class->getFeatures();
+        for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+            Feature curr_feature = feature_list->nth(i);
+            if(!curr_feature->isAttribute()){
+                curr_feature->collectSignature(this);
+            }
+        }
     }
 
     _has_cycle = has_cycle_bfs();
 }
 
 void ClassTable::addSignature(Class_ class_){
-    Features feature_list = class_->getFeatures();
-    for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
-        Feature curr_feature = feature_list->nth(i);
-        if(!curr_feature->isAttribute()){
-            curr_feature->collectSignature(this);
-        }
-    }
+
 }
 
 bool ClassTable::has_cycle_bfs() {
@@ -286,11 +286,13 @@ void ClassTable::install_basic_classes() {
     symb_class_map[Bool] = Bool_class;
     symb_class_map[Str] = Str_class;
 
-    addSignature(Object_class);
-    addSignature(IO_class);
-    addSignature(Int_class);
-    addSignature(Bool_class);
-    addSignature(Str_class);
+    Features feature_list = Object_class->getFeatures();
+    for(int i=feature_list->first(); feature_list->more(i); i=feature_list->next(i)) {
+        Feature curr_feature = feature_list->nth(i);
+        if(!curr_feature->isAttribute()){
+            curr_feature->collectSignature(this);
+        }
+    }
 }
 
 // Helper functions
