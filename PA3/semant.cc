@@ -437,25 +437,29 @@ void attr_class::addToScope(ClassTable* classtable) {
 }
 
 std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
-    Symbol curr_type = class_name;
     std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
     while(still_searching_for_method){
-        if(curr_signature.size()>0 || curr_type == Object){
+        if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
         }
         else{
-            curr_type = symb_class_map[curr_type]->getParent();
-            curr_signature = classMethods[curr_type][method_name];
+            class_name = symb_class_map[class_name]->getParent();
+            curr_signature = classMethods[class_name][method_name];
         }
     }
     if(curr_signature.size()<1){
-        ostream& err_stream = semant_error(symb_class_map[curr_type]);
+        ostream& err_stream = semant_error(symb_class_map[class_name]);
         err_stream << "getSignature Error: Class '" << getCurrentClass()->get_string()
             << "' does not have method '" << method_name->get_string() << "'" <<  endl;
     }
 
     return curr_signature;
+}
+
+std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
+    if(DEBUG_) printf("Called getSignature on current class");
+    return getSignature(getCurrentClass(), method_name);
 }
 
 void method_class::addToScope(ClassTable* classtable) {
@@ -485,7 +489,7 @@ void method_class::addToScope(ClassTable* classtable) {
         // If it did find a match, the defintions must conform
         bool matches = true;
         //Now we need to get the rest of the signature
-        std::vector<Symbol> old_signature = classtable->getSignature(curr_class,name);
+        std::vector<Symbol> old_signature = classtable->getSignature(name);
         for(uint i=0; i<data.size(); ++i){
             if(data[i] != old_signature[i]){
                 matches = false;
@@ -561,7 +565,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     Symbol* lookup = classtable->methodST.lookup(name);
     if(lookup != NULL){
         // will already have SELF_TYPE resolved
-        std::vector<Symbol> signature = classtable->getSignature(curr_class, name);
+        std::vector<Symbol> signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
