@@ -702,7 +702,7 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
-        return Object;
+        return type_decl;
     }
 }
 
@@ -717,7 +717,6 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
     if(classtable->symb_class_map.find(type_decl) == classtable->symb_class_map.end()){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
-        return Object;
     }
     return expr_inferred_type;
 }
@@ -761,8 +760,6 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string();
         err_stream << "' does not conform to type name '" << type_name->get_string() << "' for method '";
         err_stream << name->get_string() << "'" << endl;
-        set_type(Object);
-        return get_type();
     }
     // Check that method with "name" is implemented as a method of some parent of the declared type_name
     std::vector<Symbol> curr_signature = classtable->getSignature(type_name, name);
@@ -778,8 +775,6 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
             err_stream << "' method implementation does not match formals type list. " << endl;
-            set_type(Object);
-            return get_type();
         }
         ++j;
     }
@@ -824,8 +819,6 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
             err_stream << inferred_expr_type->get_string();
             err_stream << "' do not match the formal types declared for method implementation." << endl;
-            set_type(Object);
-            return get_type();    
         }
             ++j;
     }
@@ -901,8 +894,6 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
             if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
-            set_type(Object);
-            return get_type();
         }
     }
     Symbol return_type = classtable->compute_join(expr_types_vec);
@@ -938,8 +929,6 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Let error: Declared type of variable: '" << type_decl->get_string();
         err_stream << "' is not defined." << endl;
-        set_type(Object);
-        return get_type();    
     }
 
     // Check if there is initialization
@@ -950,8 +939,6 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string();
             err_stream << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
-            set_type(Object);
-            return get_type();
         }
     }
 
@@ -1098,8 +1085,6 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
             if(_DEBUG) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
-            set_type(Object);
-            return get_type();
         }
     }
     set_type(Bool);  
