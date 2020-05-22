@@ -961,6 +961,7 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         set_type(Int);
+        return get_type();
     }
     else{
         if(_DEBUG) printf("Expression plus_class error: Cannot add non-integer expressions \n");
@@ -969,7 +970,6 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
         set_type(Object);
         return get_type();
     }
-    return get_type();
 }
 
 Symbol sub_class::typeCheck(ClassTable* classtable) {
@@ -981,6 +981,7 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         set_type(Int);
+        return get_type();
     }
     else{
         if(_DEBUG) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
@@ -989,7 +990,6 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
         set_type(Object);
         return get_type();
     }
-    return get_type();
 }
 
 Symbol mul_class::typeCheck(ClassTable* classtable) {
@@ -1001,6 +1001,7 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         set_type(Int);
+        return get_type();
     }
     else{
         if(_DEBUG)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
@@ -1009,7 +1010,6 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
         set_type(Object);
         return get_type();
     }
-    return get_type();
 }
 
 Symbol divide_class::typeCheck(ClassTable* classtable) {
@@ -1021,6 +1021,7 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
 
     if(inferred_e1_type == Int && inferred_e2_type == Int) {
         set_type(Int);
+        return get_type();
     }
     else{
         if(_DEBUG) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
@@ -1029,7 +1030,6 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
         set_type(Object);
         return get_type();
     }
-    return get_type();
 }
 
 Symbol neg_class::typeCheck(ClassTable* classtable) {
@@ -1166,11 +1166,11 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
     if(lookup != NULL){
         if(_DEBUG) printf("The type of %s in the ST is %s\n", name->get_string(), (*lookup)->get_string());
         set_type(*lookup);
+        return get_type();
     }else{
         set_type(Object);
         return get_type();
     }
-    return get_type();
 }
 
 
