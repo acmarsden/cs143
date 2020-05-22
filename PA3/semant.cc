@@ -745,8 +745,10 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
             set_type(Object);
             return get_type();
     }
-    else set_type(inferred_assign_type);
-    return get_type();
+    else{
+        set_type(inferred_assign_type);
+        return get_type();
+    }
 }
 
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
