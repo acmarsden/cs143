@@ -659,7 +659,7 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
     // i.e. that inferred_assign_type inherits from declared_type
-   
+
     if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
             if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
