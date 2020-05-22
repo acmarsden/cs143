@@ -118,6 +118,27 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     }
 
     _has_cycle = has_cycle_bfs();
+
+    // Each program must have a Main class defined
+    if(classMethods.find(idtable.add_string("Main")) == classMethods.end()){
+        ostream& err_stream = semant_error(curr_class);
+        err_stream << "Any valid COOL program must have a 'Main' class."<<endl;
+        return;
+    }
+    // The Main class must have a main method defined
+    if(classMethods[idtable.add_string("Main")].find(idtable.add_string("main")) ==
+       classMethods[idtable.add_string("Main")].end()) {
+        ostream& err_stream = semant_error(curr_class);
+        err_stream << "The class 'Main' must have a 'main' method."<<endl;
+        return;
+    }
+    // The main method takes no formal parameters
+    std::vector<Symbol> main_signature = classMethods[idtable.add_string("Main")][idtable.add_string("main")];
+    if(main_signature.size() != 1) {
+        ostream& err_stream = semant_error(curr_class);
+        err_stream << "The 'Main.main' method must take no formal parameters."<<endl;
+        return;
+    }
 }
 
 void ClassTable::addSignature(Class_ class_){
@@ -525,7 +546,7 @@ void attr_class::addToScope(ClassTable* classtable) {
             //    classtable->objectST.addid(name, &curr_class);
             //}else{
             //    classtable->objectST.addid(name, &type_decl);
-            classtable->objectST.addid(name, &type_decl);    
+            classtable->objectST.addid(name, &type_decl);
         }
 
     }
@@ -964,7 +985,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     classtable->objectST.addid(identifier, &var_type);
     Symbol body_inferred_type = body->typeCheck(classtable);
     classtable->objectST.exitscope();
-    
+
     set_type(body_inferred_type);
     return get_type();
 }
@@ -1104,7 +1125,7 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
             err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
         }
     }
-    set_type(Bool);  
+    set_type(Bool);
     return get_type();
 }
 
