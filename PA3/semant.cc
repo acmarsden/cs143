@@ -460,14 +460,14 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
 
 void method_class::addToScope(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
-    
+
     std::vector<Symbol> data;
     if(return_type == SELF_TYPE) {
         data.push_back(classtable->getCurrentClass());
     }else{
         data.push_back(return_type);
     }
-    
+
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
@@ -724,9 +724,13 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             still_searching_for_method = false;
         }
         else{
+            if(_DEBUG) printf("LOOK FOR METHOD IN INHERITED CLASS.\n");
             curr_type = classtable->symb_class_map[curr_type]->getParent();
             curr_signature = classtable->classMethods[curr_type][name];
         }
+    }
+    for(uint i = 0; i<curr_signature.size(); i++){
+        if(_DEBUG) printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());
     }
     if(curr_signature.size()<1){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
@@ -742,7 +746,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
-                printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_curr_expr_type->get_string());
+                if(_DEBUG) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_curr_expr_type->get_string());
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '"
                     << inferred_expr_type->get_string() << "' do not match the formal types declared for method implementation." << endl;

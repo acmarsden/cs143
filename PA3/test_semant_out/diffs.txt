@@ -3334,15 +3334,32 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
-1,6c1
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'c2i', the type 'String' of formal 'char'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2c', the type 'Int' of formal 'i'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'a2i', the type 'String' of formal 's'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'a2i_aux', the type 'String' of formal 's'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2a', the type 'Int' of formal 'i'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Error: In method 'i2a_aux', the type 'Int' of formal 'i'' was not defined.
+1,22c1,2
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Dispatch Error: Expression type 'Object' does not have method 'length'.
+< Segmentation fault (core dumped)
 ---
 > Class Main is not defined.
+> Compilation halted due to static semantic errors.
 
 
 ==============================================================
@@ -3362,9 +3379,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
-1,2c1,653
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Error: In method 'initBook', the type 'String' of formal 'title_p'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'print' returns type 'ObjectSegmentation fault (core dumped)
+1,6c1,653
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'initBook' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:3: Method error: 'print' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method error: 'initArticle' returns type 'Object' but type 'Article' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:24: Method error: 'print' returns type 'Object' but type 'Book' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/book_list.cl:45: Dispatch Error: Expression type 'Object' does not have method 'init'.
+< Segmentation fault (core dumped)
 ---
 > #3
 > _program
@@ -4023,9 +4044,11 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
-1,2c1,606
-< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Error: In method 'init', the type 'String' of formal 'map'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'print' returns type 'ObjectSegmentation fault (core dumped)
+1,4c1,606
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'init' returns type 'Object' but type 'CellularAutomaton' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Method error: 'print' returns type 'Object' but type 'CellularAutomaton' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/cells.cl:5: Dispatch Error: Expression type 'Object' does not have method 'length'.
+< Segmentation fault (core dumped)
 ---
 > #5
 > _program
@@ -4637,9 +4660,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
-1,4c1,323
-< LOOK FOR METHOD IN INHERITED CLASS.
-< LOOK FOR METHOD IN INHERITED CLASS.
+1,2c1,323
 < /afs/ir.stanford.edu/class/cs143/examples/complex.cl:1: Dispatch Error: Expression type 'Complex' does not have method 'init'.
 < Segmentation fault (core dumped)
 ---
@@ -5075,8 +5096,13 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
-1c1,1983
-< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'outgoing' returns type 'ObjectSegmentation fault (core dumped)
+1,6c1,1983
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'outgoing' returns type 'Object' but type 'EList' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'number' returns type 'Object' but type 'Int' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'init' returns type 'Object' but type 'Vertice' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Method error: 'add_out' returns type 'Object' but type 'Vertice' was declared.
+< /afs/ir.stanford.edu/class/cs143/examples/graph.cl:53: Dispatch Error: Expression type 'Object' does not have method 'print'.
+< Segmentation fault (core dumped)
 ---
 > #38
 > _program
@@ -7740,8 +7766,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
-1c1,3762
-< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Method error: 'isNil' returns type 'BoolSegmentation fault (core dumped)
+1,2c1,3762
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:21: Dispatch Error: Expression type 'VarListNE' does not have method 'init'.
+< Segmentation fault (core dumped)
 ---
 > #21
 > _program
@@ -11509,13 +11536,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
-1,6c1,2859
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Error: In method 'size_of_board', the type 'String' of formal 'initial'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Error: In method 'board_init', the type 'String' of formal 'start'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Error: In method 'init', the type 'String' of formal 'map'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Let Error: Initialization expression type: 'Int' does not conform to declared type of variable: ' Int'
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' Int'
-< /afs/ir.stanford.edu/class/cs143/examples/life.cl:110: Method error: 'print' returns type 'ObjectSegmentation fault (core dumped)
+1,2c1,2859
+< /afs/ir.stanford.edu/class/cs143/examples/life.cl:45: Dispatch Error: Expression type 'Object' does not have method 'length'.
+< Segmentation fault (core dumped)
 ---
 > #45
 > _program
@@ -14380,8 +14403,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
-1,3c1,383
-< /afs/ir.stanford.edu/class/cs143/examples/list.cl:100: Error: In method 'print_list', the type 'List' of formal 'l'' was not defined.
+1,2c1,383
 < /afs/ir.stanford.edu/class/cs143/examples/list.cl:100: Dispatch Error: Expression type 'Object' does not have method 'isNil'.
 < Segmentation fault (core dumped)
 ---
@@ -14772,9 +14794,7 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
-1,4c1,459
-< LOOK FOR METHOD IN INHERITED CLASS.
-< LOOK FOR METHOD IN INHERITED CLASS.
+1,2c1,459
 < /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl:1: Dispatch Error: Expression type 'Complex' does not have method 'init'.
 < Segmentation fault (core dumped)
 ---
@@ -15241,11 +15261,8 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
-1,5c1,255
-< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Error: In method 'pal', the type 'String' of formal 's'' was not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Error: Attribute 'i'' was not declared in the current scope.
-< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Dispatch Error: Expression type 'Object' does not have method 'pal'.
-< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Dispatch Error: Expression type 'Object' does not have method 'in_string'.
+1,2c1,255
+< /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl:1: Dispatch Error: Expression type 'Object' does not have method 'length'.
 < Segmentation fault (core dumped)
 ---
 > #1
@@ -15507,8 +15524,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
-1c1,280
-< /afs/ir.stanford.edu/class/cs143/examples/primes.cl:27: Method error: 'main' returns type 'IntSegmentation fault (core dumped)
+1,2c1,280
+< /afs/ir.stanford.edu/class/cs143/examples/primes.cl:27: Attribute init error: Assignment expression type does not conform to declared Id type.
+< Compilation halted due to static semantic errors.
 ---
 > #27
 > _program
@@ -15794,8 +15812,9 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
-1c1,708
-< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Method error: 'isNil' returns type 'BoolSegmentation fault (core dumped)
+1,2c1,708
+< /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl:24: Dispatch Error: Expression type 'Object' does not have method 'init'.
+< Segmentation fault (core dumped)
 ---
 > #24
 > _program
