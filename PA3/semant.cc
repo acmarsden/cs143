@@ -510,13 +510,14 @@ void attr_class::addToScope(ClassTable* classtable) {
             err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined." << endl;
         }
         else {
-            if(type_decl == SELF_TYPE) {
-                classtable->objectST.addid(name, &curr_class);
-            }else{
-                classtable->objectST.addid(name, &type_decl);
-            }
-
+            //OLD
+            //if(type_decl == SELF_TYPE) {
+            //    classtable->objectST.addid(name, &curr_class);
+            //}else{
+            //    classtable->objectST.addid(name, &type_decl);
+            classtable->objectST.addid(name, &type_decl);    
         }
+
     }
 }
 
@@ -586,6 +587,10 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     Symbol* lookup = classtable->objectST.probe(name);
     if(lookup != NULL){
         declared_type = *lookup;
+        //NEW:
+        if(declared_type == SELF_TYPE){
+            declared_type = curr_class;
+        }
     }else{
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope." << endl;
