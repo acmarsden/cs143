@@ -825,13 +825,13 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
-    set_type(curr_signature[0]);
     if(curr_signature[0] == SELF_TYPE) {
         if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
-        return inferred_calling_expr_type;
+        set_type(inferred_calling_expr_type);
     }else{
-    return get_type();
+    set_type(curr_signature[0]);
     }
+    return get_type();
 }
 
 
@@ -871,7 +871,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
     // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
-    if(curr_signature[0] == SELF_TYPE) {
+    if(curr_signature[0] == SELF_TYPE && inferred_calling_expr_type!=curr_class) {
         if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
         set_type(inferred_calling_expr_type);
     }else{
