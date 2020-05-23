@@ -363,7 +363,8 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
         if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
         if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
-            if(_DEBUG) printf("Signature found from class '%s' with return type '%s' \n", class_name->get_string(), curr_signature[0]->get_string());
+            if(_DEBUG && curr_signature.size()>0) printf("Signature found from class '%s' with return type '%s' \n", class_name->get_string(), curr_signature[0]->get_string());
+            if(_DEBUG && curr_signature.size()==0) printf("No signature found from class '%s' \n", class_name->get_string());
         }
         else{
             class_name = symb_class_map[class_name]->getParent();
