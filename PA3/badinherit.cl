@@ -5,7 +5,7 @@ class Silly {
 class Sally inherits Silly { };
 
 class Sully inherits Sally { 
-    copy() : SELF_TYPE { self };
+    copy() : Sully { self };
 };
 
 class C {

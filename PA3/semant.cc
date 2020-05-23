@@ -363,6 +363,7 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
         if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
         if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
+            if(_DEBUG) printf("Signature found from class '%s' with return type '%s' \n", class_name->get_string(), curr_signature[0]->get_string());
         }
         else{
             class_name = symb_class_map[class_name]->getParent();
@@ -519,6 +520,7 @@ void method_class::collectSignature(ClassTable* classtable) {
     }
 
     // and add the method signature to this scope-independent data structure
+    if(_DEBUG) printf("WARNING WARNING WARNING WARNING WE ARE ADDING TO THE CLASSMETHODS TABLE!!!! CLASS: '%s'\n", curr_class->get_string());
     if(_DEBUG) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
     classtable->classMethods[curr_class][name] = data;
 }
@@ -562,6 +564,7 @@ void method_class::addToScope(ClassTable* classtable) {
     //    data.push_back(return_type);
     //}
     data.push_back(return_type);
+    if(_DEBUG) printf("The declared return type is '%s'\n", return_type->get_string());
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
@@ -578,18 +581,24 @@ void method_class::addToScope(ClassTable* classtable) {
         // If it did find a match, the defintions must conform
         bool matches = true;
         //Now we need to get the rest of the signature
-        std::vector<Symbol> old_signature = classtable->getSignature(name);
-        for(uint i=0; i<data.size(); ++i){
-            if(data[i] != old_signature[i]){
-                matches = false;
+        //Call it on its parent to ensure it doesn't overwrite
+        //First check that the parent class is defined
+        Symbol parent_name = classtable->symb_class_map[curr_class]->getParent();
+        if(classtable->children.find(parent_name)!=classtable->children.end()){
+            std::vector<Symbol> old_signature = classtable->getSignature(parent_name, name);
+            if(_DEBUG) printf("The return type of the signature is '%s'\n", old_signature[0]->get_string());
+            for(uint i=0; i<data.size(); ++i){
+                if(data[i] != old_signature[i]){
+                    matches = false;
+                }
             }
-        }
-        if(!matches){
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-            err_stream << "Method formals list or return type does not conform to parent definition" << endl;
-            err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string();
-            err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
-            err_stream << "'. Return type is '" << return_type->get_string() << endl;
+            if(!matches){
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                err_stream << "Method formals list or return type does not conform to parent definition" << endl;
+                err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string();
+                err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
+                err_stream << "'. Return type is '" << return_type->get_string() << endl;
+            }
         }
     }
     // If it did not find a match, we are OK, since it is the first time it is
