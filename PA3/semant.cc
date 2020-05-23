@@ -882,7 +882,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             }
         }
         // Loop through the expressions and get their inferred return types
-        int j = 1;
+        uint j = 1;
         for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
             Expression curr_expr = actual->nth(i);
             Symbol inferred_body_expr_type = curr_expr->typeCheck(classtable);
