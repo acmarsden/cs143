@@ -595,9 +595,10 @@ void method_class::addToScope(ClassTable* classtable) {
             if(!matches){
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Method formals list or return type does not conform to parent definition" << endl;
-                err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string();
-                err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
-                err_stream << "'. Return type is '" << return_type->get_string() << endl;
+                err_stream << "    Method is '" << name->get_string() << "'" << endl;
+                err_stream << "    Class calling it is '" << curr_class->get_string() << "'" << endl;
+                err_stream << "    Old signature starts with '" << old_signature[0]->get_string() << "'" << endl;
+                err_stream << "    Return type is '" << return_type->get_string() << "'" << endl;
             }
         }
     }

@@ -13,11 +13,11 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
 1,5c1,6
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let error: Declared type of variable: 'A2I' is not defined.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Dispatch Error: When trying to dispatch method 'a2i' from an expression of type 'A2I' found the type does not exist.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' Int'
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Dispatch Error: When trying to dispatch method 'i2a' from an expression of type 'A2I' found the type does not exist.
-< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' String'
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Let error: Declared type of variable: 'A2I' is not defined.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Dispatch Error: When trying to dispatch method 'a2i' from an expression of type 'A2I' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' Int'
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch Error: When trying to dispatch method 'i2a' from an expression of type 'A2I' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' String'
 ---
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Class A2I of let-bound identifier z is undefined.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used with undefined class A2I.
@@ -94,19 +94,18 @@ Parser out diff (< : ours, > : theirs) on:  assignmentex.cl
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_assignmentex.cl 
 1,2c1
-< bad_assignmentex.cl:10: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
-< bad_assignmentex.cl:10: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
+< bad_assignmentex.cl:17: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
+< bad_assignmentex.cl:17: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
 ---
 > bad_assignmentex.cl:17: Type Int of assigned expression does not conform to declared type String of identifier xcar.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad.cl 
-1,4c1,3
-< bad.cl:13: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
-< bad.cl:13: Dispatch Error: The actual number of parameters supplied for 'init' exceeds those the method was defined with
-< <basic class>:1: getSignature Error: Class 'Object' does not have method 'iinit'
-< bad.cl:13: Dispatch Error: Method 'iinit' was not defined for class 'C'
+1,3c1,3
+< bad.cl:16: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
+< bad.cl:17: Dispatch Error: The actual number of parameters supplied for 'init' exceeds those the method was defined with
+< bad.cl:18: Dispatch Error: Method 'iinit' was not defined for class 'C'
 ---
 > bad.cl:16: In call of method init, type Int of parameter y does not conform to declared type Bool.
 > bad.cl:17: Method init called with wrong number of arguments.
@@ -116,7 +115,7 @@ Parser out diff (< : ours, > : theirs) on:  bad.cl
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_dispatch3.cl 
 1c1
-< bad_dispatch3.cl:10: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
+< bad_dispatch3.cl:16: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
 ---
 > bad_dispatch3.cl:16: Type Object of assigned expression does not conform to declared type Int of identifier b.
 
@@ -124,8 +123,8 @@ Parser out diff (< : ours, > : theirs) on:  bad_dispatch3.cl
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_dispatchex2.cl 
 1,2c1,2
-< bad_dispatchex2.cl:10: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
-< bad_dispatchex2.cl:10: Method error: 'testb' returns type 'Object' but type 'Bool' was declared.
+< bad_dispatchex2.cl:16: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
+< bad_dispatchex2.cl:14: Method error: 'testb' returns type 'Object' but type 'Bool' was declared.
 ---
 > bad_dispatchex2.cl:16: Type Object of assigned expression does not conform to declared type Int of identifier b.
 > bad_dispatchex2.cl:14: Inferred return type Object of method testb does not conform to declared return type Bool.
@@ -133,20 +132,21 @@ Parser out diff (< : ours, > : theirs) on:  bad_dispatchex2.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_dispatchex.cl 
-1,4c1
-< <basic class>:2: getSignature Error: Class 'Object' does not have method 'test'
-< bad_dispatchex.cl:10: Dispatch Error: Method 'test' was not defined for class 'Int'
-< <basic class>:2: getSignature Error: Class 'Object' does not have method 'test'
-< bad_dispatchex.cl:10: Dispatch Error: Method 'test' was not defined for class 'Int'
+1,2c1
+< bad_dispatchex.cl:17: Dispatch Error: Method 'test' was not defined for class 'Int'
+< bad_dispatchex.cl:17: Dispatch Error: Method 'test' was not defined for class 'Int'
 ---
 > bad_dispatchex.cl:17: Dispatch to undefined method test.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  badinherit.cl 
-1,2c1
-< badinherit.cl:7: Method formals list or return type does not conform to parent definition
-< Method is 'copy'. Class calling it is 'Sully'. Old signature starts with 'SELF_TYPE'. Return type is 'Sully
+1,5c1
+< badinherit.cl:8: Method formals list or return type does not conform to parent definition
+<     Method is 'copy'
+<     Class calling it is 'Sully'
+<     Old signature starts with 'SELF_TYPE'
+<     Return type is 'Sully'
 ---
 > badinherit.cl:8: In redefined method copy, return type Sully is different from original return type SELF_TYPE.
 
@@ -154,7 +154,7 @@ Parser out diff (< : ours, > : theirs) on:  badinherit.cl
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_methodex.cl 
 1c1
-< bad_methodex.cl:2: Formal error: x is not a distinct formal identifier for method test
+< bad_methodex.cl:3: Formal error: x is not a distinct formal identifier for method test
 ---
 > bad_methodex.cl:3: Formal parameter x is multiply defined.
 
