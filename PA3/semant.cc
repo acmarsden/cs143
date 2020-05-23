@@ -390,11 +390,12 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = Object;
-    bool replaced_self_type = false;
-    if(symbol_vec[0] == SELF_TYPE){
-        join = curr_class;
-        replaced_self_type = true;
-    }else{ join = symbol_vec[0];}
+    //bool replaced_self_type = false;
+    //if(symbol_vec[0] == SELF_TYPE){
+    //    join = curr_class;
+    //    replaced_self_type = true;
+    //}else{ join = symbol_vec[0];}
+    join = symbol_vec[0];
 
     // Instead of SELF_TYPE we make sure each type in symbol_vec is known to us
     //if(children.find(join) == children.end()) {
@@ -404,28 +405,31 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
     //    }
     seen_symbols.insert(join);
     for(uint i=1; i<symbol_vec.size(); ++i){
-        if(symbol_vec[i] == SELF_TYPE){symbol_vec[i] = curr_class;}
+        //if(symbol_vec[i] == SELF_TYPE){symbol_vec[i] = curr_class;}
         if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
             // Make sure symbol_vec[i] is known to us
-            if(children.find(join) == children.end()) {
+            if(symbol_vec[i] != SELF_TYPE && children.find(symbol_vec[i]) == children.end()) {
                 if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", symbol_vec[i]->get_string());
                 ostream& err_stream = semant_error(symb_class_map[curr_class]);
                 err_stream << "'compute_join' error: '" << symbol_vec[i]->get_string() << "'' is not defined" << endl;
-        }
+            }
             //This symbol has NOT already been included in join so we need to update join.
             join = compute_join_pair(join, symbol_vec[i]);
             seen_symbols.insert(symbol_vec[i]);
         }
     }
-    if(replaced_self_type && join==curr_class){
-        join = SELF_TYPE;
-    }
+    //if(replaced_self_type && join==curr_class){
+    //    join = SELF_TYPE;
+    //}
     return join;
 }
 
 Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
     if(_DEBUG) printf("Computing a join on pair %s, %s\n", symbolA->get_string(), symbolB->get_string());
-    if(symbolA == symbolB) return symbolA;
+    if(symbolA == symbolB) return symbolA; // also applies to when they are both self type
+    if(symbolA == SELF_TYPE) symbolA = current_class;
+    if(symbolB == SELF_TYPE) symbolB = current_class; //As per the manual
+    
     //Increment A's ancestors one by one and check against all of B's ancestors
     //First get B's ancestors
     std::set<Symbol> b_ancestors;
@@ -924,6 +928,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     if(_DEBUG) printf("Type chcecking an if statement\n");
     Symbol pred_type = pred->typeCheck(classtable);
     if(_DEBUG) printf("IF: if resolved to type %s \n", pred_type->get_string());
@@ -938,7 +943,9 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
     else {
         //Compute join of then_exp_type and else_exp_type
         std::vector<Symbol> symbol_vec;
+        //if(then_exp_type == SELF_TYPE) then_exp_type = curr_class;
         symbol_vec.push_back(then_exp_type);
+        //if(else_exp_type == SELF_TYPE) else_exp_type = curr_class;
         symbol_vec.push_back(else_exp_type);
         if(_DEBUG) printf("IF: computing join of %s and %s\n", then_exp_type->get_string(), else_exp_type->get_string());
         return_type = classtable->compute_join(symbol_vec);

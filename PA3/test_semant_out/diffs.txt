@@ -61,10 +61,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
-1365c1365
-<       : SELF_TYPE
----
->       : Lambda
 
 
 ==============================================================
