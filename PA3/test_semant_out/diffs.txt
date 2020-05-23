@@ -102,16 +102,15 @@ Parser out diff (< : ours, > : theirs) on:  bad_assignmentex.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad.cl 
-1,4c1,4
+1,4c1,3
 < bad.cl:13: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
-< bad.cl:13: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
+< bad.cl:13: Dispatch Error: The actual number of parameters supplied for 'init' exceeds those the method was defined with
 < <basic class>:1: getSignature Error: Class 'Object' does not have method 'iinit'
-< Segmentation fault (core dumped)
+< bad.cl:13: Dispatch Error: Method 'iinit' was not defined for class 'C'
 ---
 > bad.cl:16: In call of method init, type Int of parameter y does not conform to declared type Bool.
 > bad.cl:17: Method init called with wrong number of arguments.
 > bad.cl:18: Dispatch to undefined method iinit.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
@@ -134,12 +133,22 @@ Parser out diff (< : ours, > : theirs) on:  bad_dispatchex2.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_dispatchex.cl 
-1,2c1,2
+1,4c1
 < <basic class>:2: getSignature Error: Class 'Object' does not have method 'test'
-< Segmentation fault (core dumped)
+< bad_dispatchex.cl:10: Dispatch Error: Method 'test' was not defined for class 'Int'
+< <basic class>:2: getSignature Error: Class 'Object' does not have method 'test'
+< bad_dispatchex.cl:10: Dispatch Error: Method 'test' was not defined for class 'Int'
 ---
 > bad_dispatchex.cl:17: Dispatch to undefined method test.
-> Compilation halted due to static semantic errors.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  badinherit.cl 
+1,2c1
+< badinherit.cl:7: Method formals list or return type does not conform to parent definition
+< Method is 'copy'. Class calling it is 'Sully'. Old signature starts with 'SELF_TYPE'. Return type is 'Sully
+---
+> badinherit.cl:8: In redefined method copy, return type Sully is different from original return type SELF_TYPE.
 
 
 ==============================================================
@@ -156,134 +165,6 @@ Parser out diff (< : ours, > : theirs) on:  dispatchex.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  good.cl 
-1,124c1,2
-< #1
-< _program
-<   #1
-<   _class
-<     Silly
-<     Object
-<     "good.cl"
-<     (
-<     #2
-<     _method
-<       copy
-<       SELF_TYPE
-<       #2
-<       _object
-<         self
-<       : SELF_TYPE
-<     )
-<   #5
-<   _class
-<     Sally
-<     Silly
-<     "good.cl"
-<     (
-<     )
-<   #7
-<   _class
-<     Sully
-<     Sally
-<     "good.cl"
-<     (
-<     #8
-<     _method
-<       copy
-<       Sully
-<       #8
-<       _object
-<         self
-<       : SELF_TYPE
-<     )
-<   #11
-<   _class
-<     C
-<     Object
-<     "good.cl"
-<     (
-<     #12
-<     _attr
-<       a
-<       Int
-<       #0
-<       _no_expr
-<       : _no_type
-<     #13
-<     _attr
-<       b
-<       Bool
-<       #0
-<       _no_expr
-<       : _no_type
-<     #14
-<     _method
-<       init
-<       #14
-<       _formal
-<         x
-<         Int
-<       #14
-<       _formal
-<         y
-<         Bool
-<       C
-<       #15
-<       _block
-<         #16
-<         _assign
-<           a
-<           #16
-<           _object
-<             x
-<           : Int
-<         : Int
-<         #17
-<         _assign
-<           b
-<           #17
-<           _object
-<             y
-<           : Bool
-<         : Bool
-<         #18
-<         _object
-<           self
-<         : SELF_TYPE
-<       : SELF_TYPE
-<     )
-<   #23
-<   _class
-<     Main
-<     Object
-<     "good.cl"
-<     (
-<     #24
-<     _attr
-<       x
-<       Sally
-<       #24
-<       _dispatch
-<         #24
-<         _new
-<           Sally
-<         : Sally
-<         copy
-<         (
-<         )
-<       : Sally
-<     #26
-<     _method
-<       main
-<       Sally
-<       #26
-<       _object
-<         x
-<       : Sally
-<     )
----
-> good.cl:8: In redefined method copy, return type Sully is different from original return type SELF_TYPE.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
