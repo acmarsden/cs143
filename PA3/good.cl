@@ -4,6 +4,9 @@ class Silly {
 
 class Sally inherits Silly { };
 
+class Sully inherits Sally { 
+    copy() : Sully { self };
+};
 
 class C {
 	a : Int;
