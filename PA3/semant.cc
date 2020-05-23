@@ -531,7 +531,7 @@ void attr_class::addToScope(ClassTable* classtable) {
     if(curr_class != Object && curr_class != Str && curr_class != Int &&
            curr_class != IO && curr_class != Bool){
         // Check that the attribute type has been defined.
-        if(classtable->children.find(type_decl) == classtable->children.end()) {
+        if(type_decl != SELF_TYPE && classtable->children.find(type_decl) == classtable->children.end()) {
             if(semant_debug) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined" << endl;
