@@ -10,3 +10,10 @@ for test_file in /afs/ir.stanford.edu/class/cs143/examples/*.cl; do
   ./theirsemant $test_file &> $OUT_DIR/their_$filename.out
 done
 
+for test_file in *.cl; do
+  echo "Running their semant on $test_file"
+  filename=$(basename -- "$test_file")
+  extension="${filename##*.}"
+  filename="${filename%.*}"
+  ./theirsemant $test_file &> $OUT_DIR/their_$filename.out
+done
