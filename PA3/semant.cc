@@ -814,7 +814,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     }
 
     // check the inferred_calling_expr_type exists
-    if(classtable->classMethods.find(inferred_calling_expr_type) == classtable->classMethods.end()){
+    if(classtable->children.find(inferred_calling_expr_type) == classtable->children.end()){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Statis cispatch Error: When trying to dispatch method '" << name->get_string();
         err_stream << "' from an expression of type '";
@@ -869,7 +869,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     if(inferred_calling_expr_type == SELF_TYPE) inferred_calling_expr_type = curr_class;
 
     // check the inferred_calling_expr_type exists
-    if(classtable->classMethods.find(inferred_calling_expr_type) == classtable->classMethods.end()){
+    if(classtable->children.find(inferred_calling_expr_type) == classtable->children.end()){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Dispatch Error: When trying to dispatch method '" << name->get_string();
         err_stream << "' from an expression of type '";
