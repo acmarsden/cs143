@@ -914,6 +914,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         }
 
         return get_type();
+    }
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {

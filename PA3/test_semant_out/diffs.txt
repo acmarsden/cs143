@@ -12,9 +12,12 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
-1,2c1,7
+1,5c1,6
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let error: Declared type of variable: 'A2I' is not defined.
-< Segmentation fault (core dumped)
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Dispatch Error: When trying to dispatch method 'a2i' from an expression of type 'A2I' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' Int'
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Dispatch Error: When trying to dispatch method 'i2a' from an expression of type 'A2I' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:9: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' String'
 ---
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Class A2I of let-bound identifier z is undefined.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used with undefined class A2I.
@@ -22,7 +25,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Inferred type Object of initialization of i does not conform to identifier's declared type Int.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch on undefined class A2I.
 > /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Inferred type Object of initialization of news does not conform to identifier's declared type String.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
@@ -39,10 +41,108 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
-62c62
-<                 : _no_type
+1,3c1,97
+< /afs/ir.stanford.edu/class/cs143/examples/cool.cl:1: Dispatch Error: When trying to dispatch method 'type_name' from an expression of type 'Bool' found the type does not exist.
+< <basic class>:1: getSignature Error: Class 'Object' does not have method 'substr'
+< Segmentation fault (core dumped)
 ---
+> #1
+> _program
+>   #1
+>   _class
+>     Main
+>     IO
+>     "/afs/ir.stanford.edu/class/cs143/examples/cool.cl"
+>     (
+>     #2
+>     _method
+>       main
+>       SELF_TYPE
+>       #3
+>       _block
+>         #4
+>         _dispatch
+>           #4
+>           _dispatch
+>             #4
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #4
+>             _dispatch
+>               #4
+>               _dispatch
+>                 #4
+>                 _new
+>                   Object
+>                 : Object
+>                 type_name
+>                 (
+>                 )
+>               : String
+>               substr
+>               (
+>               #4
+>               _int
+>                 4
+>               : Int
+>               #4
+>               _int
+>                 1
+>               : Int
+>               )
+>             : String
+>             )
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #5
+>           _dispatch
+>             #5
+>             _dispatch
+>               #5
+>               _isvoid
+>                 #5
+>                 _object
+>                   self
 >                 : SELF_TYPE
+>               : Bool
+>               type_name
+>               (
+>               )
+>             : String
+>             substr
+>             (
+>             #5
+>             _int
+>               1
+>             : Int
+>             #5
+>             _int
+>               3
+>             : Int
+>             )
+>           : String
+>           )
+>         : SELF_TYPE
+>         #6
+>         _dispatch
+>           #6
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #6
+>           _string
+>             "\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>       : SELF_TYPE
+>     )
 
 
 ==============================================================
@@ -51,6 +151,473 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl 
+1,18c1,447
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:3: Dispatch Error: When trying to dispatch method 'doh' from an expression of type 'Razz' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:3: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:3: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:3: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:3: Attribute init error: Assignment expression type 'Object does not conform to declared Id type 'Int'.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Statis cispatch Error: When trying to dispatch method 'doh' from an expression of type 'Razz' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Dispatch Error: When trying to dispatch method 'doh' from an expression of type 'Bar' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Dispatch Error: When trying to dispatch method 'doh' from an expression of type 'Razz' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Dispatch Error: When trying to dispatch method 'printh' from an expression of type 'Razz' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Expression plus_class error: Cannot add non-integer expressions
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:24: Attribute init error: Assignment expression type 'Object does not conform to declared Id type 'Int'.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:16: Dispatch Error: When trying to dispatch method 'doh' from an expression of type 'Bar' found the type does not exist.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:16: Attribute init error: Assignment expression type 'Object does not conform to declared Id type 'Int'.
+< /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl:16: Dispatch Error: When trying to dispatch method 'printh' from an expression of type 'Bar' found the type does not exist.
+< Compilation halted due to static semantic errors.
+---
+> #3
+> _program
+>   #3
+>   _class
+>     Foo
+>     Bazz
+>     "/afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl"
+>     (
+>     #4
+>     _attr
+>       a
+>       Razz
+>       #4
+>       _typcase
+>         #4
+>         _object
+>           self
+>         : SELF_TYPE
+>         #5
+>         _branch
+>           n
+>           Razz
+>           #5
+>           _new
+>             Bar
+>           : Bar
+>         #6
+>         _branch
+>           n
+>           Foo
+>           #6
+>           _new
+>             Razz
+>           : Razz
+>         #7
+>         _branch
+>           n
+>           Bar
+>           #7
+>           _object
+>             n
+>           : Bar
+>       : Razz
+>     #10
+>     _attr
+>       b
+>       Int
+>       #10
+>       _plus
+>         #10
+>         _plus
+>           #10
+>           _plus
+>             #10
+>             _dispatch
+>               #10
+>               _object
+>                 a
+>               : Razz
+>               doh
+>               (
+>               )
+>             : Int
+>             #10
+>             _dispatch
+>               #10
+>               _object
+>                 g
+>               : Foo
+>               doh
+>               (
+>               )
+>             : Int
+>           : Int
+>           #10
+>           _dispatch
+>             #10
+>             _object
+>               self
+>             : SELF_TYPE
+>             doh
+>             (
+>             )
+>           : Int
+>         : Int
+>         #10
+>         _dispatch
+>           #10
+>           _object
+>             self
+>           : SELF_TYPE
+>           printh
+>           (
+>           )
+>         : Int
+>       : Int
+>     #12
+>     _method
+>       doh
+>       Int
+>       #12
+>       _let
+>         i
+>         Int
+>         #12
+>         _object
+>           h
+>         : Int
+>         #12
+>         _block
+>           #12
+>           _assign
+>             h
+>             #12
+>             _plus
+>               #12
+>               _object
+>                 h
+>               : Int
+>               #12
+>               _int
+>                 2
+>               : Int
+>             : Int
+>           : Int
+>           #12
+>           _object
+>             i
+>           : Int
+>         : Int
+>       : Int
+>     )
+>   #16
+>   _class
+>     Bar
+>     Razz
+>     "/afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl"
+>     (
+>     #18
+>     _attr
+>       c
+>       Int
+>       #18
+>       _dispatch
+>         #18
+>         _object
+>           self
+>         : SELF_TYPE
+>         doh
+>         (
+>         )
+>       : Int
+>     #20
+>     _attr
+>       d
+>       Object
+>       #20
+>       _dispatch
+>         #20
+>         _object
+>           self
+>         : SELF_TYPE
+>         printh
+>         (
+>         )
+>       : Int
+>     )
+>   #24
+>   _class
+>     Razz
+>     Foo
+>     "/afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl"
+>     (
+>     #26
+>     _attr
+>       e
+>       Bar
+>       #26
+>       _typcase
+>         #26
+>         _object
+>           self
+>         : SELF_TYPE
+>         #27
+>         _branch
+>           n
+>           Razz
+>           #27
+>           _new
+>             Bar
+>           : Bar
+>         #28
+>         _branch
+>           n
+>           Bar
+>           #28
+>           _object
+>             n
+>           : Bar
+>       : Bar
+>     #31
+>     _attr
+>       f
+>       Int
+>       #31
+>       _plus
+>         #31
+>         _plus
+>           #31
+>           _plus
+>             #31
+>             _plus
+>               #31
+>               _static_dispatch
+>                 #31
+>                 _object
+>                   a
+>                 : Razz
+>                 Bazz
+>                 doh
+>                 (
+>                 )
+>               : Int
+>               #31
+>               _dispatch
+>                 #31
+>                 _object
+>                   g
+>                 : Foo
+>                 doh
+>                 (
+>                 )
+>               : Int
+>             : Int
+>             #31
+>             _dispatch
+>               #31
+>               _object
+>                 e
+>               : Bar
+>               doh
+>               (
+>               )
+>             : Int
+>           : Int
+>           #31
+>           _dispatch
+>             #31
+>             _object
+>               self
+>             : SELF_TYPE
+>             doh
+>             (
+>             )
+>           : Int
+>         : Int
+>         #31
+>         _dispatch
+>           #31
+>           _object
+>             self
+>           : SELF_TYPE
+>           printh
+>           (
+>           )
+>         : Int
+>       : Int
+>     )
+>   #35
+>   _class
+>     Bazz
+>     IO
+>     "/afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl"
+>     (
+>     #37
+>     _attr
+>       h
+>       Int
+>       #37
+>       _int
+>         1
+>       : Int
+>     #39
+>     _attr
+>       g
+>       Foo
+>       #39
+>       _typcase
+>         #39
+>         _object
+>           self
+>         : SELF_TYPE
+>         #40
+>         _branch
+>           n
+>           Bazz
+>           #40
+>           _new
+>             Foo
+>           : Foo
+>         #41
+>         _branch
+>           n
+>           Razz
+>           #41
+>           _new
+>             Bar
+>           : Bar
+>         #42
+>         _branch
+>           n
+>           Foo
+>           #42
+>           _new
+>             Razz
+>           : Razz
+>         #43
+>         _branch
+>           n
+>           Bar
+>           #43
+>           _object
+>             n
+>           : Bar
+>       : Foo
+>     #46
+>     _attr
+>       i
+>       Object
+>       #46
+>       _dispatch
+>         #46
+>         _object
+>           self
+>         : SELF_TYPE
+>         printh
+>         (
+>         )
+>       : Int
+>     #48
+>     _method
+>       printh
+>       Int
+>       #48
+>       _block
+>         #48
+>         _dispatch
+>           #48
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_int
+>           (
+>           #48
+>           _object
+>             h
+>           : Int
+>           )
+>         : SELF_TYPE
+>         #48
+>         _int
+>           0
+>         : Int
+>       : Int
+>     #50
+>     _method
+>       doh
+>       Int
+>       #50
+>       _let
+>         i
+>         Int
+>         #50
+>         _object
+>           h
+>         : Int
+>         #50
+>         _block
+>           #50
+>           _assign
+>             h
+>             #50
+>             _plus
+>               #50
+>               _object
+>                 h
+>               : Int
+>               #50
+>               _int
+>                 1
+>               : Int
+>             : Int
+>           : Int
+>           #50
+>           _object
+>             i
+>           : Int
+>         : Int
+>       : Int
+>     )
+>   #54
+>   _class
+>     Main
+>     Object
+>     "/afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl"
+>     (
+>     #55
+>     _attr
+>       a
+>       Bazz
+>       #55
+>       _new
+>         Bazz
+>       : Bazz
+>     #56
+>     _attr
+>       b
+>       Foo
+>       #56
+>       _new
+>         Foo
+>       : Foo
+>     #57
+>     _attr
+>       c
+>       Razz
+>       #57
+>       _new
+>         Razz
+>       : Razz
+>     #58
+>     _attr
+>       d
+>       Bar
+>       #58
+>       _new
+>         Bar
+>       : Bar
+>     #60
+>     _method
+>       main
+>       String
+>       #60
+>       _string
+>         "do nothing"
+>       : String
+>     )
 
 
 ==============================================================
