@@ -127,8 +127,8 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         }
     }
     if(classMethods.find(Main) == classMethods.end()){
-        ostream& err_stream = semant_error(curr_class);
-        err_stream << "Any valid COOL program must have a 'Main' class."<<endl;
+        ostream& err_stream = semant_error();
+        err_stream << "Class Main is not defined."<<endl;
         return;
     }
     // The Main class must have a main method defined
@@ -136,14 +136,14 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     if(classMethods[curr_class->getName()].find(main_meth) ==
        classMethods[curr_class->getName()].end()) {
         ostream& err_stream = semant_error(curr_class);
-        err_stream << "The class 'Main' must have a 'main' method."<<endl;
+        err_stream << "No 'main' method in class Main."<<endl;
         return;
     }
     // The main method takes no formal parameters
     std::vector<Symbol> main_signature = classMethods[Main][main_meth];
     if(main_signature.size() != 1) {
         ostream& err_stream = semant_error(curr_class);
-        err_stream << "The 'Main.main' method must take no formal parameters."<<endl;
+        err_stream << "'main' method in class Main should have no arguments."<<endl;
         return;
     }
 }
@@ -372,9 +372,8 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
         }
     }
     if(curr_signature.size()<1){
-        ostream& err_stream = semant_error(symb_class_map[class_name]);
-        err_stream << "getSignature Error: Class '" << class_name->get_string();
-        err_stream << "' does not have method '" << method_name->get_string() << "'" <<  endl;
+        if(semant_debug) printf("getSignature Error: Class '%s' does not have method '%s'\n",
+            class_name->get_string(), method_name->get_string());
     }
 
     return curr_signature;
@@ -513,7 +512,7 @@ void method_class::collectSignature(ClassTable* classtable) {
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Formal '" << formals->nth(i)->getName()->get_string();
              err_stream << "' was declared to be SELF_TYPE which is not allowed" << endl;
         }
@@ -534,13 +533,13 @@ void attr_class::addToScope(ClassTable* classtable) {
         // Check that the attribute type has been defined.
         if(classtable->children.find(type_decl) == classtable->children.end()) {
             if(semant_debug) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined" << endl;
         }
         // Check if an attribute with the same name already exists (since attributes are global)
         if(classtable->objectST.probe(name)!=NULL){
             if(semant_debug) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined." << endl;
         }
         else {
@@ -569,7 +568,7 @@ void method_class::addToScope(ClassTable* classtable) {
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Formal '" << formals->nth(i)->getName()->get_string();
              err_stream << "' was declared to be SELF_TYPE which is not allowed" << endl;
         }
@@ -594,11 +593,12 @@ void method_class::addToScope(ClassTable* classtable) {
                 }
             }
             if(!matches){
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Method formals list or return type does not conform to parent definition" << endl;
-                err_stream << "Method is '" << name->get_string() << "'. Class calling it is '" << curr_class->get_string();
-                err_stream << "'. Old signature starts with '" << old_signature[0]->get_string();
-                err_stream << "'. Return type is '" << return_type->get_string() << endl;
+                err_stream << "    Method is '" << name->get_string() << "'" << endl;
+                err_stream << "    Class calling it is '" << curr_class->get_string() << "'" << endl;
+                err_stream << "    Old signature starts with '" << old_signature[0]->get_string() << "'" << endl;
+                err_stream << "    Return type is '" << return_type->get_string() << "'" << endl;
             }
         }
     }
@@ -629,7 +629,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
     if(lookup != NULL){
         declared_type = *lookup;
     }else{
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Error: Attribute '" << name->get_string() << "'' was not declared in the current scope." << endl;
         return Object;
     }
@@ -644,7 +644,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
             bool inheritance_found = classtable->isDescendantOf(declared_type, inferred_init_type);
             if(!inheritance_found){
                 if(semant_debug) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Attribute init error: Assignment expression type '" << inferred_init_type;
                 err_stream << " does not conform to declared Id type '" << declared_type <<"'." << endl;
                 return Object;
@@ -671,7 +671,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     }else{
         if(semant_debug) printf("Dump of Method Symbol Table: \n");
         if(semant_debug) classtable->methodST.dump();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Error: Did not find method '"<< name->get_string();
         err_stream << "' in the current scope." << endl;
         err_stream << "The class calling is '" << curr_class->get_string() << endl;
@@ -690,7 +690,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         if(!classtable->isDescendantOf(formal_declared_type, formal_inferred_type)){
             // The type of the formal was not declared before
             //(already caught by formal_class::typeCheck)
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Error: In method '" << name->get_string();
             err_stream << "', the type '" << formal_declared_type->get_string();
             err_stream << "' of formal '" << formal_name->get_string();
@@ -705,7 +705,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
                        formal_name->get_string(),
                        name->get_string() );
             }
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Formal error: " << formal_name->get_string();
             err_stream << " is not a distinct formal identifier for method ";
             err_stream << name->get_string() << endl;
@@ -727,7 +727,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
     if(classtable->isDescendantOf(declared_return_type, inferred_return_type)){
         return declared_return_type;
     }else{
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Method error: '" << name->get_string();
         err_stream << "' returns type '" << inferred_return_type->get_string();
         err_stream << "' but type '" << declared_return_type->get_string();
@@ -742,7 +742,7 @@ Symbol formal_class::typeCheck(ClassTable* classtable){
     if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
         return type_decl;
     }else{
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
         return type_decl;
     }
@@ -757,7 +757,7 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 
     // Check if type_decl is defined
     if(classtable->symb_class_map.find(type_decl) == classtable->symb_class_map.end()){
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Error: The type '" << type_decl->get_string() << "'' was not defined." << endl;
     }
     return expr_inferred_type;
@@ -779,7 +779,7 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
 
     if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
             if(semant_debug) printf("Assign error: Expression type does not conform to Id type.\n");
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Assign error: Type '" << inferred_assign_type->get_string();
             err_stream << "' of assigned expression  does not conform to declared type '";
             err_stream << (*declared_type)->get_string() << "' of identifier '" << name->get_string();
@@ -805,7 +805,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     // Check that this type conforms with what is declared
     // This part is what makes it STATIC DISPATCH
     if(!classtable->isDescendantOf(type_name, inferred_calling_expr_type)){
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Static Dispatch Error: Expression type '" << inferred_calling_expr_type->get_string();
         err_stream << "' does not conform to type name '" << type_name->get_string() << "' for method '";
         err_stream << name->get_string() << "'" << endl;
@@ -813,7 +813,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
 
     // check the inferred_calling_expr_type exists
     if(classtable->children.find(inferred_calling_expr_type) == classtable->children.end()){
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Statis cispatch Error: When trying to dispatch method '" << name->get_string();
         err_stream << "' from an expression of type '";
         err_stream << inferred_calling_expr_type->get_string();
@@ -834,7 +834,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             if(inferred_body_expr_type == SELF_TYPE) inferred_body_expr_type = inferred_calling_expr_type;
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
                 if(semant_debug) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
                 err_stream << "' method implementation does not match formals type list. " << endl;
             }
@@ -868,7 +868,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 
     // check the inferred_calling_expr_type exists
     if(classtable->children.find(inferred_calling_expr_type) == classtable->children.end()){
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Dispatch Error: When trying to dispatch method '" << name->get_string();
         err_stream << "' from an expression of type '";
         err_stream << inferred_calling_expr_type->get_string();
@@ -899,14 +899,14 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
                 inferred_body_expr_type = curr_class;}
             // Check that the number of actuals is not more than the number of parameters
             if(j == curr_signature.size()){
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Dispatch Error: The actual number of parameters supplied for '";
                 err_stream << name->get_string() <<"' exceeds ";
                 err_stream << "those the method was defined with" << endl;
                 break;
             }
             if(curr_signature.size() == 0){
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Dispatch Error: Method '" << name->get_string();
                 err_stream << "' was not defined for class '" << inferred_calling_expr_type->get_string();
                 err_stream << "'" << endl;
@@ -917,7 +917,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
                 if(semant_debug) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_body_expr_type->get_string());
-                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
                 err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
                 err_stream << inferred_calling_expr_type->get_string();
                 err_stream << "' do not match the formal types declared for method implementation." << endl;
@@ -925,7 +925,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             ++j;
         }
         if(j < curr_signature.size()){
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Dispatch Error: The actual number of parameters supplied is less than ";
             err_stream << "those the method was defined with" << endl;
         }
@@ -975,7 +975,7 @@ Symbol loop_class::typeCheck(ClassTable* classtable) {
     if(pred_type!=Bool){
         if(semant_debug) printf("Loop Error: the predicate is not of type Bool. \n");
         Symbol curr_class = classtable->getCurrentClass();
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Loop Error: the predicate type '" << pred_type->get_string() <<  "' is not of type Bool." << endl;
     }
     body->typeCheck(classtable);
@@ -1002,7 +1002,7 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
         }
         else {
             if(semant_debug) printf("Case Error: The branches in each case must have distinct types.\n");
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
         }
     }
@@ -1037,7 +1037,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
         var_type = curr_class;
     }
     if(classtable->children.find(var_type) == classtable->children.end()) {
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Let error: Declared type of variable: '" << type_decl->get_string();
         err_stream << "' is not defined." << endl;
     }
@@ -1047,7 +1047,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     if(inferred_init_type != No_type){
         // Ensure initialization type conforms to the declared type of variable
         if(!classtable->isDescendantOf(var_type, inferred_init_type)){
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Let Error: Initialization expression type: '" << inferred_init_type->get_string();
             err_stream << "' does not conform to declared type of variable: ' " << var_type->get_string() << "'" << endl;
         }
@@ -1076,7 +1076,7 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression plus_class error: Cannot add non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression plus_class error: Cannot add non-integer expressions" << endl;
         set_type(Object);
         return get_type();
@@ -1096,7 +1096,7 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression sub_class error: Cannot subtract non-integer expressions" << endl;
         set_type(Object);
         return get_type();
@@ -1116,7 +1116,7 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression mul_class error: Cannot multiply non-integer expressions" << endl;
         set_type(Object);
         return get_type();
@@ -1136,7 +1136,7 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression divide_class error: Cannot divide non-integer expressions" << endl;
         set_type(Object);
         return get_type();
@@ -1153,7 +1153,7 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression neg_class error: Cannot negate a non-integer expression" << endl;
         set_type(Object);
         return get_type();
@@ -1173,7 +1173,7 @@ Symbol lt_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression lt_class error: Cannot compare non-integer expressions" << endl;
         set_type(Object);
         return get_type();
@@ -1194,7 +1194,7 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
         if(inferred_e1_type != inferred_e2_type){
             if(semant_debug) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
             if(semant_debug) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
-            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
             err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
         }
     }
@@ -1214,7 +1214,7 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
     }
     else{
         if(semant_debug) printf("Expression leq_class error: Cannot compare non-integer expressions \n");
-        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Expression leq_class error: Cannot compare non-integer expressions" << endl;
         set_type(Object);
         return get_type();
