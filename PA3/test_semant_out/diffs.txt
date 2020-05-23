@@ -108,14 +108,6 @@ Parser out diff (< : ours, > : theirs) on:  bad_attribute1.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad.cl 
-1,3c1,3
-< bad.cl:16: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
-< bad.cl:17: Dispatch Error: The actual number of parameters supplied for 'init' exceeds those the method was defined with
-< bad.cl:18: Dispatch Error: Method 'iinit' was not defined for class 'C'
----
-> bad.cl:16: In call of method init, type Int of parameter y does not conform to declared type Bool.
-> bad.cl:17: Method init called with wrong number of arguments.
-> bad.cl:18: Dispatch to undefined method iinit.
 
 
 ==============================================================
@@ -201,6 +193,10 @@ Parser out diff (< : ours, > : theirs) on:  good_cond1.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  good_cond2.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  good_isvoid.cl 
 
 
 ==============================================================
