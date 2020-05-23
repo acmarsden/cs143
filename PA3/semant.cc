@@ -413,7 +413,7 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
     if(symbolA == symbolB) return symbolA; // also applies to when they are both self type
     if(symbolA == SELF_TYPE) symbolA = current_class;
     if(symbolB == SELF_TYPE) symbolB = current_class; //As per the manual
-    
+
     //Increment A's ancestors one by one and check against all of B's ancestors
     //First get B's ancestors
     std::set<Symbol> b_ancestors;
@@ -887,6 +887,13 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
                 //inferred_body_expr_type = curr_class; }
                 //inferred_body_expr_type = inferred_calling_expr_type;}
                 inferred_body_expr_type = curr_class;}
+            // Check that the number of actuals is not more than the number of parameters
+            if(j == curr_signature.size()){
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                err_stream << "Dispatch Error: The actual number of parameters supplied exceeds ";
+                err_stream << "those the method was defined with" << endl;
+                break;
+            }
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
@@ -896,7 +903,12 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
                 err_stream << inferred_calling_expr_type->get_string();
                 err_stream << "' do not match the formal types declared for method implementation." << endl;
             }
-                ++j;
+            ++j;
+        }
+        if(j < curr_signature.size()){
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+            err_stream << "Dispatch Error: The actual number of parameters supplied is less than ";
+            err_stream << "those the method was defined with" << endl;
         }
         // Return the return type of the method. This is key part where we need to implement SELF_TYPE
         // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
