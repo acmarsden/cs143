@@ -1232,6 +1232,7 @@ Symbol new__class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol isvoid_class::typeCheck(ClassTable* classtable) {
+    e1->typeCheck(classtable);
     set_type(Bool);
     return get_type();
 }
