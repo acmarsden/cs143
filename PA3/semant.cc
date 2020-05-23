@@ -636,7 +636,8 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
             if(!inheritance_found){
                 if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-                err_stream << "Attribute init error: Assignment expression type does not conform to declared Id type." << endl;
+                err_stream << "Attribute init error: Assignment expression type '" << inferred_init_type;
+                err_stream << " does not conform to declared Id type '" << declared_type <<"'." << endl;
                 return Object;
             }
         }
@@ -786,12 +787,14 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
 Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
-    Symbol inferred_expr_type = expr->typeCheck(classtable);
+    Symbol inferred_calling_expr_type = expr->typeCheck(classtable);
+    // Before getting signature resolve the type of the inferred_calling_expr_type
+    if(inferred_calling_expr_type == SELF_TYPE) inferred_calling_expr_type = curr_class;
     // Check that this type conforms with what is declared
     // This part is what makes it STATIC DISPATCH
-    if(!classtable->isDescendantOf(type_name, inferred_expr_type)){
+    if(!classtable->isDescendantOf(type_name, inferred_calling_expr_type)){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-        err_stream << "Static Dispatch Error: Expression type '" << inferred_expr_type->get_string();
+        err_stream << "Static Dispatch Error: Expression type '" << inferred_calling_expr_type->get_string();
         err_stream << "' does not conform to type name '" << type_name->get_string() << "' for method '";
         err_stream << name->get_string() << "'" << endl;
     }
@@ -801,10 +804,12 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
     int j = 1;
     for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
         Expression curr_expr = actual->nth(i);
-        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+        Symbol inferred_body_expr_type = curr_expr->typeCheck(classtable);
         // Check that this type inherits from the type given in the method declaration
         // Otherwise return an error
-        if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
+        //SELF_TYPE with dispatch: If the body of the method has SELF_TYPE its type should be the class calling the method, not the current class
+        if(inferred_body_expr_type == SELF_TYPE) inferred_body_expr_type = inferred_calling_expr_type;
+        if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
             if(_DEBUG) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
@@ -813,64 +818,60 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
-    // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    //if(curr_signature[0] == SELF_TYPE) {
-    //    set_type(inferred_expr_type);
-    //}
-    //else{
-    //    set_type(curr_signature[0]);
-    //}
+    // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
     set_type(curr_signature[0]);
+    if(curr_signature[0] == SELF_TYPE) {
+        if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
+        return inferred_calling_expr_type;
+    }else{
     return get_type();
+    }
 }
 
 
 Symbol dispatch_class::typeCheck(ClassTable* classtable) {
-
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
-    Symbol inferred_expr_type = expr->typeCheck(classtable);
+    Symbol inferred_calling_expr_type = expr->typeCheck(classtable);
     if(_DEBUG) printf("Method Dispatch: In class '%s' an id that resolved to type '%s' is trying to call a method\n",
-            curr_class->get_string(), inferred_expr_type->get_string());
-    if(inferred_expr_type == SELF_TYPE){
-        inferred_expr_type = classtable->getCurrentClass();
-    }
+            curr_class->get_string(), inferred_calling_expr_type->get_string());
     // Check that method with "name" is implemented as a method of some parent of the expression type
-    Symbol curr_type = inferred_expr_type;
-    std::vector<Symbol> curr_signature = classtable->getSignature(inferred_expr_type, name);
+    Symbol curr_type = inferred_calling_expr_type;
+    // Before getting signature resolve the type of the inferred_calling_expr_type
+    if(inferred_calling_expr_type == SELF_TYPE) inferred_calling_expr_type = curr_class;
+    std::vector<Symbol> curr_signature = classtable->getSignature(inferred_calling_expr_type, name);
     for(uint i = 0; i<curr_signature.size(); i++){
-        if(_DEBUG) printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());
+        if(_DEBUG) printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());    
     }
     // Loop through the expressions and get their inferred return types
     int j = 1;
     for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
         Expression curr_expr = actual->nth(i);
-        Symbol inferred_curr_expr_type = curr_expr->typeCheck(classtable);
+        Symbol inferred_body_expr_type = curr_expr->typeCheck(classtable);
+        //SELF_TYPE with dispatch: If the body of the method has SELF_TYPE its type should be the class calling the method, not the current class
+        if(inferred_body_expr_type == SELF_TYPE) {
+            if(_DEBUG) printf("The method has an expression of type SELF_TYPE, which is being replaced with type %s\n", inferred_body_expr_type->get_string());
+            inferred_body_expr_type = inferred_calling_expr_type;}
         // Check that this type inherits from the type given in the method declaration
         // Otherwise return an error
-        if(!classtable->isDescendantOf(curr_signature[j], inferred_curr_expr_type)){
-            if(_DEBUG) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_curr_expr_type->get_string());
+        if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
+            if(_DEBUG) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_body_expr_type->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
-            err_stream << inferred_expr_type->get_string();
+            err_stream << inferred_calling_expr_type->get_string();
             err_stream << "' do not match the formal types declared for method implementation." << endl;
         }
             ++j;
     }
     // Return the return type of the method. This is key part where we need to implement SELF_TYPE
-    // If curr_signature[0] == SELF_TYPE then we return inferred_expr_type
-    // Now once that we know that the expr calling the method inherits from a class which implements the method,
-    // if the return type is self type then we set the return type to be the type of the expression making the method call.
-    //if(curr_signature[0] == SELF_TYPE) {
-    //    if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_expr_type->get_string());
-    //    set_type(inferred_expr_type);
-    //}
-    //else{
-    //    if(_DEBUG) printf("Dispatch type is: '%s'\n", curr_signature[0]->get_string());
-    //    set_type(curr_signature[0]);
-    //}
+    // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
     set_type(curr_signature[0]);
+    if(curr_signature[0] == SELF_TYPE) {
+        if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
+        return inferred_calling_expr_type;
+    }else{
     return get_type();
+    }
 }
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
