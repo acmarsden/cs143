@@ -770,6 +770,13 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     if(semant_debug) printf("looking for %s in scope \n", name->get_string());
     if(semant_debug) classtable->objectST.dump();
     Symbol* declared_type = classtable->objectST.lookup(name);
+    if(declared_type == NULL){
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
+        err_stream << "Assign error: Variable '" << name->get_string();
+        err_stream << "' has not been defined" << endl;
+        set_type(Object);
+        return get_type();
+    }
     Symbol declared_type_deref = *declared_type;
     if(semant_debug) printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
