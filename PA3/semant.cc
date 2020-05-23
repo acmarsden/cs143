@@ -899,9 +899,18 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Check that the number of actuals is not more than the number of parameters
             if(j == curr_signature.size()){
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
-                err_stream << "Dispatch Error: The actual number of parameters supplied exceeds ";
+                err_stream << "Dispatch Error: The actual number of parameters supplied for '";
+                err_stream << name->get_string() <<"' exceeds ";
                 err_stream << "those the method was defined with" << endl;
                 break;
+            }
+            if(curr_signature.size() == 0){
+                ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
+                err_stream << "Dispatch Error: Method '" << name->get_string();
+                err_stream << "' was not defined for class '" << inferred_calling_expr_type->get_string();
+                err_stream << "'" << endl;
+                set_type(Object);
+                return Object;
             }
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
