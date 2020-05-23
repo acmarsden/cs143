@@ -97,6 +97,14 @@ Parser out diff (< : ours, > : theirs) on:  bad_assignmentex.cl
 
 
 ==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_attribute1.cl 
+1c1
+< bad_attribute1.cl:12: Attribute init error: Assignment expression type 'A does not conform to declared Id type 'String'.
+---
+> bad_attribute1.cl:12: Inferred type A of initialization of attribute b does not conform to declared type String.
+
+
+==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad.cl 
 1,3c1,3
 < bad.cl:16: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
@@ -106,6 +114,18 @@ Parser out diff (< : ours, > : theirs) on:  bad.cl
 > bad.cl:16: In call of method init, type Int of parameter y does not conform to declared type Bool.
 > bad.cl:17: Method init called with wrong number of arguments.
 > bad.cl:18: Dispatch to undefined method iinit.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_cond1.cl 
+1c1
+< bad_cond1.cl:15: Method error: 'condcheck' returns type 'Object' but type 'Int' was declared.
+---
+> bad_cond1.cl:16: Predicate of 'if' does not have type Bool.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_cond2.cl 
 
 
 ==============================================================
@@ -164,6 +184,14 @@ Parser out diff (< : ours, > : theirs) on:  good.cl
 
 
 ==============================================================
+Parser out diff (< : ours, > : theirs) on:  good_cond1.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  good_cond2.cl 
+
+
+==============================================================
 Parser out diff (< : ours, > : theirs) on:  inheritance_cycle.cl 
 1,2c1,3
 < inheritance_cycle.cl:11: C is part of a cycle in the inheritance graph.
@@ -184,5 +212,17 @@ Parser out diff (< : ours, > : theirs) on:  no_MainClass.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  no_mainMethod.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  selftype1.cl 
+1,5c1
+< selftype1.cl:15: Method formals list or return type does not conform to parent definition
+<     Method is 'testfun'
+<     Class calling it is 'Sully'
+<     Old signature starts with 'Silly'
+<     Return type is 'SELF_TYPE'
+---
+> selftype1.cl:15: In redefined method testfun, return type SELF_TYPE is different from original return type Silly.
 
 
