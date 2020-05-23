@@ -390,8 +390,10 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = Object;
+    bool replaced_self_type = false;
     if(symbol_vec[0] == SELF_TYPE){
         join = curr_class;
+        replaced_self_type = true;
     }else{ join = symbol_vec[0];}
 
     // Instead of SELF_TYPE we make sure each type in symbol_vec is known to us
@@ -414,6 +416,9 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
             join = compute_join_pair(join, symbol_vec[i]);
             seen_symbols.insert(symbol_vec[i]);
         }
+    }
+    if(replaced_self_type && join==curr_class){
+        join = SELF_TYPE;
     }
     return join;
 }
