@@ -1244,6 +1244,7 @@ Symbol string_const_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     if(type_name==SELF_TYPE){
         set_type(classtable->getCurrentClass());
     }
