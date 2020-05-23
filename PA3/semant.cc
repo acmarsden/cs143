@@ -889,10 +889,16 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         for(int i=actual->first(); actual->more(i); i=actual->next(i)) {
             Expression curr_expr = actual->nth(i);
             Symbol inferred_body_expr_type = curr_expr->typeCheck(classtable);
+            //if(curr_expr == SELF_TYPE){
+            //    printf("FOUND SELF!!!!");
+            //    inferred_boyd_expr_type = curr_class;
+            //}
             //SELF_TYPE with dispatch: If the body of the method has SELF_TYPE its type should be the class calling the method, not the current class
             if(inferred_body_expr_type == SELF_TYPE) {
                 if(_DEBUG) printf("The method has an expression of type SELF_TYPE, which is being replaced with type %s\n", inferred_body_expr_type->get_string());
-                inferred_body_expr_type = inferred_calling_expr_type;}
+                //inferred_body_expr_type = curr_class; }
+                //inferred_body_expr_type = inferred_calling_expr_type;}
+                inferred_body_expr_type = curr_class;}
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
