@@ -389,23 +389,10 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
     if(_DEBUG) printf("Computing a join on several Symbols\n");
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
-    Symbol join = Object;
-    //bool replaced_self_type = false;
-    //if(symbol_vec[0] == SELF_TYPE){
-    //    join = curr_class;
-    //    replaced_self_type = true;
-    //}else{ join = symbol_vec[0];}
-    join = symbol_vec[0];
+    Symbol join = symbol_vec[0];
 
-    // Instead of SELF_TYPE we make sure each type in symbol_vec is known to us
-    //if(children.find(join) == children.end()) {
-    //    if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", join->get_string());
-    //        ostream& err_stream = semant_error(symb_class_map[curr_class]);
-    //        err_stream << "'compute_join' error: '" << join->get_string() << "'' is not defined" << endl;
-    //    }
     seen_symbols.insert(join);
     for(uint i=1; i<symbol_vec.size(); ++i){
-        //if(symbol_vec[i] == SELF_TYPE){symbol_vec[i] = curr_class;}
         if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
             // Make sure symbol_vec[i] is known to us
             if(symbol_vec[i] != SELF_TYPE && children.find(symbol_vec[i]) == children.end()) {
@@ -418,9 +405,6 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
             seen_symbols.insert(symbol_vec[i]);
         }
     }
-    //if(replaced_self_type && join==curr_class){
-    //    join = SELF_TYPE;
-    //}
     return join;
 }
 
