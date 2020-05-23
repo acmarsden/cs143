@@ -92,7 +92,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     Class_ curr_class;
     for(int i=classes->first(); classes->more(i); i=classes->next(i)) {
         curr_class = classes->nth(i);
-        if(_DEBUG) printf("%s: %s\n", curr_class->getName()->get_string(),
+        if(semant_debug) printf("%s: %s\n", curr_class->getName()->get_string(),
                curr_class->getParent()->get_string());
         Symbol node = curr_class->getName();
         Symbol parent = curr_class->getParent();
@@ -114,14 +114,14 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         }
 
         // Now loop over features and collect method signatures
-        if(_DEBUG) printf("Adding class %s \n", curr_class->getName()->get_string());
+        if(semant_debug) printf("Adding class %s \n", curr_class->getName()->get_string());
         addSignature(curr_class);
     }
 
     _has_cycle = has_cycle_bfs();
 
     // Each program must have a Main class defined
-    if(_DEBUG){
+    if(semant_debug){
         for(auto it = classMethods.begin(); it!=classMethods.end(); ++it){
             printf("key: %s\n", it->first->get_string());
         }
@@ -162,7 +162,7 @@ void ClassTable::addSignature(Class_ class_){
 bool ClassTable::has_cycle_bfs() {
     std::set<Symbol> discovered;
     std::queue<Symbol> Q;
-    if(_DEBUG) printf("Number of children: %lu\n", children.size());
+    if(semant_debug) printf("Number of children: %lu\n", children.size());
     discovered.insert(Object);
     Q.push(Object);
     while(!Q.empty() || discovered.size() < children.size()) {
@@ -175,17 +175,17 @@ bool ClassTable::has_cycle_bfs() {
             }
         }
         Symbol current_vertex = Q.front();
-        if(_DEBUG) printf("Visiting: %s\n", current_vertex->get_string());
+        if(semant_debug) printf("Visiting: %s\n", current_vertex->get_string());
         Q.pop();
         std::vector<Symbol> current_children = children[current_vertex];
         for (auto it=current_children.begin(); it!=current_children.end(); ++it) {
             Symbol current_child = *it;
-            if(_DEBUG) printf("bfs visiting: %s\n", current_child->get_string());
-            if(_DEBUG) printf("%d\n", discovered.find(current_child) == discovered.end());
+            if(semant_debug) printf("bfs visiting: %s\n", current_child->get_string());
+            if(semant_debug) printf("%d\n", discovered.find(current_child) == discovered.end());
             if(discovered.find(current_child) == discovered.end()) {
                 // The node hasn't already been discovered
                 Q.push(current_child);
-                if(_DEBUG) printf("capacity: %lu\n", Q.size());
+                if(semant_debug) printf("capacity: %lu\n", Q.size());
                 discovered.insert(current_child);
             }
             else {
@@ -355,16 +355,16 @@ bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
 }
 
 std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_name) {
-    if(_DEBUG) printf("Called getSignature on class '%s'\n", class_name->get_string());
+    if(semant_debug) printf("Called getSignature on class '%s'\n", class_name->get_string());
     std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
     while(still_searching_for_method){
-        if(_DEBUG) printf("Searching for method '%s' in class %s\n", method_name->get_string(), class_name->get_string());
-        if(_DEBUG) printf("Signature size found:  %lu\n", curr_signature.size());
+        if(semant_debug) printf("Searching for method '%s' in class %s\n", method_name->get_string(), class_name->get_string());
+        if(semant_debug) printf("Signature size found:  %lu\n", curr_signature.size());
         if(curr_signature.size()>0 || class_name == Object){
             still_searching_for_method = false;
-            if(_DEBUG && curr_signature.size()>0) printf("Signature found from class '%s' with return type '%s' \n", class_name->get_string(), curr_signature[0]->get_string());
-            if(_DEBUG && curr_signature.size()==0) printf("No signature found from class '%s' \n", class_name->get_string());
+            if(semant_debug && curr_signature.size()>0) printf("Signature found from class '%s' with return type '%s' \n", class_name->get_string(), curr_signature[0]->get_string());
+            if(semant_debug && curr_signature.size()==0) printf("No signature found from class '%s' \n", class_name->get_string());
         }
         else{
             class_name = symb_class_map[class_name]->getParent();
@@ -381,14 +381,14 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
 }
 
 std::vector<Symbol> ClassTable::getSignature(Symbol method_name) {
-    if(_DEBUG) printf("Called getSignature on current class\n");
+    if(semant_debug) printf("Called getSignature on current class\n");
     return getSignature(getCurrentClass(), method_name);
 }
 
 Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 //Sequentially compute the least type C such that C_old \leq C and Type_i \leq C
 //Set C_old to be C
-    if(_DEBUG) printf("Computing a join on several Symbols\n");
+    if(semant_debug) printf("Computing a join on several Symbols\n");
     Symbol curr_class = getCurrentClass();
     std::set<Symbol> seen_symbols;
     Symbol join = symbol_vec[0];
@@ -398,7 +398,7 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
         if(seen_symbols.find(symbol_vec[i])==seen_symbols.end()){
             // Make sure symbol_vec[i] is known to us
             if(symbol_vec[i] != SELF_TYPE && children.find(symbol_vec[i]) == children.end()) {
-                if(_DEBUG) printf("'compute_join' error: '%s' is not defined\n", symbol_vec[i]->get_string());
+                if(semant_debug) printf("'compute_join' error: '%s' is not defined\n", symbol_vec[i]->get_string());
                 ostream& err_stream = semant_error(symb_class_map[curr_class]);
                 err_stream << "'compute_join' error: '" << symbol_vec[i]->get_string() << "'' is not defined" << endl;
             }
@@ -411,7 +411,7 @@ Symbol ClassTable::compute_join(std::vector<Symbol> symbol_vec) {
 }
 
 Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
-    if(_DEBUG) printf("Computing a join on pair %s, %s\n", symbolA->get_string(), symbolB->get_string());
+    if(semant_debug) printf("Computing a join on pair %s, %s\n", symbolA->get_string(), symbolB->get_string());
     if(symbolA == symbolB) return symbolA; // also applies to when they are both self type
     if(symbolA == SELF_TYPE) symbolA = current_class;
     if(symbolB == SELF_TYPE) symbolB = current_class; //As per the manual
@@ -425,14 +425,14 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
         if(curr_symbolB == Object) found_all_ancestors = true;
         b_ancestors.insert(curr_symbolB);
         curr_symbolB = symb_class_map[curr_symbolB]->getParent();
-        if(_DEBUG) printf("JOIN: adding %s to ancestors list\n", curr_symbolB->get_string());
+        if(semant_debug) printf("JOIN: adding %s to ancestors list\n", curr_symbolB->get_string());
     }
-    if(_DEBUG) printf("JOIN: Finished gathering all ancestors of type %s \n", symbolB->get_string());
+    if(semant_debug) printf("JOIN: Finished gathering all ancestors of type %s \n", symbolB->get_string());
     Symbol curr_symbolA = symbolA;
     bool found_join = false;
     Symbol join_pair = Object;
     while(!found_join){
-        if(_DEBUG) printf("JOIN: checking %s against ancestors list\n", curr_symbolA->get_string());
+        if(semant_debug) printf("JOIN: checking %s against ancestors list\n", curr_symbolA->get_string());
         if(b_ancestors.find(curr_symbolA)!=b_ancestors.end()){
             //Found join
             join_pair = curr_symbolA;
@@ -440,7 +440,7 @@ Symbol ClassTable::compute_join_pair(Symbol symbolA, Symbol symbolB) {
         }
         curr_symbolA =  symb_class_map[curr_symbolA]->getParent();
     }
-    if(_DEBUG) printf("Join resolved to type %s\n", join_pair->get_string());
+    if(semant_debug) printf("Join resolved to type %s\n", join_pair->get_string());
     return join_pair;
 }
 
@@ -462,7 +462,7 @@ void ClassTable::run_type_checks()
 void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
 {
     visited->insert(curr_class);
-    if(_DEBUG) printf("DFS visiting: %s\n", curr_class->get_string());
+    if(semant_debug) printf("DFS visiting: %s\n", curr_class->get_string());
     check_features(curr_class);
     if(children[curr_class].size() != 0){
         std::vector<Symbol> curr_children = children[curr_class];
@@ -472,8 +472,8 @@ void ClassTable::run_type_checks_r(Symbol curr_class, std::set<Symbol>* visited)
                 objectST.enterscope();
                 methodST.enterscope();
                 run_type_checks_r(*it, visited);
-                if(_DEBUG) printf("Dumping objectST\n");
-                if(_DEBUG) objectST.dump();
+                if(semant_debug) printf("Dumping objectST\n");
+                if(semant_debug) objectST.dump();
                 objectST.exitscope();
                 methodST.exitscope();
             }
@@ -521,8 +521,8 @@ void method_class::collectSignature(ClassTable* classtable) {
     }
 
     // and add the method signature to this scope-independent data structure
-    if(_DEBUG) printf("WARNING WARNING WARNING WARNING WE ARE ADDING TO THE CLASSMETHODS TABLE!!!! CLASS: '%s'\n", curr_class->get_string());
-    if(_DEBUG) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
+    if(semant_debug) printf("WARNING WARNING WARNING WARNING WE ARE ADDING TO THE CLASSMETHODS TABLE!!!! CLASS: '%s'\n", curr_class->get_string());
+    if(semant_debug) printf("Added a signature of size %lu to %s.%s\n", data.size(), curr_class->get_string(), name->get_string());
     classtable->classMethods[curr_class][name] = data;
 }
 
@@ -533,13 +533,13 @@ void attr_class::addToScope(ClassTable* classtable) {
            curr_class != IO && curr_class != Bool){
         // Check that the attribute type has been defined.
         if(classtable->children.find(type_decl) == classtable->children.end()) {
-            if(_DEBUG) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
+            if(semant_debug) printf("Attribute type error: '%s' is not defined\n", type_decl->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Attribute type error: '" << type_decl->get_string() << "'' is not defined" << endl;
         }
         // Check if an attribute with the same name already exists (since attributes are global)
         if(classtable->objectST.probe(name)!=NULL){
-            if(_DEBUG) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
+            if(semant_debug) printf("Error: Attribute '%s' has already been defined.\n", name->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Error: Attribute '"<< name->get_string() << "'' has already been defined." << endl;
         }
@@ -565,7 +565,7 @@ void method_class::addToScope(ClassTable* classtable) {
     //    data.push_back(return_type);
     //}
     data.push_back(return_type);
-    if(_DEBUG) printf("The declared return type is '%s'\n", return_type->get_string());
+    if(semant_debug) printf("The declared return type is '%s'\n", return_type->get_string());
     for(int i=formals->first(); formals->more(i); i=formals->next(i)) {
         Symbol formal_type = formals->nth(i)->getType();
         if(formal_type == SELF_TYPE) {
@@ -587,7 +587,7 @@ void method_class::addToScope(ClassTable* classtable) {
         Symbol parent_name = classtable->symb_class_map[curr_class]->getParent();
         if(classtable->children.find(parent_name)!=classtable->children.end()){
             std::vector<Symbol> old_signature = classtable->getSignature(parent_name, name);
-            if(_DEBUG) printf("The return type of the signature is '%s'\n", old_signature[0]->get_string());
+            if(semant_debug) printf("The return type of the signature is '%s'\n", old_signature[0]->get_string());
             for(uint i=0; i<data.size(); ++i){
                 if(data[i] != old_signature[i]){
                     matches = false;
@@ -643,7 +643,7 @@ Symbol attr_class::typeCheck(ClassTable* classtable) {
         if(declared_type!=inferred_init_type){
             bool inheritance_found = classtable->isDescendantOf(declared_type, inferred_init_type);
             if(!inheritance_found){
-                if(_DEBUG) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
+                if(semant_debug) printf("Attribute init error: Assignment expression type does not conform to declared Id type.\n");
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Attribute init error: Assignment expression type '" << inferred_init_type;
                 err_stream << " does not conform to declared Id type '" << declared_type <<"'." << endl;
@@ -669,8 +669,8 @@ Symbol method_class::typeCheck(ClassTable* classtable){
         signature = classtable->getSignature(name);
         declared_return_type = signature[0];
     }else{
-        if(_DEBUG) printf("Dump of Method Symbol Table: \n");
-        if(_DEBUG) classtable->methodST.dump();
+        if(semant_debug) printf("Dump of Method Symbol Table: \n");
+        if(semant_debug) classtable->methodST.dump();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Error: Did not find method '"<< name->get_string();
         err_stream << "' in the current scope." << endl;
@@ -700,7 +700,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 
         // Check that the identifiers in the formal params are distinct
         if(formal_names.find(formal_name) != formal_names.end()){
-            if(_DEBUG) {
+            if(semant_debug) {
                 printf("Formal error: %s is not a distinct formal identifier for method %s",
                        formal_name->get_string(),
                        name->get_string() );
@@ -711,7 +711,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
             err_stream << name->get_string() << endl;
         }
         formal_names.insert(formal_name);
-        if(_DEBUG) printf("Adding to scope name %s of type %s \n", formal_name->get_string(), formal_declared_type->get_string());
+        if(semant_debug) printf("Adding to scope name %s of type %s \n", formal_name->get_string(), formal_declared_type->get_string());
         classtable->objectST.addid(formal_name, &(signature[j]));
         ++j;
     }
@@ -764,21 +764,21 @@ Symbol branch_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol assign_class::typeCheck(ClassTable* classtable) {
-    if(_DEBUG) printf("Type checking an assignment \n");
+    if(semant_debug) printf("Type checking an assignment \n");
     Symbol curr_class = classtable->getCurrentClass();
     // First get O(Id), i.e. the type the environment gives to the id
-    if(_DEBUG) printf("looking for %s in scope \n", name->get_string());
-    if(_DEBUG) classtable->objectST.dump();
+    if(semant_debug) printf("looking for %s in scope \n", name->get_string());
+    if(semant_debug) classtable->objectST.dump();
     Symbol* declared_type = classtable->objectST.lookup(name);
     Symbol declared_type_deref = *declared_type;
-    if(_DEBUG) printf("The declared type is '%s' \n", declared_type_deref->get_string());
+    if(semant_debug) printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
     Symbol inferred_assign_type = expr->typeCheck(classtable);
     // Check that the type of the expression conforms to declared_type
     // i.e. that inferred_assign_type inherits from declared_type
 
     if(!classtable->isDescendantOf(*declared_type, inferred_assign_type)) {
-            if(_DEBUG) printf("Assign error: Expression type does not conform to Id type.\n");
+            if(semant_debug) printf("Assign error: Expression type does not conform to Id type.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Assign error: Type '" << inferred_assign_type->get_string();
             err_stream << "' of assigned expression  does not conform to declared type '";
@@ -833,7 +833,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
             //SELF_TYPE with dispatch: If the body of the method has SELF_TYPE its type should be the class calling the method, not the current class
             if(inferred_body_expr_type == SELF_TYPE) inferred_body_expr_type = inferred_calling_expr_type;
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
-                if(_DEBUG) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
+                if(semant_debug) printf("Static Dispatch Error: Declared type's method implementation does not have associated formal type for method.\n");
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Static Dispatch Error: Declared type '" << type_name->get_string();
                 err_stream << "' method implementation does not match formals type list. " << endl;
@@ -843,7 +843,7 @@ Symbol static_dispatch_class::typeCheck(ClassTable* classtable) {
         // Return the return type of the method. This is key part where we need to implement SELF_TYPE
         // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
         if(curr_signature[0] == SELF_TYPE) {
-            if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
+            if(semant_debug) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
             set_type(inferred_calling_expr_type);
         }else{
             set_type(curr_signature[0]);
@@ -857,7 +857,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
     // First get the type for the base expression e_0
     Symbol inferred_calling_expr_type = expr->typeCheck(classtable);
-    if(_DEBUG) printf("Method Dispatch: In class '%s' an id that resolved to type '%s' is trying to call a method\n",
+    if(semant_debug) printf("Method Dispatch: In class '%s' an id that resolved to type '%s' is trying to call a method\n",
             curr_class->get_string(), inferred_calling_expr_type->get_string());
 
     // Check that method with "name" is implemented as a method of some parent of the expression type
@@ -877,7 +877,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         return Object;
     }else{
         std::vector<Symbol> curr_signature = classtable->getSignature(inferred_calling_expr_type, name);
-        if(_DEBUG){
+        if(semant_debug){
             for(uint i = 0; i<curr_signature.size(); i++){
                 printf("Curr Sign: '%s'\n", curr_signature[i]->get_string());
             }
@@ -893,7 +893,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             //}
             //SELF_TYPE with dispatch: If the body of the method has SELF_TYPE its type should be the class calling the method, not the current class
             if(inferred_body_expr_type == SELF_TYPE) {
-                if(_DEBUG) printf("The method has an expression of type SELF_TYPE, which is being replaced with type %s\n", inferred_body_expr_type->get_string());
+                if(semant_debug) printf("The method has an expression of type SELF_TYPE, which is being replaced with type %s\n", inferred_body_expr_type->get_string());
                 //inferred_body_expr_type = curr_class; }
                 //inferred_body_expr_type = inferred_calling_expr_type;}
                 inferred_body_expr_type = curr_class;}
@@ -916,7 +916,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
             // Check that this type inherits from the type given in the method declaration
             // Otherwise return an error
             if(!classtable->isDescendantOf(curr_signature[j], inferred_body_expr_type)){
-                if(_DEBUG) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_body_expr_type->get_string());
+                if(semant_debug) printf("curr_signature: %s \n inferred_curr_expr_type: %s \n", curr_signature[j]->get_string(), inferred_body_expr_type->get_string());
                 ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
                 err_stream << "Dispatch Error: The formal types listed in dispatch call for expression of type '";
                 err_stream << inferred_calling_expr_type->get_string();
@@ -932,7 +932,7 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
         // Return the return type of the method. This is key part where we need to implement SELF_TYPE
         // If curr_signature[0] == SELF_TYPE then we return inferred_calling_expr_type
         if(curr_signature[0] == SELF_TYPE && inferred_calling_expr_type!=curr_class) {
-            if(_DEBUG) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
+            if(semant_debug) printf("Dispatch type SELF_TYPE resolved to: '%s'\n", inferred_calling_expr_type->get_string());
             set_type(inferred_calling_expr_type);
         }else{
             set_type(curr_signature[0]);
@@ -944,16 +944,16 @@ Symbol dispatch_class::typeCheck(ClassTable* classtable) {
 
 Symbol cond_class::typeCheck(ClassTable* classtable) {
     Symbol curr_class = classtable->getCurrentClass();
-    if(_DEBUG) printf("Type chcecking an if statement\n");
+    if(semant_debug) printf("Type chcecking an if statement\n");
     Symbol pred_type = pred->typeCheck(classtable);
-    if(_DEBUG) printf("IF: if resolved to type %s \n", pred_type->get_string());
+    if(semant_debug) printf("IF: if resolved to type %s \n", pred_type->get_string());
     Symbol then_exp_type = then_exp->typeCheck(classtable);
-    if(_DEBUG) printf("IF: then resolved to type %s \n", then_exp_type->get_string());
+    if(semant_debug) printf("IF: then resolved to type %s \n", then_exp_type->get_string());
     Symbol else_exp_type = else_exp->typeCheck(classtable);
-    if(_DEBUG) printf("IF: else resolved to type %s \n", else_exp_type->get_string());
+    if(semant_debug) printf("IF: else resolved to type %s \n", else_exp_type->get_string());
     Symbol return_type = Object;
     if(pred_type!=Bool){
-        if(_DEBUG) printf("If-Statement Error: the predicate is not of type Bool.\n");
+        if(semant_debug) printf("If-Statement Error: the predicate is not of type Bool.\n");
     }
     else {
         //Compute join of then_exp_type and else_exp_type
@@ -962,9 +962,9 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
         symbol_vec.push_back(then_exp_type);
         //if(else_exp_type == SELF_TYPE) else_exp_type = curr_class;
         symbol_vec.push_back(else_exp_type);
-        if(_DEBUG) printf("IF: computing join of %s and %s\n", then_exp_type->get_string(), else_exp_type->get_string());
+        if(semant_debug) printf("IF: computing join of %s and %s\n", then_exp_type->get_string(), else_exp_type->get_string());
         return_type = classtable->compute_join(symbol_vec);
-        if(_DEBUG) printf("IF: join resolved to type %s.\n", return_type->get_string());
+        if(semant_debug) printf("IF: join resolved to type %s.\n", return_type->get_string());
     }
     set_type(return_type);
     return get_type();
@@ -973,7 +973,7 @@ Symbol cond_class::typeCheck(ClassTable* classtable) {
 Symbol loop_class::typeCheck(ClassTable* classtable) {
     Symbol pred_type = pred->typeCheck(classtable);
     if(pred_type!=Bool){
-        if(_DEBUG) printf("Loop Error: the predicate is not of type Bool. \n");
+        if(semant_debug) printf("Loop Error: the predicate is not of type Bool. \n");
         Symbol curr_class = classtable->getCurrentClass();
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Loop Error: the predicate type '" << pred_type->get_string() <<  "' is not of type Bool." << endl;
@@ -1001,7 +1001,7 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
             declared_types_set.insert(branch_declared_type);
         }
         else {
-            if(_DEBUG) printf("Case Error: The branches in each case must have distinct types.\n");
+            if(semant_debug) printf("Case Error: The branches in each case must have distinct types.\n");
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Case Error: The branches in each case must have distinct types." << endl;
         }
@@ -1012,19 +1012,19 @@ Symbol typcase_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol block_class::typeCheck(ClassTable* classtable) {
-    if(_DEBUG) printf("Type checking a block\n");
+    if(semant_debug) printf("Type checking a block\n");
     Expression curr_expr;
     for(int i=body->first(); body->more(i); i=body->next(i)) {
         curr_expr = body->nth(i);
         //Though we don't use we do need to typecheck
-        if(_DEBUG) printf("Type checking first expression in block\n");
+        if(semant_debug) printf("Type checking first expression in block\n");
         Symbol curr_type = curr_expr->typeCheck(classtable);
     }
-    if(_DEBUG) printf("Type checking the last expr in  block\n");
+    if(semant_debug) printf("Type checking the last expr in  block\n");
     Symbol inferred_type = curr_expr->typeCheck(classtable);
-    if(_DEBUG) printf("Block resolved to type %s\n", inferred_type->get_string());
+    if(semant_debug) printf("Block resolved to type %s\n", inferred_type->get_string());
     set_type(inferred_type);
-    if(_DEBUG) printf("Type was set to %s\n", get_type()->get_string());
+    if(semant_debug) printf("Type was set to %s\n", get_type()->get_string());
     return get_type();
 }
 
@@ -1075,7 +1075,7 @@ Symbol plus_class::typeCheck(ClassTable* classtable) {
         return get_type();
     }
     else{
-        if(_DEBUG) printf("Expression plus_class error: Cannot add non-integer expressions \n");
+        if(semant_debug) printf("Expression plus_class error: Cannot add non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression plus_class error: Cannot add non-integer expressions" << endl;
         set_type(Object);
@@ -1095,7 +1095,7 @@ Symbol sub_class::typeCheck(ClassTable* classtable) {
         return get_type();
     }
     else{
-        if(_DEBUG) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
+        if(semant_debug) printf("Expression sub_class error: Cannot subtract non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression sub_class error: Cannot subtract non-integer expressions" << endl;
         set_type(Object);
@@ -1115,7 +1115,7 @@ Symbol mul_class::typeCheck(ClassTable* classtable) {
         return get_type();
     }
     else{
-        if(_DEBUG)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
+        if(semant_debug)printf("Expression mul_class error: Cannot multiply non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression mul_class error: Cannot multiply non-integer expressions" << endl;
         set_type(Object);
@@ -1135,7 +1135,7 @@ Symbol divide_class::typeCheck(ClassTable* classtable) {
         return get_type();
     }
     else{
-        if(_DEBUG) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
+        if(semant_debug) printf("Expression divide_class error: Cannot divide non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression divide_class error: Cannot divide non-integer expressions" << endl;
         set_type(Object);
@@ -1152,7 +1152,7 @@ Symbol neg_class::typeCheck(ClassTable* classtable) {
         set_type(Int);
     }
     else{
-        if(_DEBUG) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
+        if(semant_debug) printf("Expression neg_class error: Cannot negate a non-integer expression \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression neg_class error: Cannot negate a non-integer expression" << endl;
         set_type(Object);
@@ -1172,7 +1172,7 @@ Symbol lt_class::typeCheck(ClassTable* classtable) {
         set_type(Bool);
     }
     else{
-        if(_DEBUG) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
+        if(semant_debug) printf("Expression lt_class error: Cannot compare non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression lt_class error: Cannot compare non-integer expressions" << endl;
         set_type(Object);
@@ -1192,8 +1192,8 @@ Symbol eq_class::typeCheck(ClassTable* classtable) {
     if(inferred_e1_type == Int || inferred_e1_type == Str || inferred_e1_type == Bool
             || inferred_e2_type == Int || inferred_e2_type == Str || inferred_e2_type == Bool){
         if(inferred_e1_type != inferred_e2_type){
-            if(_DEBUG) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
-            if(_DEBUG) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
+            if(semant_debug) printf("Expression eq_class error: if any expression is of type Int, String, or Bool then both must be.\n");
+            if(semant_debug) printf("The type of e1 is '%s' and the type of e2 is '%s'\n", inferred_e1_type->get_string(), inferred_e2_type->get_string());
             ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
             err_stream << "Expression eq_class error: if any expression is of type Int, String, or Bool then both must be." << endl;
         }
@@ -1213,7 +1213,7 @@ Symbol leq_class::typeCheck(ClassTable* classtable) {
         set_type(Bool);
     }
     else{
-        if(_DEBUG) printf("Expression leq_class error: Cannot compare non-integer expressions \n");
+        if(semant_debug) printf("Expression leq_class error: Cannot compare non-integer expressions \n");
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]);
         err_stream << "Expression leq_class error: Cannot compare non-integer expressions" << endl;
         set_type(Object);
@@ -1265,18 +1265,18 @@ Symbol no_expr_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol object_class::typeCheck(ClassTable* classtable) {
-    if(_DEBUG) printf("Type checking a single object id: %s\n", name->get_string());
+    if(semant_debug) printf("Type checking a single object id: %s\n", name->get_string());
     Symbol curr_class = classtable->getCurrentClass();
     if(name == self){
-        if(_DEBUG) printf("Resolving self to be: %s\n", curr_class->get_string());
+        if(semant_debug) printf("Resolving self to be: %s\n", curr_class->get_string());
         set_type(SELF_TYPE);
         return get_type();
     }
-    if(_DEBUG) printf("Looking for %s in all the symbol table\n", name->get_string());
-    if(_DEBUG) classtable->objectST.dump();
+    if(semant_debug) printf("Looking for %s in all the symbol table\n", name->get_string());
+    if(semant_debug) classtable->objectST.dump();
     Symbol* lookup = classtable->objectST.lookup(name);
     if(lookup != NULL){
-        if(_DEBUG) printf("The type of %s in the ST is %s\n", name->get_string(), (*lookup)->get_string());
+        if(semant_debug) printf("The type of %s in the ST is %s\n", name->get_string(), (*lookup)->get_string());
         set_type(*lookup);
         return get_type();
     }else{
@@ -1333,9 +1333,8 @@ ostream& ClassTable::semant_error()
  */
 void program_class::semant()
 {
-    _DEBUG = false;
     initialize_constants();
-    
+
     /* ClassTable constructor may do some semantic analysis */
     ClassTable *classtable = new ClassTable(classes);
 
@@ -1343,7 +1342,7 @@ void program_class::semant()
     // Stop semantic analysis if inheritance graph is not well formed
     if(!classtable->has_cycle()){
         // continue semantic analysis
-        if(_DEBUG) printf("No inheritance cycles\n");
+        if(semant_debug) printf("No inheritance cycles\n");
         classtable->run_type_checks();
     }
     if(semant_debug) printf("========= END Constructor output =========\n");

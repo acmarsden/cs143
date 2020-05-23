@@ -54,6 +54,4 @@ public:
     ostream& semant_error(Symbol filename, tree_node *t);
 };
 
-bool _DEBUG;
-
 #endif
