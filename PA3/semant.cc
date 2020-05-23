@@ -1335,7 +1335,7 @@ void program_class::semant()
 {
     _DEBUG = false;
     initialize_constants();
-
+    
     /* ClassTable constructor may do some semantic analysis */
     ClassTable *classtable = new ClassTable(classes);
 
@@ -1346,7 +1346,7 @@ void program_class::semant()
         if(_DEBUG) printf("No inheritance cycles\n");
         classtable->run_type_checks();
     }
-    if(_DEBUG) printf("========= END Constructor output =========\n");
+    if(semant_debug) printf("========= END Constructor output =========\n");
 
     if (classtable->errors()) {
         cerr << "Compilation halted due to static semantic errors." << endl;
