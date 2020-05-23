@@ -127,8 +127,8 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         }
     }
     if(classMethods.find(Main) == classMethods.end()){
-        ostream& err_stream = semant_error(curr_class);
-        err_stream << "Any valid COOL program must have a 'Main' class."<<endl;
+        ostream& err_stream = semant_error();
+        err_stream << "Class Main is not defined."<<endl;
         return;
     }
     // The Main class must have a main method defined
@@ -136,14 +136,14 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
     if(classMethods[curr_class->getName()].find(main_meth) ==
        classMethods[curr_class->getName()].end()) {
         ostream& err_stream = semant_error(curr_class);
-        err_stream << "The class 'Main' must have a 'main' method."<<endl;
+        err_stream << "No 'main' method in class Main."<<endl;
         return;
     }
     // The main method takes no formal parameters
     std::vector<Symbol> main_signature = classMethods[Main][main_meth];
     if(main_signature.size() != 1) {
         ostream& err_stream = semant_error(curr_class);
-        err_stream << "The 'Main.main' method must take no formal parameters."<<endl;
+        err_stream << "'main' method in class Main should have no arguments."<<endl;
         return;
     }
 }

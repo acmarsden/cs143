@@ -4,10 +4,6 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
-1c1
-< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Any valid COOL program must have a 'Main' class.
----
-> Class Main is not defined.
 
 
 ==============================================================
@@ -171,7 +167,7 @@ Parser out diff (< : ours, > : theirs) on:  good.cl
 Parser out diff (< : ours, > : theirs) on:  inheritance_cycle.cl 
 1,2c1,3
 < inheritance_cycle.cl:11: C is part of a cycle in the inheritance graph.
-< inheritance_cycle.cl:11: Any valid COOL program must have a 'Main' class.
+< Class Main is not defined.
 ---
 > inheritance_cycle.cl:11: Class C, or an ancestor of C, is involved in an inheritance cycle.
 > inheritance_cycle.cl:6: Class B, or an ancestor of B, is involved in an inheritance cycle.
@@ -180,25 +176,13 @@ Parser out diff (< : ours, > : theirs) on:  inheritance_cycle.cl
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  main_params.cl 
-1c1
-< main_params.cl:20: The 'Main.main' method must take no formal parameters.
----
-> main_params.cl:20: 'main' method in class Main should have no arguments.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  no_MainClass.cl 
-1c1
-< no_MainClass.cl:20: Any valid COOL program must have a 'Main' class.
----
-> Class Main is not defined.
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  no_mainMethod.cl 
-1c1
-< no_mainMethod.cl:20: The class 'Main' must have a 'main' method.
----
-> no_mainMethod.cl:20: No 'main' method in class Main.
 
 
