@@ -770,6 +770,13 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     if(semant_debug) printf("looking for %s in scope \n", name->get_string());
     if(semant_debug) classtable->objectST.dump();
     Symbol* declared_type = classtable->objectST.lookup(name);
+    if(declared_type == NULL){
+        ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
+        err_stream << "Assign error: Variable '" << name->get_string();
+        err_stream << "' has not been defined" << endl;
+        set_type(Object);
+        return get_type();
+    }
     Symbol declared_type_deref = *declared_type;
     if(semant_debug) printf("The declared type is '%s' \n", declared_type_deref->get_string());
     // Now get the type of the expression
@@ -1244,11 +1251,18 @@ Symbol string_const_class::typeCheck(ClassTable* classtable) {
 }
 
 Symbol new__class::typeCheck(ClassTable* classtable) {
+    Symbol curr_class = classtable->getCurrentClass();
     if(type_name==SELF_TYPE){
         set_type(classtable->getCurrentClass());
     }
     else{
-        set_type(type_name);
+        if(classtable->children.find(type_name) == classtable->children.end()){
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
+            err_stream << "'new' used on undefined type '" << type_name->get_string() <<"'" << endl;
+            set_type(Object);
+        }else{
+            set_type(type_name);
+        }
     }
     return get_type();
 }
