@@ -1248,7 +1248,13 @@ Symbol new__class::typeCheck(ClassTable* classtable) {
         set_type(classtable->getCurrentClass());
     }
     else{
-        set_type(type_name);
+        if(classtable->children.find(type_name) == classtable->children.end()){
+            ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
+            err_stream << "'new' used on undefined type '" << type_name->get_string() <<"'" << endl;
+            set_type(Object);
+        }else{
+            set_type(type_name);
+        }
     }
     return get_type();
 }
