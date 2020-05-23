@@ -1,1483 +1,13 @@
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/arith.cl 
-46,47c46,47
-<         : A
-<       : A
----
->         : SELF_TYPE
->       : SELF_TYPE
-59c59
-<       : A
----
->       : SELF_TYPE
-554c554
-<             : D
----
->             : SELF_TYPE
-622c622
-<                   : D
----
->                   : SELF_TYPE
-890c890
-<                               : A2I
----
->                               : SELF_TYPE
-1095c1095
-<                               : A2I
----
->                               : SELF_TYPE
-1180c1180
-<               : A2I
----
->               : SELF_TYPE
-1249c1249
-<               : A2I
----
->               : SELF_TYPE
-1290c1290
-<               : A2I
----
->               : SELF_TYPE
-1378c1378
-<                         : A2I
----
->                         : SELF_TYPE
-1471c1471
-<             : A2I
----
->             : SELF_TYPE
-1493c1493
-<               : A2I
----
->               : SELF_TYPE
-1563c1563
-<               : A2I
----
->               : SELF_TYPE
-1579c1579
-<               : A2I
----
->               : SELF_TYPE
-1653c1653
-<           : Main
----
->           : SELF_TYPE
-1661c1661
-<         : Main
----
->         : SELF_TYPE
-1667c1667
-<           : Main
----
->           : SELF_TYPE
-1675c1675
-<         : Main
----
->         : SELF_TYPE
-1681c1681
-<           : Main
----
->           : SELF_TYPE
-1689c1689
-<         : Main
----
->         : SELF_TYPE
-1695c1695
-<           : Main
----
->           : SELF_TYPE
-1703c1703
-<         : Main
----
->         : SELF_TYPE
-1709c1709
-<           : Main
----
->           : SELF_TYPE
-1717c1717
-<         : Main
----
->         : SELF_TYPE
-1723c1723
-<           : Main
----
->           : SELF_TYPE
-1731c1731
-<         : Main
----
->         : SELF_TYPE
-1737c1737
-<           : Main
----
->           : SELF_TYPE
-1745c1745
-<         : Main
----
->         : SELF_TYPE
-1751c1751
-<           : Main
----
->           : SELF_TYPE
-1759c1759
-<         : Main
----
->         : SELF_TYPE
-1765c1765
-<           : Main
----
->           : SELF_TYPE
-1773c1773
-<         : Main
----
->         : SELF_TYPE
-1779c1779
-<           : Main
----
->           : SELF_TYPE
-1787c1787
-<         : Main
----
->         : SELF_TYPE
-1793c1793
-<           : Main
----
->           : SELF_TYPE
-1801c1801
-<         : Main
----
->         : SELF_TYPE
-1807c1807
-<           : Main
----
->           : SELF_TYPE
-1815c1815
-<         : Main
----
->         : SELF_TYPE
-1821c1821
-<           : Main
----
->           : SELF_TYPE
-1829c1829
-<         : Main
----
->         : SELF_TYPE
-1835c1835
-<           : Main
----
->           : SELF_TYPE
-1843c1843
-<         : Main
----
->         : SELF_TYPE
-1849c1849
-<           : Main
----
->           : SELF_TYPE
-1857c1857
-<         : Main
----
->         : SELF_TYPE
-1863c1863
-<           : Main
----
->           : SELF_TYPE
-1871c1871
-<         : Main
----
->         : SELF_TYPE
-1877c1877
-<           : Main
----
->           : SELF_TYPE
-1885c1885
-<         : Main
----
->         : SELF_TYPE
-1891c1891
-<           : Main
----
->           : SELF_TYPE
-1899c1899
-<         : Main
----
->         : SELF_TYPE
-1905c1905
-<           : Main
----
->           : SELF_TYPE
-1913c1913
-<         : Main
----
->         : SELF_TYPE
-1919c1919
-<           : Main
----
->           : SELF_TYPE
-1927c1927
-<         : Main
----
->         : SELF_TYPE
-1933c1933
-<           : Main
----
->           : SELF_TYPE
-1941c1941
-<         : Main
----
->         : SELF_TYPE
-1947c1947
-<           : Main
----
->           : SELF_TYPE
-1955c1955
-<         : Main
----
->         : SELF_TYPE
-1961c1961
-<           : Main
----
->           : SELF_TYPE
-1969c1969
-<         : Main
----
->         : SELF_TYPE
-1975c1975
-<           : Main
----
->           : SELF_TYPE
-1983c1983
-<         : Main
----
->         : SELF_TYPE
-1989c1989
-<           : Main
----
->           : SELF_TYPE
-1997c1997
-<         : Main
----
->         : SELF_TYPE
-2003c2003
-<           : Main
----
->           : SELF_TYPE
-2011c2011
-<         : Main
----
->         : SELF_TYPE
-2017c2017
-<           : Main
----
->           : SELF_TYPE
-2034c2034
-<           : Main
----
->           : SELF_TYPE
-2042c2042
-<         : Main
----
->         : SELF_TYPE
-2048c2048
-<           : Main
----
->           : SELF_TYPE
-2056c2056
-<         : Main
----
->         : SELF_TYPE
-2062c2062
-<           : Main
----
->           : SELF_TYPE
-2091c2091
-<               : Main
----
->               : SELF_TYPE
-2147c2147
-<             : Main
----
->             : SELF_TYPE
-2198c2198
-<                 : Main
----
->                 : SELF_TYPE
-2241c2241
-<             : Main
----
->             : SELF_TYPE
-2249c2249
-<           : Main
----
->           : SELF_TYPE
-2259c2259
-<             : Main
----
->             : SELF_TYPE
-2267c2267
-<           : Main
----
->           : SELF_TYPE
-2277c2277
-<             : Main
----
->             : SELF_TYPE
-2285c2285
-<           : Main
----
->           : SELF_TYPE
-2295c2295
-<             : Main
----
->             : SELF_TYPE
-2303c2303
-<           : Main
----
->           : SELF_TYPE
-2313c2313
-<             : Main
----
->             : SELF_TYPE
-2321c2321
-<           : Main
----
->           : SELF_TYPE
-2331c2331
-<             : Main
----
->             : SELF_TYPE
-2339,2340c2339,2340
-<           : Main
-<       : Main
----
->           : SELF_TYPE
->       : SELF_TYPE
-2364c2364
-<             : Main
----
->             : SELF_TYPE
-2388c2388
-<           : Main
----
->           : SELF_TYPE
-2394c2394
-<             : Main
----
->             : SELF_TYPE
-2402,2404c2402,2404
-<           : Main
-<         : Main
-<       : Main
----
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-2432c2432
-<               : Main
----
->               : SELF_TYPE
-2440c2440
-<             : Main
----
->             : SELF_TYPE
-2446c2446
-<               : Main
----
->               : SELF_TYPE
-2454c2454
-<             : Main
----
->             : SELF_TYPE
-2462c2462
-<                 : Main
----
->                 : SELF_TYPE
-2482c2482
-<                 : Main
----
->                 : SELF_TYPE
-2490c2490
-<               : Main
----
->               : SELF_TYPE
-2496c2496
-<                 : Main
----
->                 : SELF_TYPE
-2504,2505c2504,2505
-<               : Main
-<             : Main
----
->               : SELF_TYPE
->             : SELF_TYPE
-2511c2511
-<               : Main
----
->               : SELF_TYPE
-2519c2519
-<             : Main
----
->             : SELF_TYPE
-2528c2528
-<                 : Main
----
->                 : SELF_TYPE
-2565c2565
-<                       : Main
----
->                       : SELF_TYPE
-2694c2694
-<                         : Main
----
->                         : SELF_TYPE
-2702c2702
-<                       : Main
----
->                       : SELF_TYPE
-2708c2708
-<                         : Main
----
->                         : SELF_TYPE
-2750c2750
-<                           : Main
----
->                           : SELF_TYPE
-2949c2949
-<                                 : Main
----
->                                 : SELF_TYPE
-2957c2957
-<                               : Main
----
->                               : SELF_TYPE
-2963c2963
-<                                 : Main
----
->                                 : SELF_TYPE
-2971c2971
-<                               : Main
----
->                               : SELF_TYPE
-2977c2977
-<                                 : Main
----
->                                 : SELF_TYPE
-2985,2986c2985,2986
-<                               : Main
-<                             : Main
----
->                               : SELF_TYPE
->                             : SELF_TYPE
-2994c2994
-<                                 : Main
----
->                                 : SELF_TYPE
-3002c3002
-<                               : Main
----
->                               : SELF_TYPE
-3008c3008
-<                                 : Main
----
->                                 : SELF_TYPE
-3016c3016
-<                               : Main
----
->                               : SELF_TYPE
-3022c3022
-<                                 : Main
----
->                                 : SELF_TYPE
-3030,3032c3030,3032
-<                               : Main
-<                             : Main
-<                           : Main
----
->                               : SELF_TYPE
->                             : SELF_TYPE
->                           : SELF_TYPE
-3120c3120
-<                                       : Main
----
->                                       : SELF_TYPE
-3128c3128
-<                                     : Main
----
->                                     : SELF_TYPE
-3134c3134
-<                                       : Main
----
->                                       : SELF_TYPE
-3142c3142
-<                                     : Main
----
->                                     : SELF_TYPE
-3148c3148
-<                                       : Main
----
->                                       : SELF_TYPE
-3156c3156
-<                                     : Main
----
->                                     : SELF_TYPE
-3162c3162
-<                                       : Main
----
->                                       : SELF_TYPE
-3170c3170
-<                                     : Main
----
->                                     : SELF_TYPE
-3176c3176
-<                                       : Main
----
->                                       : SELF_TYPE
-3184c3184
-<                                     : Main
----
->                                     : SELF_TYPE
-3200c3200
-<                                           : Main
----
->                                           : SELF_TYPE
-3218c3218
-<                                         : Main
----
->                                         : SELF_TYPE
-3224c3224
-<                                           : Main
----
->                                           : SELF_TYPE
-3232,3236c3232,3236
-<                                         : Main
-<                                       : Main
-<                                     : Main
-<                                   : Main
-<                                 : Main
----
->                                         : SELF_TYPE
->                                       : SELF_TYPE
->                                     : SELF_TYPE
->                                   : SELF_TYPE
->                                 : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
-1,910c1,2
-< #13
-< _program
-<   #13
-<   _class
-<     A2I
-<     Object
-<     "/afs/ir.stanford.edu/class/cs143/examples/atoi.cl"
-<     (
-<     #15
-<     _method
-<       c2i
-<       #15
-<       _formal
-<         char
-<         String
-<       Int
-<       #16
-<       _cond
-<         #16
-<         _eq
-<           #16
-<           _object
-<             char
-<           : String
-<           #16
-<           _string
-<             "0"
-<           : String
-<         : Bool
-<         #16
-<         _int
-<           0
-<         : Int
-<         #17
-<         _cond
-<           #17
-<           _eq
-<             #17
-<             _object
-<               char
-<             : String
-<             #17
-<             _string
-<               "1"
-<             : String
-<           : Bool
-<           #17
-<           _int
-<             1
-<           : Int
-<           #18
-<           _cond
-<             #18
-<             _eq
-<               #18
-<               _object
-<                 char
-<               : String
-<               #18
-<               _string
-<                 "2"
-<               : String
-<             : Bool
-<             #18
-<             _int
-<               2
-<             : Int
-<             #19
-<             _cond
-<               #19
-<               _eq
-<                 #19
-<                 _object
-<                   char
-<                 : String
-<                 #19
-<                 _string
-<                   "3"
-<                 : String
-<               : Bool
-<               #19
-<               _int
-<                 3
-<               : Int
-<               #20
-<               _cond
-<                 #20
-<                 _eq
-<                   #20
-<                   _object
-<                     char
-<                   : String
-<                   #20
-<                   _string
-<                     "4"
-<                   : String
-<                 : Bool
-<                 #20
-<                 _int
-<                   4
-<                 : Int
-<                 #21
-<                 _cond
-<                   #21
-<                   _eq
-<                     #21
-<                     _object
-<                       char
-<                     : String
-<                     #21
-<                     _string
-<                       "5"
-<                     : String
-<                   : Bool
-<                   #21
-<                   _int
-<                     5
-<                   : Int
-<                   #22
-<                   _cond
-<                     #22
-<                     _eq
-<                       #22
-<                       _object
-<                         char
-<                       : String
-<                       #22
-<                       _string
-<                         "6"
-<                       : String
-<                     : Bool
-<                     #22
-<                     _int
-<                       6
-<                     : Int
-<                     #23
-<                     _cond
-<                       #23
-<                       _eq
-<                         #23
-<                         _object
-<                           char
-<                         : String
-<                         #23
-<                         _string
-<                           "7"
-<                         : String
-<                       : Bool
-<                       #23
-<                       _int
-<                         7
-<                       : Int
-<                       #24
-<                       _cond
-<                         #24
-<                         _eq
-<                           #24
-<                           _object
-<                             char
-<                           : String
-<                           #24
-<                           _string
-<                             "8"
-<                           : String
-<                         : Bool
-<                         #24
-<                         _int
-<                           8
-<                         : Int
-<                         #25
-<                         _cond
-<                           #25
-<                           _eq
-<                             #25
-<                             _object
-<                               char
-<                             : String
-<                             #25
-<                             _string
-<                               "9"
-<                             : String
-<                           : Bool
-<                           #25
-<                           _int
-<                             9
-<                           : Int
-<                           #26
-<                           _block
-<                             #26
-<                             _dispatch
-<                               #26
-<                               _object
-<                                 self
-<                               : A2I
-<                               abort
-<                               (
-<                               )
-<                             : Object
-<                             #26
-<                             _int
-<                               0
-<                             : Int
-<                           : Int
-<                         : Int
-<                       : Int
-<                     : Int
-<                   : Int
-<                 : Int
-<               : Int
-<             : Int
-<           : Int
-<         : Int
-<       : Int
-<     #33
-<     _method
-<       i2c
-<       #33
-<       _formal
-<         i
-<         Int
-<       String
-<       #34
-<       _cond
-<         #34
-<         _eq
-<           #34
-<           _object
-<             i
-<           : Int
-<           #34
-<           _int
-<             0
-<           : Int
-<         : Bool
-<         #34
-<         _string
-<           "0"
-<         : String
-<         #35
-<         _cond
-<           #35
-<           _eq
-<             #35
-<             _object
-<               i
-<             : Int
-<             #35
-<             _int
-<               1
-<             : Int
-<           : Bool
-<           #35
-<           _string
-<             "1"
-<           : String
-<           #36
-<           _cond
-<             #36
-<             _eq
-<               #36
-<               _object
-<                 i
-<               : Int
-<               #36
-<               _int
-<                 2
-<               : Int
-<             : Bool
-<             #36
-<             _string
-<               "2"
-<             : String
-<             #37
-<             _cond
-<               #37
-<               _eq
-<                 #37
-<                 _object
-<                   i
-<                 : Int
-<                 #37
-<                 _int
-<                   3
-<                 : Int
-<               : Bool
-<               #37
-<               _string
-<                 "3"
-<               : String
-<               #38
-<               _cond
-<                 #38
-<                 _eq
-<                   #38
-<                   _object
-<                     i
-<                   : Int
-<                   #38
-<                   _int
-<                     4
-<                   : Int
-<                 : Bool
-<                 #38
-<                 _string
-<                   "4"
-<                 : String
-<                 #39
-<                 _cond
-<                   #39
-<                   _eq
-<                     #39
-<                     _object
-<                       i
-<                     : Int
-<                     #39
-<                     _int
-<                       5
-<                     : Int
-<                   : Bool
-<                   #39
-<                   _string
-<                     "5"
-<                   : String
-<                   #40
-<                   _cond
-<                     #40
-<                     _eq
-<                       #40
-<                       _object
-<                         i
-<                       : Int
-<                       #40
-<                       _int
-<                         6
-<                       : Int
-<                     : Bool
-<                     #40
-<                     _string
-<                       "6"
-<                     : String
-<                     #41
-<                     _cond
-<                       #41
-<                       _eq
-<                         #41
-<                         _object
-<                           i
-<                         : Int
-<                         #41
-<                         _int
-<                           7
-<                         : Int
-<                       : Bool
-<                       #41
-<                       _string
-<                         "7"
-<                       : String
-<                       #42
-<                       _cond
-<                         #42
-<                         _eq
-<                           #42
-<                           _object
-<                             i
-<                           : Int
-<                           #42
-<                           _int
-<                             8
-<                           : Int
-<                         : Bool
-<                         #42
-<                         _string
-<                           "8"
-<                         : String
-<                         #43
-<                         _cond
-<                           #43
-<                           _eq
-<                             #43
-<                             _object
-<                               i
-<                             : Int
-<                             #43
-<                             _int
-<                               9
-<                             : Int
-<                           : Bool
-<                           #43
-<                           _string
-<                             "9"
-<                           : String
-<                           #44
-<                           _block
-<                             #44
-<                             _dispatch
-<                               #44
-<                               _object
-<                                 self
-<                               : A2I
-<                               abort
-<                               (
-<                               )
-<                             : Object
-<                             #44
-<                             _string
-<                               ""
-<                             : String
-<                           : String
-<                         : String
-<                       : String
-<                     : String
-<                   : String
-<                 : String
-<               : String
-<             : String
-<           : String
-<         : String
-<       : String
-<     #56
-<     _method
-<       a2i
-<       #56
-<       _formal
-<         s
-<         String
-<       Int
-<       #57
-<       _cond
-<         #57
-<         _eq
-<           #57
-<           _dispatch
-<             #57
-<             _object
-<               s
-<             : String
-<             length
-<             (
-<             )
-<           : Int
-<           #57
-<           _int
-<             0
-<           : Int
-<         : Bool
-<         #57
-<         _int
-<           0
-<         : Int
-<         #58
-<         _cond
-<           #58
-<           _eq
-<             #58
-<             _dispatch
-<               #58
-<               _object
-<                 s
-<               : String
-<               substr
-<               (
-<               #58
-<               _int
-<                 0
-<               : Int
-<               #58
-<               _int
-<                 1
-<               : Int
-<               )
-<             : String
-<             #58
-<             _string
-<               "-"
-<             : String
-<           : Bool
-<           #58
-<           _neg
-<             #58
-<             _dispatch
-<               #58
-<               _object
-<                 self
-<               : A2I
-<               a2i_aux
-<               (
-<               #58
-<               _dispatch
-<                 #58
-<                 _object
-<                   s
-<                 : String
-<                 substr
-<                 (
-<                 #58
-<                 _int
-<                   1
-<                 : Int
-<                 #58
-<                 _sub
-<                   #58
-<                   _dispatch
-<                     #58
-<                     _object
-<                       s
-<                     : String
-<                     length
-<                     (
-<                     )
-<                   : Int
-<                   #58
-<                   _int
-<                     1
-<                   : Int
-<                 : Int
-<                 )
-<               : String
-<               )
-<             : Int
-<           : Int
-<           #59
-<           _cond
-<             #59
-<             _eq
-<               #59
-<               _dispatch
-<                 #59
-<                 _object
-<                   s
-<                 : String
-<                 substr
-<                 (
-<                 #59
-<                 _int
-<                   0
-<                 : Int
-<                 #59
-<                 _int
-<                   1
-<                 : Int
-<                 )
-<               : String
-<               #59
-<               _string
-<                 "+"
-<               : String
-<             : Bool
-<             #59
-<             _dispatch
-<               #59
-<               _object
-<                 self
-<               : A2I
-<               a2i_aux
-<               (
-<               #59
-<               _dispatch
-<                 #59
-<                 _object
-<                   s
-<                 : String
-<                 substr
-<                 (
-<                 #59
-<                 _int
-<                   1
-<                 : Int
-<                 #59
-<                 _sub
-<                   #59
-<                   _dispatch
-<                     #59
-<                     _object
-<                       s
-<                     : String
-<                     length
-<                     (
-<                     )
-<                   : Int
-<                   #59
-<                   _int
-<                     1
-<                   : Int
-<                 : Int
-<                 )
-<               : String
-<               )
-<             : Int
-<             #60
-<             _dispatch
-<               #60
-<               _object
-<                 self
-<               : A2I
-<               a2i_aux
-<               (
-<               #60
-<               _object
-<                 s
-<               : String
-<               )
-<             : Int
-<           : Int
-<         : Int
-<       : Int
-<     #68
-<     _method
-<       a2i_aux
-<       #68
-<       _formal
-<         s
-<         String
-<       Int
-<       #69
-<       _let
-<         int
-<         Int
-<         #69
-<         _int
-<           0
-<         : Int
-<         #70
-<         _block
-<           #71
-<           _let
-<             j
-<             Int
-<             #71
-<             _dispatch
-<               #71
-<               _object
-<                 s
-<               : String
-<               length
-<               (
-<               )
-<             : Int
-<             #72
-<             _let
-<               i
-<               Int
-<               #72
-<               _int
-<                 0
-<               : Int
-<               #73
-<               _loop
-<                 #73
-<                 _lt
-<                   #73
-<                   _object
-<                     i
-<                   : Int
-<                   #73
-<                   _object
-<                     j
-<                   : Int
-<                 : Bool
-<                 #74
-<                 _block
-<                   #75
-<                   _assign
-<                     int
-<                     #75
-<                     _plus
-<                       #75
-<                       _mul
-<                         #75
-<                         _object
-<                           int
-<                         : Int
-<                         #75
-<                         _int
-<                           10
-<                         : Int
-<                       : Int
-<                       #75
-<                       _dispatch
-<                         #75
-<                         _object
-<                           self
-<                         : A2I
-<                         c2i
-<                         (
-<                         #75
-<                         _dispatch
-<                           #75
-<                           _object
-<                             s
-<                           : String
-<                           substr
-<                           (
-<                           #75
-<                           _object
-<                             i
-<                           : Int
-<                           #75
-<                           _int
-<                             1
-<                           : Int
-<                           )
-<                         : String
-<                         )
-<                       : Int
-<                     : Int
-<                   : Int
-<                   #76
-<                   _assign
-<                     i
-<                     #76
-<                     _plus
-<                       #76
-<                       _object
-<                         i
-<                       : Int
-<                       #76
-<                       _int
-<                         1
-<                       : Int
-<                     : Int
-<                   : Int
-<                 : Int
-<               : Object
-<             : Object
-<           : Object
-<           #81
-<           _object
-<             int
-<           : Int
-<         : Int
-<       : Int
-<     #90
-<     _method
-<       i2a
-<       #90
-<       _formal
-<         i
-<         Int
-<       String
-<       #91
-<       _cond
-<         #91
-<         _eq
-<           #91
-<           _object
-<             i
-<           : Int
-<           #91
-<           _int
-<             0
-<           : Int
-<         : Bool
-<         #91
-<         _string
-<           "0"
-<         : String
-<         #92
-<         _cond
-<           #92
-<           _lt
-<             #92
-<             _int
-<               0
-<             : Int
-<             #92
-<             _object
-<               i
-<             : Int
-<           : Bool
-<           #92
-<           _dispatch
-<             #92
-<             _object
-<               self
-<             : A2I
-<             i2a_aux
-<             (
-<             #92
-<             _object
-<               i
-<             : Int
-<             )
-<           : String
-<           #93
-<           _dispatch
-<             #93
-<             _string
-<               "-"
-<             : String
-<             concat
-<             (
-<             #93
-<             _dispatch
-<               #93
-<               _object
-<                 self
-<               : A2I
-<               i2a_aux
-<               (
-<               #93
-<               _mul
-<                 #93
-<                 _object
-<                   i
-<                 : Int
-<                 #93
-<                 _neg
-<                   #93
-<                   _int
-<                     1
-<                   : Int
-<                 : Int
-<               : Int
-<               )
-<             : String
-<             )
-<           : String
-<         : String
-<       : String
-<     #100
-<     _method
-<       i2a_aux
-<       #100
-<       _formal
-<         i
-<         Int
-<       String
-<       #101
-<       _cond
-<         #101
-<         _eq
-<           #101
-<           _object
-<             i
-<           : Int
-<           #101
-<           _int
-<             0
-<           : Int
-<         : Bool
-<         #101
-<         _string
-<           ""
-<         : String
-<         #102
-<         _let
-<           next
-<           Int
-<           #102
-<           _divide
-<             #102
-<             _object
-<               i
-<             : Int
-<             #102
-<             _int
-<               10
-<             : Int
-<           : Int
-<           #103
-<           _dispatch
-<             #103
-<             _dispatch
-<               #103
-<               _object
-<                 self
-<               : A2I
-<               i2a_aux
-<               (
-<               #103
-<               _object
-<                 next
-<               : Int
-<               )
-<             : String
-<             concat
-<             (
-<             #103
-<             _dispatch
-<               #103
-<               _object
-<                 self
-<               : A2I
-<               i2c
-<               (
-<               #103
-<               _sub
-<                 #103
-<                 _object
-<                   i
-<                 : Int
-<                 #103
-<                 _mul
-<                   #103
-<                   _object
-<                     next
-<                   : Int
-<                   #103
-<                   _int
-<                     10
-<                   : Int
-<                 : Int
-<               : Int
-<               )
-<             : String
-<             )
-<           : String
-<         : String
-<       : String
-<     )
+1c1
+< /afs/ir.stanford.edu/class/cs143/examples/atoi.cl:13: Any valid COOL program must have a 'Main' class.
 ---
 > Class Main is not defined.
-> Compilation halted due to static semantic errors.
 
 
 ==============================================================
@@ -1497,2451 +27,3831 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
-56,57c56,57
-<         : Book
-<       : Book
----
->         : SELF_TYPE
->       : SELF_TYPE
-73c73
-<               : Book
----
->               : SELF_TYPE
-81c81
-<             : Book
----
->             : SELF_TYPE
-89c89
-<           : Book
----
->           : SELF_TYPE
-97c97
-<         : Book
----
->         : SELF_TYPE
-107c107
-<               : Book
----
->               : SELF_TYPE
-115c115
-<             : Book
----
->             : SELF_TYPE
-123c123
-<           : Book
----
->           : SELF_TYPE
-131c131
-<         : Book
----
->         : SELF_TYPE
-135,136c135,136
-<         : Book
-<       : Book
----
->         : SELF_TYPE
->       : SELF_TYPE
-174c174
-<           : Article
----
->           : SELF_TYPE
-198,199c198,199
-<         : Article
-<       : Article
----
->         : SELF_TYPE
->       : SELF_TYPE
-211c211
-<           : Article
----
->           : SELF_TYPE
-226c226
-<               : Article
----
->               : SELF_TYPE
-234c234
-<             : Article
----
->             : SELF_TYPE
-242c242
-<           : Article
----
->           : SELF_TYPE
-250c250
-<         : Article
----
->         : SELF_TYPE
-254,255c254,255
-<         : Article
-<       : Article
----
->         : SELF_TYPE
->       : SELF_TYPE
-274c274
-<           : BookList
----
->           : SELF_TYPE
-315c315
-<           : BookList
----
->           : SELF_TYPE
-330c330
-<           : BookList
----
->           : SELF_TYPE
-351c351
-<           : BookList
----
->           : SELF_TYPE
-370c370
-<         : BookList
----
->         : SELF_TYPE
-437,438c437,438
-<         : Cons
-<       : Cons
----
->         : SELF_TYPE
->       : SELF_TYPE
-482c482
-<               : Cons
----
->               : SELF_TYPE
-490c490
-<             : Cons
----
->             : SELF_TYPE
-500c500
-<               : Cons
----
->               : SELF_TYPE
-508,509c508,509
-<             : Cons
-<         : Cons
----
->             : SELF_TYPE
->         : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
-37,38c37,38
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->         : SELF_TYPE
->       : SELF_TYPE
-50c50
-<           : CellularAutomaton
----
->           : SELF_TYPE
-68c68
-<         : CellularAutomaton
----
->         : SELF_TYPE
-72,73c72,73
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->         : SELF_TYPE
->       : SELF_TYPE
-140c140
-<           : CellularAutomaton
----
->           : SELF_TYPE
-150c150
-<               : CellularAutomaton
----
->               : SELF_TYPE
-167c167
-<           : CellularAutomaton
----
->           : SELF_TYPE
-207c207
-<               : CellularAutomaton
----
->               : SELF_TYPE
-223c223
-<           : CellularAutomaton
----
->           : SELF_TYPE
-237c237
-<           : CellularAutomaton
----
->           : SELF_TYPE
-279c279
-<                     : CellularAutomaton
----
->                     : SELF_TYPE
-311c311
-<                     : CellularAutomaton
----
->                     : SELF_TYPE
-344c344
-<                   : CellularAutomaton
----
->                   : SELF_TYPE
-402c402
-<             : CellularAutomaton
----
->             : SELF_TYPE
-447c447
-<                         : CellularAutomaton
----
->                         : SELF_TYPE
-487,491c487,491
-<               : CellularAutomaton
-<             : CellularAutomaton
-<           : CellularAutomaton
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->               : SELF_TYPE
->             : SELF_TYPE
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-604,605c604,605
-<         : Main
-<       : Main
----
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
-71c71
-<             : Main
----
->             : SELF_TYPE
-79c79
-<           : Main
----
->           : SELF_TYPE
-85c85
-<             : Main
----
->             : SELF_TYPE
-93,95c93,95
-<           : Main
-<         : Main
-<       : Main
----
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-156,157c156,157
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-180c180
-<           : Complex
----
->           : SELF_TYPE
-188c188
-<         : Complex
----
->         : SELF_TYPE
-200c200
-<                 : Complex
----
->                 : SELF_TYPE
-208c208
-<               : Complex
----
->               : SELF_TYPE
-216c216
-<             : Complex
----
->             : SELF_TYPE
-224c224
-<           : Complex
----
->           : SELF_TYPE
-232,233c232,233
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-271,272c271,272
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-296,297c296,297
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-321,322c321,322
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
-22c22
-<             : Main
----
->             : SELF_TYPE
-50c50
-<           : Main
----
->           : SELF_TYPE
 62c62
 <                 : _no_type
 ---
 >                 : SELF_TYPE
-81c81
-<         : Main
----
->         : SELF_TYPE
-87c87
-<           : Main
----
->           : SELF_TYPE
-95,96c95,96
-<         : Main
-<       : Main
----
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
-165,166c165,166
-<         : Vertice
-<       : Vertice
----
->         : SELF_TYPE
->       : SELF_TYPE
-198,199c198,199
-<         : Vertice
-<       : Vertice
----
->         : SELF_TYPE
->       : SELF_TYPE
-211c211
-<           : Vertice
----
->           : SELF_TYPE
-219c219
-<         : Vertice
----
->         : SELF_TYPE
-304,305c304,305
-<         : Edge
-<       : Edge
----
->         : SELF_TYPE
->       : SELF_TYPE
-317c317
-<           : Edge
----
->           : SELF_TYPE
-325c325
-<         : Edge
----
->         : SELF_TYPE
-331c331
-<           : Edge
----
->           : SELF_TYPE
-339c339
-<         : Edge
----
->         : SELF_TYPE
-345c345
-<           : Edge
----
->           : SELF_TYPE
-353c353
-<         : Edge
----
->         : SELF_TYPE
-359c359
-<           : Edge
----
->           : SELF_TYPE
-367c367
-<         : Edge
----
->         : SELF_TYPE
-373c373
-<           : Edge
----
->           : SELF_TYPE
-381c381
-<         : Edge
----
->         : SELF_TYPE
-387c387
-<           : Edge
----
->           : SELF_TYPE
-395,396c395,396
-<         : Edge
-<       : Edge
----
->         : SELF_TYPE
->       : SELF_TYPE
-430c430
-<           : EList
----
->           : SELF_TYPE
-451c451
-<           : EList
----
->           : SELF_TYPE
-459,460c459,460
-<         : EList
-<       : EList
----
->         : SELF_TYPE
->       : SELF_TYPE
-484c484
-<         : EList
----
->         : SELF_TYPE
-502c502
-<           : EList
----
->           : SELF_TYPE
-520c520
-<               : EList
----
->               : SELF_TYPE
-540c540
-<             : EList
----
->             : SELF_TYPE
-557c557
-<         : EList
----
->         : SELF_TYPE
-565c565
-<       : EList
----
->       : SELF_TYPE
-637,638c637,638
-<         : ECons
-<       : ECons
----
->         : SELF_TYPE
->       : SELF_TYPE
-699c699
-<           : VList
----
->           : SELF_TYPE
-720c720
-<           : VList
----
->           : SELF_TYPE
-728,729c728,729
-<         : VList
-<       : VList
----
->         : SELF_TYPE
->       : SELF_TYPE
-753c753
-<         : VList
----
->         : SELF_TYPE
-765c765
-<         : VList
----
->         : SELF_TYPE
-773c773
-<       : VList
----
->       : SELF_TYPE
-845,846c845,846
-<         : VCons
-<       : VCons
----
->         : SELF_TYPE
->       : SELF_TYPE
-912c912
-<               : Parse
----
->               : SELF_TYPE
-972c972
-<                     : Parse
----
->                     : SELF_TYPE
-991c991
-<                     : Parse
----
->                     : SELF_TYPE
-1031c1031
-<             : Parse
----
->             : SELF_TYPE
-1077c1077
-<                   : Parse
----
->                   : SELF_TYPE
-1095c1095
-<                     : Parse
----
->                     : SELF_TYPE
-1337c1337
-<                               : Parse
----
->                               : SELF_TYPE
-1429c1429
-<               : Parse
----
->               : SELF_TYPE
-1498c1498
-<               : Parse
----
->               : SELF_TYPE
-1539c1539
-<               : Parse
----
->               : SELF_TYPE
-1795c1795
-<                               : Parse
----
->                               : SELF_TYPE
-1890c1890
-<         : Main
----
->         : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl 
-18c18
-<         : Foo
----
->         : SELF_TYPE
-80c80
-<             : Foo
----
->             : SELF_TYPE
-91c91
-<           : Foo
----
->           : SELF_TYPE
-148c148
-<         : Bar
----
->         : SELF_TYPE
-162c162
-<         : Bar
----
->         : SELF_TYPE
-183c183
-<         : Razz
----
->         : SELF_TYPE
-251c251
-<             : Razz
----
->             : SELF_TYPE
-262c262
-<           : Razz
----
->           : SELF_TYPE
-292c292
-<         : Bazz
----
->         : SELF_TYPE
-335c335
-<         : Bazz
----
->         : SELF_TYPE
-351c351
-<           : Bazz
----
->           : SELF_TYPE
-359c359
-<         : Bazz
----
->         : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
-18c18
-<         : Main
----
->         : SELF_TYPE
-26c26
-<       : Main
----
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/io.cl 
-76c76
-<         : C
----
->         : SELF_TYPE
-84c84
-<       : C
----
->       : SELF_TYPE
-101c101
-<         : D
----
->         : SELF_TYPE
-109c109
-<       : D
----
->       : SELF_TYPE
-168c168
-<           : Main
----
->           : SELF_TYPE
-176,177c176,177
-<         : Main
-<       : Main
----
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
-28c28
-<           : VarList
+1,2c1,3762
+< /afs/ir.stanford.edu/class/cs143/examples/lam.cl:201: Dispatch Error: The formal types listed in dispatch call for expression of type 'LambdaListRef' do not match the formal types declared for method implementation.
+< Compilation halted due to static semantic errors.
 ---
+> #21
+> _program
+>   #21
+>   _class
+>     VarList
+>     IO
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #22
+>     _method
+>       isNil
+>       Bool
+>       #22
+>       _bool
+>         1
+>       : Bool
+>     #23
+>     _method
+>       head
+>       Variable
+>       #23
+>       _block
+>         #23
+>         _dispatch
+>           #23
+>           _object
+>             self
 >           : SELF_TYPE
-49c49
-<           : VarList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #23
+>         _new
+>           Variable
+>         : Variable
+>       : Variable
+>     #24
+>     _method
+>       tail
+>       VarList
+>       #24
+>       _block
+>         #24
+>         _dispatch
+>           #24
+>           _object
+>             self
 >           : SELF_TYPE
-82c82
-<         : VarList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #24
+>         _new
+>           VarList
+>         : VarList
+>       : VarList
+>     #25
+>     _method
+>       add
+>       #25
+>       _formal
+>         x
+>         Variable
+>       VarList
+>       #25
+>       _dispatch
+>         #25
+>         _new
+>           VarListNE
+>         : VarListNE
+>         init
+>         (
+>         #25
+>         _object
+>           x
+>         : Variable
+>         #25
+>         _object
+>           self
 >         : SELF_TYPE
-94c94
-<         : VarList
----
+>         )
+>       : VarListNE
+>     #26
+>     _method
+>       print
+>       SELF_TYPE
+>       #26
+>       _dispatch
+>         #26
+>         _object
+>           self
 >         : SELF_TYPE
-102c102
-<       : VarList
----
+>         out_string
+>         (
+>         #26
+>         _string
+>           "\n"
+>         : String
+>         )
 >       : SELF_TYPE
-181,182c181,182
-<         : VarListNE
-<       : VarListNE
----
+>     )
+>   #29
+>   _class
+>     VarListNE
+>     VarList
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #30
+>     _attr
+>       x
+>       Variable
+>       #0
+>       _no_expr
+>       : _no_type
+>     #31
+>     _attr
+>       rest
+>       VarList
+>       #0
+>       _no_expr
+>       : _no_type
+>     #32
+>     _method
+>       isNil
+>       Bool
+>       #32
+>       _bool
+>         0
+>       : Bool
+>     #33
+>     _method
+>       head
+>       Variable
+>       #33
+>       _object
+>         x
+>       : Variable
+>     #34
+>     _method
+>       tail
+>       VarList
+>       #34
+>       _object
+>         rest
+>       : VarList
+>     #35
+>     _method
+>       init
+>       #35
+>       _formal
+>         y
+>         Variable
+>       #35
+>       _formal
+>         r
+>         VarList
+>       VarListNE
+>       #35
+>       _block
+>         #35
+>         _assign
+>           x
+>           #35
+>           _object
+>             y
+>           : Variable
+>         : Variable
+>         #35
+>         _assign
+>           rest
+>           #35
+>           _object
+>             r
+>           : VarList
+>         : VarList
+>         #35
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-204c204
-<           : VarListNE
----
+>     #36
+>     _method
+>       print
+>       SELF_TYPE
+>       #36
+>       _block
+>         #36
+>         _dispatch
+>           #36
+>           _object
+>             x
+>           : Variable
+>           print_self
+>           (
+>           )
+>         : Variable
+>         #36
+>         _dispatch
+>           #36
+>           _object
+>             self
 >           : SELF_TYPE
-212c212
-<         : VarListNE
----
+>           out_string
+>           (
+>           #36
+>           _string
+>             " "
+>           : String
+>           )
 >         : SELF_TYPE
-226,227c226,227
-<         : VarListNE
-<       : VarListNE
----
+>         #37
+>         _dispatch
+>           #37
+>           _object
+>             rest
+>           : VarList
+>           print
+>           (
+>           )
+>         : VarList
+>         #37
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-254c254
-<           : LambdaList
----
+>     )
+>   #44
+>   _class
+>     LambdaList
+>     Object
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #45
+>     _method
+>       isNil
+>       Bool
+>       #45
+>       _bool
+>         1
+>       : Bool
+>     #46
+>     _method
+>       headE
+>       VarList
+>       #46
+>       _block
+>         #46
+>         _dispatch
+>           #46
+>           _object
+>             self
 >           : SELF_TYPE
-275c275
-<           : LambdaList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #46
+>         _new
+>           VarList
+>         : VarList
+>       : VarList
+>     #47
+>     _method
+>       headC
+>       Lambda
+>       #47
+>       _block
+>         #47
+>         _dispatch
+>           #47
+>           _object
+>             self
 >           : SELF_TYPE
-296c296
-<           : LambdaList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #47
+>         _new
+>           Lambda
+>         : Lambda
+>       : Lambda
+>     #48
+>     _method
+>       headN
+>       Int
+>       #48
+>       _block
+>         #48
+>         _dispatch
+>           #48
+>           _object
+>             self
 >           : SELF_TYPE
-317c317
-<           : LambdaList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #48
+>         _int
+>           0
+>         : Int
+>       : Int
+>     #49
+>     _method
+>       tail
+>       LambdaList
+>       #49
+>       _block
+>         #49
+>         _dispatch
+>           #49
+>           _object
+>             self
 >           : SELF_TYPE
-366c366
-<         : LambdaList
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #49
+>         _new
+>           LambdaList
+>         : LambdaList
+>       : LambdaList
+>     #50
+>     _method
+>       add
+>       #50
+>       _formal
+>         e
+>         VarList
+>       #50
+>       _formal
+>         x
+>         Lambda
+>       #50
+>       _formal
+>         n
+>         Int
+>       LambdaList
+>       #51
+>       _dispatch
+>         #51
+>         _new
+>           LambdaListNE
+>         : LambdaListNE
+>         init
+>         (
+>         #51
+>         _object
+>           e
+>         : VarList
+>         #51
+>         _object
+>           x
+>         : Lambda
+>         #51
+>         _object
+>           n
+>         : Int
+>         #51
+>         _object
+>           self
 >         : SELF_TYPE
-501,502c501,502
-<         : LambdaListNE
-<       : LambdaListNE
----
+>         )
+>       : LambdaListNE
+>     )
+>   #55
+>   _class
+>     LambdaListNE
+>     LambdaList
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #56
+>     _attr
+>       lam
+>       Lambda
+>       #0
+>       _no_expr
+>       : _no_type
+>     #57
+>     _attr
+>       num
+>       Int
+>       #0
+>       _no_expr
+>       : _no_type
+>     #58
+>     _attr
+>       env
+>       VarList
+>       #0
+>       _no_expr
+>       : _no_type
+>     #59
+>     _attr
+>       rest
+>       LambdaList
+>       #0
+>       _no_expr
+>       : _no_type
+>     #60
+>     _method
+>       isNil
+>       Bool
+>       #60
+>       _bool
+>         0
+>       : Bool
+>     #61
+>     _method
+>       headE
+>       VarList
+>       #61
+>       _object
+>         env
+>       : VarList
+>     #62
+>     _method
+>       headC
+>       Lambda
+>       #62
+>       _object
+>         lam
+>       : Lambda
+>     #63
+>     _method
+>       headN
+>       Int
+>       #63
+>       _object
+>         num
+>       : Int
+>     #64
+>     _method
+>       tail
+>       LambdaList
+>       #64
+>       _object
+>         rest
+>       : LambdaList
+>     #65
+>     _method
+>       init
+>       #65
+>       _formal
+>         e
+>         VarList
+>       #65
+>       _formal
+>         l
+>         Lambda
+>       #65
+>       _formal
+>         n
+>         Int
+>       #65
+>       _formal
+>         r
+>         LambdaList
+>       LambdaListNE
+>       #66
+>       _block
+>         #67
+>         _assign
+>           env
+>           #67
+>           _object
+>             e
+>           : VarList
+>         : VarList
+>         #68
+>         _assign
+>           lam
+>           #68
+>           _object
+>             l
+>           : Lambda
+>         : Lambda
+>         #69
+>         _assign
+>           num
+>           #69
+>           _object
+>             n
+>           : Int
+>         : Int
+>         #70
+>         _assign
+>           rest
+>           #70
+>           _object
+>             r
+>           : LambdaList
+>         : LambdaList
+>         #71
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-606,607c606,607
-<         : LambdaListRef
-<       : LambdaListRef
----
+>     )
+>   #76
+>   _class
+>     LambdaListRef
+>     Object
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #77
+>     _attr
+>       nextNum
+>       Int
+>       #77
+>       _int
+>         0
+>       : Int
+>     #78
+>     _attr
+>       l
+>       LambdaList
+>       #0
+>       _no_expr
+>       : _no_type
+>     #79
+>     _method
+>       isNil
+>       Bool
+>       #79
+>       _dispatch
+>         #79
+>         _object
+>           l
+>         : LambdaList
+>         isNil
+>         (
+>         )
+>       : Bool
+>     #80
+>     _method
+>       headE
+>       VarList
+>       #80
+>       _dispatch
+>         #80
+>         _object
+>           l
+>         : LambdaList
+>         headE
+>         (
+>         )
+>       : VarList
+>     #81
+>     _method
+>       headC
+>       Lambda
+>       #81
+>       _dispatch
+>         #81
+>         _object
+>           l
+>         : LambdaList
+>         headC
+>         (
+>         )
+>       : Lambda
+>     #82
+>     _method
+>       headN
+>       Int
+>       #82
+>       _dispatch
+>         #82
+>         _object
+>           l
+>         : LambdaList
+>         headN
+>         (
+>         )
+>       : Int
+>     #83
+>     _method
+>       reset
+>       SELF_TYPE
+>       #84
+>       _block
+>         #85
+>         _assign
+>           nextNum
+>           #85
+>           _int
+>             0
+>           : Int
+>         : Int
+>         #86
+>         _assign
+>           l
+>           #86
+>           _new
+>             LambdaList
+>           : LambdaList
+>         : LambdaList
+>         #87
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-698,699c698,699
-<         : LambdaListRef
-<       : LambdaListRef
----
+>     #90
+>     _method
+>       add
+>       #90
+>       _formal
+>         env
+>         VarList
+>       #90
+>       _formal
+>         c
+>         Lambda
+>       Int
+>       #91
+>       _block
+>         #92
+>         _assign
+>           l
+>           #92
+>           _dispatch
+>             #92
+>             _object
+>               l
+>             : LambdaList
+>             add
+>             (
+>             #92
+>             _object
+>               env
+>             : VarList
+>             #92
+>             _object
+>               c
+>             : Lambda
+>             #92
+>             _object
+>               nextNum
+>             : Int
+>             )
+>           : LambdaList
+>         : LambdaList
+>         #93
+>         _assign
+>           nextNum
+>           #93
+>           _plus
+>             #93
+>             _object
+>               nextNum
+>             : Int
+>             #93
+>             _int
+>               1
+>             : Int
+>           : Int
+>         : Int
+>         #94
+>         _sub
+>           #94
+>           _object
+>             nextNum
+>           : Int
+>           #94
+>           _int
+>             1
+>           : Int
+>         : Int
+>       : Int
+>     #97
+>     _method
+>       removeHead
+>       SELF_TYPE
+>       #98
+>       _block
+>         #99
+>         _assign
+>           l
+>           #99
+>           _dispatch
+>             #99
+>             _object
+>               l
+>             : LambdaList
+>             tail
+>             (
+>             )
+>           : LambdaList
+>         : LambdaList
+>         #100
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-718c718
-<           : Expr
----
+>     )
+>   #111
+>   _class
+>     Expr
+>     IO
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #114
+>     _method
+>       print_self
+>       SELF_TYPE
+>       #115
+>       _block
+>         #116
+>         _dispatch
+>           #116
+>           _object
+>             self
 >           : SELF_TYPE
-726c726
-<         : Expr
----
+>           out_string
+>           (
+>           #116
+>           _string
+>             "\nError: Expr is pure virtual; can't print self\n"
+>           : String
+>           )
 >         : SELF_TYPE
-732c732
-<           : Expr
----
+>         #117
+>         _dispatch
+>           #117
+>           _object
+>             self
 >           : SELF_TYPE
-740,741c740,741
-<         : Expr
-<       : Expr
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #118
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-753c753
-<           : Expr
----
+>     #123
+>     _method
+>       beta
+>       Expr
+>       #124
+>       _block
+>         #125
+>         _dispatch
+>           #125
+>           _object
+>             self
 >           : SELF_TYPE
-761c761
-<         : Expr
----
+>           out_string
+>           (
+>           #125
+>           _string
+>             "\nError: Expr is pure virtual; can't beta-reduce\n"
+>           : String
+>           )
 >         : SELF_TYPE
-767c767
-<           : Expr
----
+>         #126
+>         _dispatch
+>           #126
+>           _object
+>             self
 >           : SELF_TYPE
-775,776c775,776
-<         : Expr
-<       : Expr
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #127
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-796c796
-<           : Expr
----
+>     #132
+>     _method
+>       substitute
+>       #132
+>       _formal
+>         x
+>         Variable
+>       #132
+>       _formal
+>         e
+>         Expr
+>       Expr
+>       #133
+>       _block
+>         #134
+>         _dispatch
+>           #134
+>           _object
+>             self
 >           : SELF_TYPE
-804c804
-<         : Expr
----
+>           out_string
+>           (
+>           #134
+>           _string
+>             "\nError: Expr is pure virtual; can't substitute\n"
+>           : String
+>           )
 >         : SELF_TYPE
-810c810
-<           : Expr
----
+>         #135
+>         _dispatch
+>           #135
+>           _object
+>             self
 >           : SELF_TYPE
-818,819c818,819
-<         : Expr
-<       : Expr
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #136
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-839c839
-<           : Expr
----
+>     #141
+>     _method
+>       gen_code
+>       #141
+>       _formal
+>         env
+>         VarList
+>       #141
+>       _formal
+>         closures
+>         LambdaListRef
+>       SELF_TYPE
+>       #142
+>       _block
+>         #143
+>         _dispatch
+>           #143
+>           _object
+>             self
 >           : SELF_TYPE
-847c847
-<         : Expr
----
+>           out_string
+>           (
+>           #143
+>           _string
+>             "\nError: Expr is pure virtual; can't gen_code\n"
+>           : String
+>           )
 >         : SELF_TYPE
-853c853
-<           : Expr
----
+>         #144
+>         _dispatch
+>           #144
+>           _object
+>             self
 >           : SELF_TYPE
-861,862c861,862
-<         : Expr
-<       : Expr
----
+>           abort
+>           (
+>           )
+>         : Object
+>         #145
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-898,899c898,899
-<         : Variable
-<       : Variable
----
+>     )
+>   #153
+>   _class
+>     Variable
+>     Expr
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #154
+>     _attr
+>       name
+>       String
+>       #0
+>       _no_expr
+>       : _no_type
+>     #156
+>     _method
+>       init
+>       #156
+>       _formal
+>         n
+>         String
+>       Variable
+>       #157
+>       _block
+>         #158
+>         _assign
+>           name
+>           #158
+>           _object
+>             n
+>           : String
+>         : String
+>         #159
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-909c909
-<         : Variable
----
+>     #163
+>     _method
+>       print_self
+>       SELF_TYPE
+>       #164
+>       _dispatch
+>         #164
+>         _object
+>           self
 >         : SELF_TYPE
-917c917
-<       : Variable
----
+>         out_string
+>         (
+>         #164
+>         _object
+>           name
+>         : String
+>         )
 >       : SELF_TYPE
-925c925
-<       : Variable
----
+>     #167
+>     _method
+>       beta
+>       Expr
+>       #167
+>       _object
+>         self
 >       : SELF_TYPE
-949c949
-<           : Variable
----
+>     #169
+>     _method
+>       substitute
+>       #169
+>       _formal
+>         x
+>         Variable
+>       #169
+>       _formal
+>         e
+>         Expr
+>       Expr
+>       #170
+>       _cond
+>         #170
+>         _eq
+>           #170
+>           _object
+>             x
+>           : Variable
+>           #170
+>           _object
+>             self
 >           : SELF_TYPE
-958c958
-<         : Variable
----
+>         : Bool
+>         #170
+>         _object
+>           e
+>         : Expr
+>         #170
+>         _object
+>           self
 >         : SELF_TYPE
-1017c1017
-<                   : Variable
----
+>       : Expr
+>     #173
+>     _method
+>       gen_code
+>       #173
+>       _formal
+>         env
+>         VarList
+>       #173
+>       _formal
+>         closures
+>         LambdaListRef
+>       SELF_TYPE
+>       #174
+>       _let
+>         cur_env
+>         VarList
+>         #174
+>         _object
+>           env
+>         : VarList
+>         #175
+>         _block
+>           #175
+>           _loop
+>             #175
+>             _cond
+>               #175
+>               _dispatch
+>                 #175
+>                 _object
+>                   cur_env
+>                 : VarList
+>                 isNil
+>                 (
+>                 )
+>               : Bool
+>               #176
+>               _bool
+>                 0
+>               : Bool
+>               #178
+>               _comp
+>                 #178
+>                 _eq
+>                   #178
+>                   _dispatch
+>                     #178
+>                     _object
+>                       cur_env
+>                     : VarList
+>                     head
+>                     (
+>                     )
+>                   : Variable
+>                   #178
+>                   _object
+>                     self
 >                   : SELF_TYPE
-1028c1028
-<                 : Variable
----
+>                 : Bool
+>               : Bool
+>             : Bool
+>             #180
+>             _block
+>               #180
+>               _dispatch
+>                 #180
+>                 _object
+>                   self
 >                 : SELF_TYPE
-1036c1036
-<               : Variable
----
+>                 out_string
+>                 (
+>                 #180
+>                 _string
+>                   "get_parent()."
+>                 : String
+>                 )
 >               : SELF_TYPE
-1072c1072
-<                 : Variable
----
+>               #181
+>               _assign
+>                 cur_env
+>                 #181
+>                 _dispatch
+>                   #181
+>                   _object
+>                     cur_env
+>                   : VarList
+>                   tail
+>                   (
+>                   )
+>                 : VarList
+>               : VarList
+>             : VarList
+>           : Object
+>           #184
+>           _cond
+>             #184
+>             _dispatch
+>               #184
+>               _object
+>                 cur_env
+>               : VarList
+>               isNil
+>               (
+>               )
+>             : Bool
+>             #185
+>             _block
+>               #185
+>               _dispatch
+>                 #185
+>                 _object
+>                   self
 >                 : SELF_TYPE
-1080c1080
-<               : Variable
----
+>                 out_string
+>                 (
+>                 #185
+>                 _string
+>                   "Error:  free occurrence of "
+>                 : String
+>                 )
 >               : SELF_TYPE
-1086c1086
-<                 : Variable
----
+>               #186
+>               _dispatch
+>                 #186
+>                 _object
+>                   self
 >                 : SELF_TYPE
-1090c1090
-<               : Variable
----
+>                 print_self
+>                 (
+>                 )
 >               : SELF_TYPE
-1096c1096
-<                 : Variable
----
+>               #187
+>               _dispatch
+>                 #187
+>                 _object
+>                   self
 >                 : SELF_TYPE
-1104c1104
-<               : Variable
----
+>                 out_string
+>                 (
+>                 #187
+>                 _string
+>                   "\n"
+>                 : String
+>                 )
 >               : SELF_TYPE
-1110c1110
-<                 : Variable
----
+>               #188
+>               _dispatch
+>                 #188
+>                 _object
+>                   self
 >                 : SELF_TYPE
-1118,1119c1118,1119
-<               : Variable
-<             : Variable
----
+>                 abort
+>                 (
+>                 )
+>               : Object
+>               #189
+>               _object
+>                 self
 >               : SELF_TYPE
 >             : SELF_TYPE
-1125c1125
-<               : Variable
----
+>             #192
+>             _dispatch
+>               #192
+>               _object
+>                 self
 >               : SELF_TYPE
-1133,1136c1133,1136
-<             : Variable
-<           : Variable
-<         : Variable
-<       : Variable
----
+>               out_string
+>               (
+>               #192
+>               _string
+>                 "get_x()"
+>               : String
+>               )
 >             : SELF_TYPE
 >           : SELF_TYPE
 >         : SELF_TYPE
 >       : SELF_TYPE
-1191,1192c1191,1192
-<         : Lambda
-<       : Lambda
----
+>     )
+>   #201
+>   _class
+>     Lambda
+>     Expr
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #202
+>     _attr
+>       arg
+>       Variable
+>       #0
+>       _no_expr
+>       : _no_type
+>     #203
+>     _attr
+>       body
+>       Expr
+>       #0
+>       _no_expr
+>       : _no_type
+>     #205
+>     _method
+>       init
+>       #205
+>       _formal
+>         a
+>         Variable
+>       #205
+>       _formal
+>         b
+>         Expr
+>       Lambda
+>       #206
+>       _block
+>         #207
+>         _assign
+>           arg
+>           #207
+>           _object
+>             a
+>           : Variable
+>         : Variable
+>         #208
+>         _assign
+>           body
+>           #208
+>           _object
+>             b
+>           : Expr
+>         : Expr
+>         #209
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-1204c1204
-<           : Lambda
----
+>     #213
+>     _method
+>       print_self
+>       SELF_TYPE
+>       #214
+>       _block
+>         #215
+>         _dispatch
+>           #215
+>           _object
+>             self
 >           : SELF_TYPE
-1212c1212
-<         : Lambda
----
+>           out_string
+>           (
+>           #215
+>           _string
+>             "\\"
+>           : String
+>           )
 >         : SELF_TYPE
-1228c1228
-<           : Lambda
----
+>         #216
+>         _dispatch
+>           #216
+>           _object
+>             arg
+>           : Variable
+>           print_self
+>           (
+>           )
+>         : Variable
+>         #217
+>         _dispatch
+>           #217
+>           _object
+>             self
 >           : SELF_TYPE
-1236c1236
-<         : Lambda
----
+>           out_string
+>           (
+>           #217
+>           _string
+>             "."
+>           : String
+>           )
 >         : SELF_TYPE
-1250,1251c1250,1251
-<         : Lambda
-<       : Lambda
----
+>         #218
+>         _dispatch
+>           #218
+>           _object
+>             body
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #219
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-1259c1259
-<       : Lambda
----
+>     #223
+>     _method
+>       beta
+>       Expr
+>       #223
+>       _object
+>         self
 >       : SELF_TYPE
-1314c1314
-<         : Lambda
----
+>     #225
+>     _method
+>       apply
+>       #225
+>       _formal
+>         actual
+>         Expr
+>       Expr
+>       #226
+>       _dispatch
+>         #226
+>         _object
+>           body
+>         : Expr
+>         substitute
+>         (
+>         #226
+>         _object
+>           arg
+>         : Variable
+>         #226
+>         _object
+>           actual
+>         : Expr
+>         )
+>       : Expr
+>     #230
+>     _method
+>       substitute
+>       #230
+>       _formal
+>         x
+>         Variable
+>       #230
+>       _formal
+>         e
+>         Expr
+>       Expr
+>       #231
+>       _cond
+>         #231
+>         _eq
+>           #231
+>           _object
+>             x
+>           : Variable
+>           #231
+>           _object
+>             arg
+>           : Variable
+>         : Bool
+>         #232
+>         _object
+>           self
 >         : SELF_TYPE
-1385c1385
-<           : Lambda
----
+>         #234
+>         _let
+>           new_body
+>           Expr
+>           #234
+>           _dispatch
+>             #234
+>             _object
+>               body
+>             : Expr
+>             substitute
+>             (
+>             #234
+>             _object
+>               x
+>             : Variable
+>             #234
+>             _object
+>               e
+>             : Expr
+>             )
+>           : Expr
+>           #235
+>           _let
+>             new_lam
+>             Lambda
+>             #235
+>             _new
+>               Lambda
+>             : Lambda
+>             #236
+>             _dispatch
+>               #236
+>               _object
+>                 new_lam
+>               : Lambda
+>               init
+>               (
+>               #236
+>               _object
+>                 arg
+>               : Variable
+>               #236
+>               _object
+>                 new_body
+>               : Expr
+>               )
+>             : Lambda
+>           : Lambda
+>         : Lambda
+>       : Lambda
+>     #240
+>     _method
+>       gen_code
+>       #240
+>       _formal
+>         env
+>         VarList
+>       #240
+>       _formal
+>         closures
+>         LambdaListRef
+>       SELF_TYPE
+>       #241
+>       _block
+>         #242
+>         _dispatch
+>           #242
+>           _object
+>             self
 >           : SELF_TYPE
-1393c1393
-<         : Lambda
----
+>           out_string
+>           (
+>           #242
+>           _string
+>             "((new Closure"
+>           : String
+>           )
 >         : SELF_TYPE
-1399c1399
-<           : Lambda
----
+>         #243
+>         _dispatch
+>           #243
+>           _object
+>             self
 >           : SELF_TYPE
-1417c1417
-<             : Lambda
----
+>           out_int
+>           (
+>           #243
+>           _dispatch
+>             #243
+>             _object
+>               closures
+>             : LambdaListRef
+>             add
+>             (
+>             #243
+>             _object
+>               env
+>             : VarList
+>             #243
+>             _object
+>               self
 >             : SELF_TYPE
-1421c1421
-<         : Lambda
----
+>             )
+>           : Int
+>           )
 >         : SELF_TYPE
-1427c1427
-<           : Lambda
----
+>         #244
+>         _dispatch
+>           #244
+>           _object
+>             self
 >           : SELF_TYPE
-1435c1435
-<         : Lambda
----
+>           out_string
+>           (
+>           #244
+>           _string
+>             ").init("
+>           : String
+>           )
 >         : SELF_TYPE
-1453c1453
-<             : Lambda
----
+>         #245
+>         _cond
+>           #245
+>           _dispatch
+>             #245
+>             _object
+>               env
+>             : VarList
+>             isNil
+>             (
+>             )
+>           : Bool
+>           #246
+>           _dispatch
+>             #246
+>             _object
+>               self
 >             : SELF_TYPE
-1461c1461
-<           : Lambda
----
+>             out_string
+>             (
+>             #246
+>             _string
+>               "new Closure))"
+>             : String
+>             )
 >           : SELF_TYPE
-1467c1467
-<             : Lambda
----
+>           #248
+>           _dispatch
+>             #248
+>             _object
+>               self
 >             : SELF_TYPE
-1475,1476c1475,1476
-<           : Lambda
-<         : Lambda
----
+>             out_string
+>             (
+>             #248
+>             _string
+>               "self))"
+>             : String
+>             )
 >           : SELF_TYPE
 >         : SELF_TYPE
-1480,1481c1480,1481
-<         : Lambda
-<       : Lambda
----
->         : SELF_TYPE
->       : SELF_TYPE
-1505c1505
-<           : Lambda
----
->           : SELF_TYPE
-1513c1513
-<         : Lambda
----
->         : SELF_TYPE
-1519c1519
-<           : Lambda
----
->           : SELF_TYPE
-1527c1527
-<         : Lambda
----
->         : SELF_TYPE
-1533c1533
-<           : Lambda
----
->           : SELF_TYPE
-1541c1541
-<         : Lambda
----
->         : SELF_TYPE
-1547c1547
-<           : Lambda
----
->           : SELF_TYPE
-1555c1555
-<         : Lambda
----
->         : SELF_TYPE
-1561c1561
-<           : Lambda
----
->           : SELF_TYPE
-1569c1569
-<         : Lambda
----
->         : SELF_TYPE
-1575c1575
-<           : Lambda
----
->           : SELF_TYPE
-1583c1583
-<         : Lambda
----
->         : SELF_TYPE
-1589c1589
-<           : Lambda
----
->           : SELF_TYPE
-1597c1597
-<         : Lambda
----
->         : SELF_TYPE
-1603c1603
-<           : Lambda
----
->           : SELF_TYPE
-1611c1611
-<         : Lambda
----
->         : SELF_TYPE
-1645c1645
-<           : Lambda
----
->           : SELF_TYPE
-1653c1653
-<         : Lambda
----
->         : SELF_TYPE
-1659c1659
-<           : Lambda
----
->           : SELF_TYPE
-1667,1668c1667,1668
-<         : Lambda
-<       : Lambda
----
+>         #249
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-1723,1724c1723,1724
-<         : App
-<       : App
----
+>     #253
+>     _method
+>       gen_closure_code
+>       #253
+>       _formal
+>         n
+>         Int
+>       #253
+>       _formal
+>         env
+>         VarList
+>       #254
+>       _formal
+>         closures
+>         LambdaListRef
+>       SELF_TYPE
+>       #255
+>       _block
+>         #256
+>         _dispatch
+>           #256
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #256
+>           _string
+>             "class Closure"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #257
+>         _dispatch
+>           #257
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_int
+>           (
+>           #257
+>           _object
+>             n
+>           : Int
+>           )
+>         : SELF_TYPE
+>         #258
+>         _dispatch
+>           #258
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #258
+>           _string
+>             " inherits Closure {\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #259
+>         _dispatch
+>           #259
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #259
+>           _string
+>             "  apply(y : EvalObject) : EvalObject {\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #260
+>         _dispatch
+>           #260
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #260
+>           _string
+>             "    { out_string(\"Applying closure "
+>           : String
+>           )
+>         : SELF_TYPE
+>         #261
+>         _dispatch
+>           #261
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_int
+>           (
+>           #261
+>           _object
+>             n
+>           : Int
+>           )
+>         : SELF_TYPE
+>         #262
+>         _dispatch
+>           #262
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #262
+>           _string
+>             "\\n\");\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #263
+>         _dispatch
+>           #263
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #263
+>           _string
+>             "      x <- y;\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #264
+>         _dispatch
+>           #264
+>           _object
+>             body
+>           : Expr
+>           gen_code
+>           (
+>           #264
+>           _dispatch
+>             #264
+>             _object
+>               env
+>             : VarList
+>             add
+>             (
+>             #264
+>             _object
+>               arg
+>             : Variable
+>             )
+>           : VarList
+>           #264
+>           _object
+>             closures
+>           : LambdaListRef
+>           )
+>         : Expr
+>         #265
+>         _dispatch
+>           #265
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #265
+>           _string
+>             ";}};\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #266
+>         _dispatch
+>           #266
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #266
+>           _string
+>             "};\n"
+>           : String
+>           )
 >         : SELF_TYPE
 >       : SELF_TYPE
-1736c1736
-<           : App
----
->           : SELF_TYPE
-1744c1744
-<         : App
----
->         : SELF_TYPE
-1760c1760
-<           : App
----
->           : SELF_TYPE
-1768c1768
-<         : App
----
->         : SELF_TYPE
-1784c1784
-<           : App
----
->           : SELF_TYPE
-1792c1792
-<         : App
----
->         : SELF_TYPE
-1796,1797c1796,1797
-<         : App
-<       : App
----
->         : SELF_TYPE
->       : SELF_TYPE
-1977c1977
-<           : App
----
->           : SELF_TYPE
-1985c1985
-<         : App
----
->         : SELF_TYPE
-2009c2009
-<           : App
----
->           : SELF_TYPE
-2017c2017
-<         : App
----
->         : SELF_TYPE
-2023c2023
-<           : App
----
->           : SELF_TYPE
-2031c2031
-<         : App
----
->         : SELF_TYPE
-2055c2055
-<           : App
----
->           : SELF_TYPE
-2063c2063
-<         : App
----
->         : SELF_TYPE
-2069c2069
-<           : App
----
->           : SELF_TYPE
-2077c2077
-<         : App
----
->         : SELF_TYPE
-2083c2083
-<           : App
----
->           : SELF_TYPE
-2091c2091
-<         : App
----
->         : SELF_TYPE
-2097c2097
-<           : App
----
->           : SELF_TYPE
-2105c2105
-<         : App
----
->         : SELF_TYPE
-2111c2111
-<           : App
----
->           : SELF_TYPE
-2119,2120c2119,2120
-<         : App
-<       : App
----
+>     )
+>   #274
+>   _class
+>     App
+>     Expr
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #275
+>     _attr
+>       fun
+>       Expr
+>       #0
+>       _no_expr
+>       : _no_type
+>     #276
+>     _attr
+>       arg
+>       Expr
+>       #0
+>       _no_expr
+>       : _no_type
+>     #278
+>     _method
+>       init
+>       #278
+>       _formal
+>         f
+>         Expr
+>       #278
+>       _formal
+>         a
+>         Expr
+>       App
+>       #279
+>       _block
+>         #280
+>         _assign
+>           fun
+>           #280
+>           _object
+>             f
+>           : Expr
+>         : Expr
+>         #281
+>         _assign
+>           arg
+>           #281
+>           _object
+>             a
+>           : Expr
+>         : Expr
+>         #282
+>         _object
+>           self
 >         : SELF_TYPE
 >       : SELF_TYPE
-2250c2250
-<           : Term
----
+>     #286
+>     _method
+>       print_self
+>       SELF_TYPE
+>       #287
+>       _block
+>         #288
+>         _dispatch
+>           #288
+>           _object
+>             self
 >           : SELF_TYPE
-2264c2264
-<           : Term
----
+>           out_string
+>           (
+>           #288
+>           _string
+>             "(("
+>           : String
+>           )
+>         : SELF_TYPE
+>         #289
+>         _dispatch
+>           #289
+>           _object
+>             fun
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #290
+>         _dispatch
+>           #290
+>           _object
+>             self
 >           : SELF_TYPE
-2291c2291
-<           : Term
----
+>           out_string
+>           (
+>           #290
+>           _string
+>             ")@("
+>           : String
+>           )
+>         : SELF_TYPE
+>         #291
+>         _dispatch
+>           #291
+>           _object
+>             arg
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #292
+>         _dispatch
+>           #292
+>           _object
+>             self
 >           : SELF_TYPE
-2309c2309
-<             : Term
----
+>           out_string
+>           (
+>           #292
+>           _string
+>             "))"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #293
+>         _object
+>           self
+>         : SELF_TYPE
+>       : SELF_TYPE
+>     #297
+>     _method
+>       beta
+>       Expr
+>       #298
+>       _typcase
+>         #298
+>         _object
+>           fun
+>         : Expr
+>         #299
+>         _branch
+>           l
+>           Lambda
+>           #299
+>           _dispatch
+>             #299
+>             _object
+>               l
+>             : Lambda
+>             apply
+>             (
+>             #299
+>             _object
+>               arg
+>             : Expr
+>             )
+>           : Expr
+>         #300
+>         _branch
+>           e
+>           Expr
+>           #301
+>           _let
+>             new_fun
+>             Expr
+>             #301
+>             _dispatch
+>               #301
+>               _object
+>                 fun
+>               : Expr
+>               beta
+>               (
+>               )
+>             : Expr
+>             #302
+>             _let
+>               new_app
+>               App
+>               #302
+>               _new
+>                 App
+>               : App
+>               #303
+>               _dispatch
+>                 #303
+>                 _object
+>                   new_app
+>                 : App
+>                 init
+>                 (
+>                 #303
+>                 _object
+>                   new_fun
+>                 : Expr
+>                 #303
+>                 _object
+>                   arg
+>                 : Expr
+>                 )
+>               : App
+>             : App
+>           : App
+>       : Expr
+>     #307
+>     _method
+>       substitute
+>       #307
+>       _formal
+>         x
+>         Variable
+>       #307
+>       _formal
+>         e
+>         Expr
+>       Expr
+>       #308
+>       _let
+>         new_fun
+>         Expr
+>         #308
+>         _dispatch
+>           #308
+>           _object
+>             fun
+>           : Expr
+>           substitute
+>           (
+>           #308
+>           _object
+>             x
+>           : Variable
+>           #308
+>           _object
+>             e
+>           : Expr
+>           )
+>         : Expr
+>         #309
+>         _let
+>           new_arg
+>           Expr
+>           #309
+>           _dispatch
+>             #309
+>             _object
+>               arg
+>             : Expr
+>             substitute
+>             (
+>             #309
+>             _object
+>               x
+>             : Variable
+>             #309
+>             _object
+>               e
+>             : Expr
+>             )
+>           : Expr
+>           #310
+>           _let
+>             new_app
+>             App
+>             #310
+>             _new
+>               App
+>             : App
+>             #311
+>             _dispatch
+>               #311
+>               _object
+>                 new_app
+>               : App
+>               init
+>               (
+>               #311
+>               _object
+>                 new_fun
+>               : Expr
+>               #311
+>               _object
+>                 new_arg
+>               : Expr
+>               )
+>             : App
+>           : App
+>         : App
+>       : App
+>     #314
+>     _method
+>       gen_code
+>       #314
+>       _formal
+>         env
+>         VarList
+>       #314
+>       _formal
+>         closures
+>         LambdaListRef
+>       SELF_TYPE
+>       #315
+>       _block
+>         #316
+>         _dispatch
+>           #316
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #316
+>           _string
+>             "(let x : EvalObject <- "
+>           : String
+>           )
+>         : SELF_TYPE
+>         #317
+>         _dispatch
+>           #317
+>           _object
+>             fun
+>           : Expr
+>           gen_code
+>           (
+>           #317
+>           _object
+>             env
+>           : VarList
+>           #317
+>           _object
+>             closures
+>           : LambdaListRef
+>           )
+>         : Expr
+>         #318
+>         _dispatch
+>           #318
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #318
+>           _string
+>             ",\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #319
+>         _dispatch
+>           #319
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #319
+>           _string
+>             "     y : EvalObject <- "
+>           : String
+>           )
+>         : SELF_TYPE
+>         #320
+>         _dispatch
+>           #320
+>           _object
+>             arg
+>           : Expr
+>           gen_code
+>           (
+>           #320
+>           _object
+>             env
+>           : VarList
+>           #320
+>           _object
+>             closures
+>           : LambdaListRef
+>           )
+>         : Expr
+>         #321
+>         _dispatch
+>           #321
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #321
+>           _string
+>             " in\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #322
+>         _dispatch
+>           #322
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #322
+>           _string
+>             "  case x of\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #323
+>         _dispatch
+>           #323
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #323
+>           _string
+>             "    c : Closure => c.apply(y);\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #324
+>         _dispatch
+>           #324
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #324
+>           _string
+>             "    o : Object => { abort(); new EvalObject; };\n"
+>           : String
+>           )
+>         : SELF_TYPE
+>         #325
+>         _dispatch
+>           #325
+>           _object
+>             self
+>           : SELF_TYPE
+>           out_string
+>           (
+>           #325
+>           _string
+>             "  esac)"
+>           : String
+>           )
+>         : SELF_TYPE
+>       : SELF_TYPE
+>     )
+>   #335
+>   _class
+>     Term
+>     IO
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #339
+>     _method
+>       var
+>       #339
+>       _formal
+>         x
+>         String
+>       Variable
+>       #340
+>       _let
+>         v
+>         Variable
+>         #340
+>         _new
+>           Variable
+>         : Variable
+>         #341
+>         _dispatch
+>           #341
+>           _object
+>             v
+>           : Variable
+>           init
+>           (
+>           #341
+>           _object
+>             x
+>           : String
+>           )
+>         : Variable
+>       : Variable
+>     #344
+>     _method
+>       lam
+>       #344
+>       _formal
+>         x
+>         Variable
+>       #344
+>       _formal
+>         e
+>         Expr
+>       Lambda
+>       #345
+>       _let
+>         l
+>         Lambda
+>         #345
+>         _new
+>           Lambda
+>         : Lambda
+>         #346
+>         _dispatch
+>           #346
+>           _object
+>             l
+>           : Lambda
+>           init
+>           (
+>           #346
+>           _object
+>             x
+>           : Variable
+>           #346
+>           _object
+>             e
+>           : Expr
+>           )
+>         : Lambda
+>       : Lambda
+>     #349
+>     _method
+>       app
+>       #349
+>       _formal
+>         e1
+>         Expr
+>       #349
+>       _formal
+>         e2
+>         Expr
+>       App
+>       #350
+>       _let
+>         a
+>         App
+>         #350
+>         _new
+>           App
+>         : App
+>         #351
+>         _dispatch
+>           #351
+>           _object
+>             a
+>           : App
+>           init
+>           (
+>           #351
+>           _object
+>             e1
+>           : Expr
+>           #351
+>           _object
+>             e2
+>           : Expr
+>           )
+>         : App
+>       : App
+>     #357
+>     _method
+>       i
+>       Expr
+>       #358
+>       _let
+>         x
+>         Variable
+>         #358
+>         _dispatch
+>           #358
+>           _object
+>             self
+>           : SELF_TYPE
+>           var
+>           (
+>           #358
+>           _string
+>             "x"
+>           : String
+>           )
+>         : Variable
+>         #359
+>         _dispatch
+>           #359
+>           _object
+>             self
+>           : SELF_TYPE
+>           lam
+>           (
+>           #359
+>           _object
+>             x
+>           : Variable
+>           #359
+>           _object
+>             x
+>           : Variable
+>           )
+>         : Lambda
+>       : Lambda
+>     #362
+>     _method
+>       k
+>       Expr
+>       #363
+>       _let
+>         x
+>         Variable
+>         #363
+>         _dispatch
+>           #363
+>           _object
+>             self
+>           : SELF_TYPE
+>           var
+>           (
+>           #363
+>           _string
+>             "x"
+>           : String
+>           )
+>         : Variable
+>         #364
+>         _let
+>           y
+>           Variable
+>           #364
+>           _dispatch
+>             #364
+>             _object
+>               self
 >             : SELF_TYPE
-2323c2323
-<             : Term
----
+>             var
+>             (
+>             #364
+>             _string
+>               "y"
+>             : String
+>             )
+>           : Variable
+>           #365
+>           _dispatch
+>             #365
+>             _object
+>               self
 >             : SELF_TYPE
-2335c2335
-<               : Term
----
+>             lam
+>             (
+>             #365
+>             _object
+>               x
+>             : Variable
+>             #365
+>             _dispatch
+>               #365
+>               _object
+>                 self
 >               : SELF_TYPE
-2365c2365
-<           : Term
----
+>               lam
+>               (
+>               #365
+>               _object
+>                 y
+>               : Variable
+>               #365
+>               _object
+>                 x
+>               : Variable
+>               )
+>             : Lambda
+>             )
+>           : Lambda
+>         : Lambda
+>       : Lambda
+>     #368
+>     _method
+>       s
+>       Expr
+>       #369
+>       _let
+>         x
+>         Variable
+>         #369
+>         _dispatch
+>           #369
+>           _object
+>             self
 >           : SELF_TYPE
-2383c2383
-<             : Term
----
+>           var
+>           (
+>           #369
+>           _string
+>             "x"
+>           : String
+>           )
+>         : Variable
+>         #370
+>         _let
+>           y
+>           Variable
+>           #370
+>           _dispatch
+>             #370
+>             _object
+>               self
 >             : SELF_TYPE
-2401c2401
-<               : Term
----
+>             var
+>             (
+>             #370
+>             _string
+>               "y"
+>             : String
+>             )
+>           : Variable
+>           #371
+>           _let
+>             z
+>             Variable
+>             #371
+>             _dispatch
+>               #371
+>               _object
+>                 self
 >               : SELF_TYPE
-2415c2415
-<               : Term
----
+>               var
+>               (
+>               #371
+>               _string
+>                 "z"
+>               : String
+>               )
+>             : Variable
+>             #372
+>             _dispatch
+>               #372
+>               _object
+>                 self
 >               : SELF_TYPE
-2427c2427
-<                 : Term
----
+>               lam
+>               (
+>               #372
+>               _object
+>                 x
+>               : Variable
+>               #372
+>               _dispatch
+>                 #372
+>                 _object
+>                   self
 >                 : SELF_TYPE
-2439c2439
-<                   : Term
----
+>                 lam
+>                 (
+>                 #372
+>                 _object
+>                   y
+>                 : Variable
+>                 #372
+>                 _dispatch
+>                   #372
+>                   _object
+>                     self
 >                   : SELF_TYPE
-2451c2451
-<                     : Term
----
+>                   lam
+>                   (
+>                   #372
+>                   _object
+>                     z
+>                   : Variable
+>                   #372
+>                   _dispatch
+>                     #372
+>                     _object
+>                       self
 >                     : SELF_TYPE
-2459c2459
-<                       : Term
----
+>                     app
+>                     (
+>                     #372
+>                     _dispatch
+>                       #372
+>                       _object
+>                         self
 >                       : SELF_TYPE
-2477c2477
-<                       : Term
----
+>                       app
+>                       (
+>                       #372
+>                       _object
+>                         x
+>                       : Variable
+>                       #372
+>                       _object
+>                         z
+>                       : Variable
+>                       )
+>                     : App
+>                     #372
+>                     _dispatch
+>                       #372
+>                       _object
+>                         self
 >                       : SELF_TYPE
-2523c2523
-<           : Main
----
+>                       app
+>                       (
+>                       #372
+>                       _object
+>                         y
+>                       : Variable
+>                       #372
+>                       _object
+>                         z
+>                       : Variable
+>                       )
+>                     : App
+>                     )
+>                   : App
+>                   )
+>                 : Lambda
+>                 )
+>               : Lambda
+>               )
+>             : Lambda
+>           : Lambda
+>         : Lambda
+>       : Lambda
+>     )
+>   #383
+>   _class
+>     Main
+>     Term
+>     "/afs/ir.stanford.edu/class/cs143/examples/lam.cl"
+>     (
+>     #385
+>     _method
+>       beta_reduce
+>       #385
+>       _formal
+>         e
+>         Expr
+>       Expr
+>       #386
+>       _block
+>         #387
+>         _dispatch
+>           #387
+>           _object
+>             self
 >           : SELF_TYPE
-2531c2531
-<         : Main
----
+>           out_string
+>           (
+>           #387
+>           _string
+>             "beta-reduce: "
+>           : String
+>           )
 >         : SELF_TYPE
-2620c2620
-<                         : Main
----
+>         #388
+>         _dispatch
+>           #388
+>           _object
+>             e
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #389
+>         _let
+>           done
+>           Bool
+>           #389
+>           _bool
+>             0
+>           : Bool
+>           #390
+>           _let
+>             new_expr
+>             Expr
+>             #0
+>             _no_expr
+>             : _no_type
+>             #391
+>             _block
+>               #392
+>               _loop
+>                 #392
+>                 _comp
+>                   #392
+>                   _object
+>                     done
+>                   : Bool
+>                 : Bool
+>                 #393
+>                 _block
+>                   #394
+>                   _assign
+>                     new_expr
+>                     #394
+>                     _dispatch
+>                       #394
+>                       _object
+>                         e
+>                       : Expr
+>                       beta
+>                       (
+>                       )
+>                     : Expr
+>                   : Expr
+>                   #395
+>                   _cond
+>                     #395
+>                     _eq
+>                       #395
+>                       _object
+>                         new_expr
+>                       : Expr
+>                       #395
+>                       _object
+>                         e
+>                       : Expr
+>                     : Bool
+>                     #396
+>                     _assign
+>                       done
+>                       #396
+>                       _bool
+>                         1
+>                       : Bool
+>                     : Bool
+>                     #398
+>                     _block
+>                       #399
+>                       _assign
+>                         e
+>                         #399
+>                         _object
+>                           new_expr
+>                         : Expr
+>                       : Expr
+>                       #400
+>                       _dispatch
+>                         #400
+>                         _object
+>                           self
 >                         : SELF_TYPE
-2628c2628
-<                       : Main
----
+>                         out_string
+>                         (
+>                         #400
+>                         _string
+>                           " =>\n"
+>                         : String
+>                         )
 >                       : SELF_TYPE
-2648c2648
-<                 : Main
----
+>                       #401
+>                       _dispatch
+>                         #401
+>                         _object
+>                           e
+>                         : Expr
+>                         print_self
+>                         (
+>                         )
+>                       : Expr
+>                     : Expr
+>                   : Object
+>                 : Object
+>               : Object
+>               #406
+>               _dispatch
+>                 #406
+>                 _object
+>                   self
 >                 : SELF_TYPE
-2656c2656
-<               : Main
----
+>                 out_string
+>                 (
+>                 #406
+>                 _string
+>                   "\n"
+>                 : String
+>                 )
 >               : SELF_TYPE
-2676c2676
-<           : Main
----
+>               #407
+>               _object
+>                 e
+>               : Expr
+>             : Expr
+>           : Expr
+>         : Expr
+>       : Expr
+>     #412
+>     _method
+>       eval_class
+>       SELF_TYPE
+>       #413
+>       _block
+>         #414
+>         _dispatch
+>           #414
+>           _object
+>             self
 >           : SELF_TYPE
-2684c2684
-<         : Main
----
+>           out_string
+>           (
+>           #414
+>           _string
+>             "class EvalObject inherits IO {\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2690c2690
-<           : Main
----
+>         #415
+>         _dispatch
+>           #415
+>           _object
+>             self
 >           : SELF_TYPE
-2698c2698
-<         : Main
----
+>           out_string
+>           (
+>           #415
+>           _string
+>             "  eval() : EvalObject { { abort(); self; } };\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2704c2704
-<           : Main
----
+>         #416
+>         _dispatch
+>           #416
+>           _object
+>             self
 >           : SELF_TYPE
-2712,2713c2712,2713
-<         : Main
-<       : Main
----
+>           out_string
+>           (
+>           #416
+>           _string
+>             "};\n"
+>           : String
+>           )
 >         : SELF_TYPE
 >       : SELF_TYPE
-2725c2725
-<           : Main
----
+>     #420
+>     _method
+>       closure_class
+>       SELF_TYPE
+>       #421
+>       _block
+>         #422
+>         _dispatch
+>           #422
+>           _object
+>             self
 >           : SELF_TYPE
-2733c2733
-<         : Main
----
+>           out_string
+>           (
+>           #422
+>           _string
+>             "class Closure inherits EvalObject {\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2739c2739
-<           : Main
----
+>         #423
+>         _dispatch
+>           #423
+>           _object
+>             self
 >           : SELF_TYPE
-2747c2747
-<         : Main
----
+>           out_string
+>           (
+>           #423
+>           _string
+>             "  parent : Closure;\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2753c2753
-<           : Main
----
+>         #424
+>         _dispatch
+>           #424
+>           _object
+>             self
 >           : SELF_TYPE
-2761c2761
-<         : Main
----
+>           out_string
+>           (
+>           #424
+>           _string
+>             "  x : EvalObject;\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2767c2767
-<           : Main
----
+>         #425
+>         _dispatch
+>           #425
+>           _object
+>             self
 >           : SELF_TYPE
-2775c2775
-<         : Main
----
+>           out_string
+>           (
+>           #425
+>           _string
+>             "  get_parent() : Closure { parent };\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2781c2781
-<           : Main
----
+>         #426
+>         _dispatch
+>           #426
+>           _object
+>             self
 >           : SELF_TYPE
-2789c2789
-<         : Main
----
+>           out_string
+>           (
+>           #426
+>           _string
+>             "  get_x() : EvalObject { x };\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2795c2795
-<           : Main
----
+>         #427
+>         _dispatch
+>           #427
+>           _object
+>             self
 >           : SELF_TYPE
-2803c2803
-<         : Main
----
+>           out_string
+>           (
+>           #427
+>           _string
+>             "  init(p : Closure) : Closure {{ parent <- p; self; }};\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2809c2809
-<           : Main
----
+>         #428
+>         _dispatch
+>           #428
+>           _object
+>             self
 >           : SELF_TYPE
-2817c2817
-<         : Main
----
+>           out_string
+>           (
+>           #428
+>           _string
+>             "  apply(y : EvalObject) : EvalObject { { abort(); self; } };\n"
+>           : String
+>           )
 >         : SELF_TYPE
-2823c2823
-<           : Main
----
+>         #429
+>         _dispatch
+>           #429
+>           _object
+>             self
 >           : SELF_TYPE
-2831,2832c2831,2832
-<         : Main
-<       : Main
----
->         : SELF_TYPE
->       : SELF_TYPE
-2862c2862
-<             : Main
----
->             : SELF_TYPE
-2870c2870
-<           : Main
----
->           : SELF_TYPE
-2886c2886
-<             : Main
----
->             : SELF_TYPE
-2894c2894
-<           : Main
----
->           : SELF_TYPE
-2900c2900
-<             : Main
----
->             : SELF_TYPE
-2908c2908
-<           : Main
----
->           : SELF_TYPE
-2914c2914
-<             : Main
----
->             : SELF_TYPE
-2918c2918
-<           : Main
----
->           : SELF_TYPE
-2924c2924
-<             : Main
----
->             : SELF_TYPE
-2928c2928
-<           : Main
----
->           : SELF_TYPE
-2934c2934
-<             : Main
----
->             : SELF_TYPE
-2942c2942
-<           : Main
----
->           : SELF_TYPE
-2948c2948
-<             : Main
----
->             : SELF_TYPE
-2956c2956
-<           : Main
----
->           : SELF_TYPE
-2980c2980
-<             : Main
----
->             : SELF_TYPE
-2988c2988
-<           : Main
----
->           : SELF_TYPE
-3090c3090
-<             : Main
----
->             : SELF_TYPE
-3098,3100c3098,3100
-<           : Main
-<         : Main
-<       : Main
----
->           : SELF_TYPE
+>           out_string
+>           (
+>           #429
+>           _string
+>             "};\n"
+>           : String
+>           )
 >         : SELF_TYPE
 >       : SELF_TYPE
-3114c3114
-<             : Main
----
+>     #433
+>     _method
+>       gen_code
+>       #433
+>       _formal
+>         e
+>         Expr
+>       SELF_TYPE
+>       #434
+>       _let
+>         cl
+>         LambdaListRef
+>         #434
+>         _dispatch
+>           #434
+>           _new
+>             LambdaListRef
+>           : LambdaListRef
+>           reset
+>           (
+>           )
+>         : LambdaListRef
+>         #435
+>         _block
+>           #436
+>           _dispatch
+>             #436
+>             _object
+>               self
 >             : SELF_TYPE
-3128c3128
-<           : Main
----
+>             out_string
+>             (
+>             #436
+>             _string
+>               "Generating code for "
+>             : String
+>             )
 >           : SELF_TYPE
-3136c3136
-<         : Main
----
+>           #437
+>           _dispatch
+>             #437
+>             _object
+>               e
+>             : Expr
+>             print_self
+>             (
+>             )
+>           : Expr
+>           #438
+>           _dispatch
+>             #438
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #438
+>             _string
+>               "\n------------------cut here------------------\n"
+>             : String
+>             )
+>           : SELF_TYPE
+>           #439
+>           _dispatch
+>             #439
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #439
+>             _string
+>               "(*Generated by lam.cl (Jeff Foster, March 2000)*)\n"
+>             : String
+>             )
+>           : SELF_TYPE
+>           #440
+>           _dispatch
+>             #440
+>             _object
+>               self
+>             : SELF_TYPE
+>             eval_class
+>             (
+>             )
+>           : SELF_TYPE
+>           #441
+>           _dispatch
+>             #441
+>             _object
+>               self
+>             : SELF_TYPE
+>             closure_class
+>             (
+>             )
+>           : SELF_TYPE
+>           #442
+>           _dispatch
+>             #442
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #442
+>             _string
+>               "class Main {\n"
+>             : String
+>             )
+>           : SELF_TYPE
+>           #443
+>           _dispatch
+>             #443
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #443
+>             _string
+>               "  main() : EvalObject {\n"
+>             : String
+>             )
+>           : SELF_TYPE
+>           #444
+>           _dispatch
+>             #444
+>             _object
+>               e
+>             : Expr
+>             gen_code
+>             (
+>             #444
+>             _new
+>               VarList
+>             : VarList
+>             #444
+>             _object
+>               cl
+>             : LambdaListRef
+>             )
+>           : Expr
+>           #445
+>           _dispatch
+>             #445
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #445
+>             _string
+>               "\n};\n};\n"
+>             : String
+>             )
+>           : SELF_TYPE
+>           #446
+>           _loop
+>             #446
+>             _comp
+>               #446
+>               _dispatch
+>                 #446
+>                 _object
+>                   cl
+>                 : LambdaListRef
+>                 isNil
+>                 (
+>                 )
+>               : Bool
+>             : Bool
+>             #447
+>             _let
+>               e
+>               VarList
+>               #447
+>               _dispatch
+>                 #447
+>                 _object
+>                   cl
+>                 : LambdaListRef
+>                 headE
+>                 (
+>                 )
+>               : VarList
+>               #448
+>               _let
+>                 c
+>                 Lambda
+>                 #448
+>                 _dispatch
+>                   #448
+>                   _object
+>                     cl
+>                   : LambdaListRef
+>                   headC
+>                   (
+>                   )
+>                 : Lambda
+>                 #449
+>                 _let
+>                   n
+>                   Int
+>                   #449
+>                   _dispatch
+>                     #449
+>                     _object
+>                       cl
+>                     : LambdaListRef
+>                     headN
+>                     (
+>                     )
+>                   : Int
+>                   #450
+>                   _block
+>                     #451
+>                     _dispatch
+>                       #451
+>                       _object
+>                         cl
+>                       : LambdaListRef
+>                       removeHead
+>                       (
+>                       )
+>                     : LambdaListRef
+>                     #452
+>                     _dispatch
+>                       #452
+>                       _object
+>                         c
+>                       : Lambda
+>                       gen_closure_code
+>                       (
+>                       #452
+>                       _object
+>                         n
+>                       : Int
+>                       #452
+>                       _object
+>                         e
+>                       : VarList
+>                       #452
+>                       _object
+>                         cl
+>                       : LambdaListRef
+>                       )
+>                     : Lambda
+>                   : Lambda
+>                 : Lambda
+>               : Lambda
+>             : Lambda
+>           : Object
+>           #455
+>           _dispatch
+>             #455
+>             _object
+>               self
+>             : SELF_TYPE
+>             out_string
+>             (
+>             #455
+>             _string
+>               "\n------------------cut here------------------\n"
+>             : String
+>             )
+>           : SELF_TYPE
 >         : SELF_TYPE
-3144c3144
-<             : Main
----
+>       : SELF_TYPE
+>     #459
+>     _method
+>       main
+>       Int
+>       #460
+>       _block
+>         #461
+>         _dispatch
+>           #461
+>           _dispatch
+>             #461
+>             _object
+>               self
 >             : SELF_TYPE
-3158c3158
-<           : Main
----
+>             i
+>             (
+>             )
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #462
+>         _dispatch
+>           #462
+>           _object
+>             self
 >           : SELF_TYPE
-3166c3166
-<         : Main
----
+>           out_string
+>           (
+>           #462
+>           _string
+>             "\n"
+>           : String
+>           )
 >         : SELF_TYPE
-3174c3174
-<             : Main
----
+>         #463
+>         _dispatch
+>           #463
+>           _dispatch
+>             #463
+>             _object
+>               self
 >             : SELF_TYPE
-3188c3188
-<           : Main
----
+>             k
+>             (
+>             )
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #464
+>         _dispatch
+>           #464
+>           _object
+>             self
 >           : SELF_TYPE
-3196c3196
-<         : Main
----
+>           out_string
+>           (
+>           #464
+>           _string
+>             "\n"
+>           : String
+>           )
 >         : SELF_TYPE
-3202c3202
-<           : Main
----
->           : SELF_TYPE
-3210c3210
-<             : Main
----
+>         #465
+>         _dispatch
+>           #465
+>           _dispatch
+>             #465
+>             _object
+>               self
 >             : SELF_TYPE
-3218c3218
-<               : Main
----
->               : SELF_TYPE
-3226c3226
-<                 : Main
----
->                 : SELF_TYPE
-3234c3234
-<                   : Main
----
->                   : SELF_TYPE
-3244c3244
-<                   : Main
----
->                   : SELF_TYPE
-3256c3256
-<                 : Main
----
->                 : SELF_TYPE
-3268c3268
-<               : Main
----
->               : SELF_TYPE
-3282c3282
-<           : Main
----
+>             s
+>             (
+>             )
+>           : Expr
+>           print_self
+>           (
+>           )
+>         : Expr
+>         #466
+>         _dispatch
+>           #466
+>           _object
+>             self
 >           : SELF_TYPE
-3290c3290
-<             : Main
----
->             : SELF_TYPE
-3298c3298
-<               : Main
----
->               : SELF_TYPE
-3306c3306
-<                 : Main
----
->                 : SELF_TYPE
-3316c3316
-<                 : Main
----
->                 : SELF_TYPE
-3328c3328
-<               : Main
----
->               : SELF_TYPE
-3342c3342
-<           : Main
----
->           : SELF_TYPE
-3350c3350
-<             : Main
----
->             : SELF_TYPE
-3358c3358
-<               : Main
----
->               : SELF_TYPE
-3368c3368
-<               : Main
----
->               : SELF_TYPE
-3376c3376
-<         : Main
----
+>           out_string
+>           (
+>           #466
+>           _string
+>             "\n"
+>           : String
+>           )
 >         : SELF_TYPE
-3382c3382
-<           : Main
----
+>         #467
+>         _dispatch
+>           #467
+>           _object
+>             self
 >           : SELF_TYPE
-3390c3390
-<             : Main
----
+>           beta_reduce
+>           (
+>           #467
+>           _dispatch
+>             #467
+>             _object
+>               self
 >             : SELF_TYPE
-3398c3398
-<               : Main
----
+>             app
+>             (
+>             #467
+>             _dispatch
+>               #467
+>               _object
+>                 self
 >               : SELF_TYPE
-3406c3406
-<                 : Main
----
+>               app
+>               (
+>               #467
+>               _dispatch
+>                 #467
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3414c3414
-<                   : Main
----
+>                 app
+>                 (
+>                 #467
+>                 _dispatch
+>                   #467
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3424c3424
-<                   : Main
----
+>                   s
+>                   (
+>                   )
+>                 : Expr
+>                 #467
+>                 _dispatch
+>                   #467
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3436c3436
-<                 : Main
----
+>                   k
+>                   (
+>                   )
+>                 : Expr
+>                 )
+>               : App
+>               #467
+>               _dispatch
+>                 #467
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3448c3448
-<               : Main
----
+>                 i
+>                 (
+>                 )
+>               : Expr
+>               )
+>             : App
+>             #467
+>             _dispatch
+>               #467
+>               _object
+>                 self
 >               : SELF_TYPE
-3456c3456
-<         : Main
----
+>               i
+>               (
+>               )
+>             : Expr
+>             )
+>           : App
+>           )
+>         : Expr
+>         #468
+>         _dispatch
+>           #468
+>           _object
+>             self
+>           : SELF_TYPE
+>           beta_reduce
+>           (
+>           #468
+>           _dispatch
+>             #468
+>             _object
+>               self
+>             : SELF_TYPE
+>             app
+>             (
+>             #468
+>             _dispatch
+>               #468
+>               _object
+>                 self
+>               : SELF_TYPE
+>               app
+>               (
+>               #468
+>               _dispatch
+>                 #468
+>                 _object
+>                   self
+>                 : SELF_TYPE
+>                 k
+>                 (
+>                 )
+>               : Expr
+>               #468
+>               _dispatch
+>                 #468
+>                 _object
+>                   self
+>                 : SELF_TYPE
+>                 i
+>                 (
+>                 )
+>               : Expr
+>               )
+>             : App
+>             #468
+>             _dispatch
+>               #468
+>               _object
+>                 self
+>               : SELF_TYPE
+>               i
+>               (
+>               )
+>             : Expr
+>             )
+>           : App
+>           )
+>         : Expr
+>         #469
+>         _dispatch
+>           #469
+>           _object
+>             self
+>           : SELF_TYPE
+>           gen_code
+>           (
+>           #469
+>           _dispatch
+>             #469
+>             _object
+>               self
+>             : SELF_TYPE
+>             app
+>             (
+>             #469
+>             _dispatch
+>               #469
+>               _object
+>                 self
+>               : SELF_TYPE
+>               i
+>               (
+>               )
+>             : Expr
+>             #469
+>             _dispatch
+>               #469
+>               _object
+>                 self
+>               : SELF_TYPE
+>               i
+>               (
+>               )
+>             : Expr
+>             )
+>           : App
+>           )
 >         : SELF_TYPE
-3462c3462
-<           : Main
----
+>         #470
+>         _dispatch
+>           #470
+>           _object
+>             self
 >           : SELF_TYPE
-3470c3470
-<             : Main
----
+>           gen_code
+>           (
+>           #470
+>           _dispatch
+>             #470
+>             _object
+>               self
 >             : SELF_TYPE
-3478c3478
-<               : Main
----
+>             app
+>             (
+>             #470
+>             _dispatch
+>               #470
+>               _object
+>                 self
 >               : SELF_TYPE
-3486c3486
-<                 : Main
----
+>               app
+>               (
+>               #470
+>               _dispatch
+>                 #470
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3494c3494
-<                   : Main
----
+>                 app
+>                 (
+>                 #470
+>                 _dispatch
+>                   #470
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3502c3502
-<                     : Main
----
+>                   s
+>                   (
+>                   )
+>                 : Expr
+>                 #470
+>                 _dispatch
+>                   #470
+>                   _object
+>                     self
+>                   : SELF_TYPE
+>                   k
+>                   (
+>                   )
+>                 : Expr
+>                 )
+>               : App
+>               #470
+>               _dispatch
+>                 #470
+>                 _object
+>                   self
+>                 : SELF_TYPE
+>                 i
+>                 (
+>                 )
+>               : Expr
+>               )
+>             : App
+>             #470
+>             _dispatch
+>               #470
+>               _object
+>                 self
+>               : SELF_TYPE
+>               i
+>               (
+>               )
+>             : Expr
+>             )
+>           : App
+>           )
+>         : SELF_TYPE
+>         #471
+>         _dispatch
+>           #471
+>           _object
+>             self
+>           : SELF_TYPE
+>           gen_code
+>           (
+>           #471
+>           _dispatch
+>             #471
+>             _object
+>               self
+>             : SELF_TYPE
+>             app
+>             (
+>             #471
+>             _dispatch
+>               #471
+>               _object
+>                 self
+>               : SELF_TYPE
+>               app
+>               (
+>               #471
+>               _dispatch
+>                 #471
+>                 _object
+>                   self
+>                 : SELF_TYPE
+>                 app
+>                 (
+>                 #471
+>                 _dispatch
+>                   #471
+>                   _object
+>                     self
+>                   : SELF_TYPE
+>                   app
+>                   (
+>                   #471
+>                   _dispatch
+>                     #471
+>                     _object
+>                       self
 >                     : SELF_TYPE
-3510c3510
-<                       : Main
----
+>                     app
+>                     (
+>                     #471
+>                     _dispatch
+>                       #471
+>                       _object
+>                         self
 >                       : SELF_TYPE
-3518c3518
-<                         : Main
----
+>                       app
+>                       (
+>                       #471
+>                       _dispatch
+>                         #471
+>                         _object
+>                           self
 >                         : SELF_TYPE
-3526c3526
-<                           : Main
----
+>                         app
+>                         (
+>                         #471
+>                         _dispatch
+>                           #471
+>                           _object
+>                             self
 >                           : SELF_TYPE
-3534c3534
-<                             : Main
----
+>                           app
+>                           (
+>                           #471
+>                           _dispatch
+>                             #471
+>                             _object
+>                               self
 >                             : SELF_TYPE
-3544c3544
-<                             : Main
----
+>                             i
+>                             (
+>                             )
+>                           : Expr
+>                           #471
+>                           _dispatch
+>                             #471
+>                             _object
+>                               self
 >                             : SELF_TYPE
-3556c3556
-<                           : Main
----
+>                             k
+>                             (
+>                             )
+>                           : Expr
+>                           )
+>                         : App
+>                         #471
+>                         _dispatch
+>                           #471
+>                           _object
+>                             self
 >                           : SELF_TYPE
-3568c3568
-<                         : Main
----
+>                           s
+>                           (
+>                           )
+>                         : Expr
+>                         )
+>                       : App
+>                       #471
+>                       _dispatch
+>                         #471
+>                         _object
+>                           self
 >                         : SELF_TYPE
-3580c3580
-<                       : Main
----
+>                         s
+>                         (
+>                         )
+>                       : Expr
+>                       )
+>                     : App
+>                     #472
+>                     _dispatch
+>                       #472
+>                       _object
+>                         self
 >                       : SELF_TYPE
-3592c3592
-<                     : Main
----
+>                       k
+>                       (
+>                       )
+>                     : Expr
+>                     )
+>                   : App
+>                   #472
+>                   _dispatch
+>                     #472
+>                     _object
+>                       self
 >                     : SELF_TYPE
-3604c3604
-<                   : Main
----
+>                     s
+>                     (
+>                     )
+>                   : Expr
+>                   )
+>                 : App
+>                 #472
+>                 _dispatch
+>                   #472
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3616c3616
-<                 : Main
----
+>                   i
+>                   (
+>                   )
+>                 : Expr
+>                 )
+>               : App
+>               #472
+>               _dispatch
+>                 #472
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3628c3628
-<               : Main
----
+>                 k
+>                 (
+>                 )
+>               : Expr
+>               )
+>             : App
+>             #472
+>             _dispatch
+>               #472
+>               _object
+>                 self
 >               : SELF_TYPE
-3636c3636
-<         : Main
----
+>               i
+>               (
+>               )
+>             : Expr
+>             )
+>           : App
+>           )
 >         : SELF_TYPE
-3642c3642
-<           : Main
----
+>         #473
+>         _dispatch
+>           #473
+>           _object
+>             self
 >           : SELF_TYPE
-3650c3650
-<             : Main
----
+>           gen_code
+>           (
+>           #473
+>           _dispatch
+>             #473
+>             _object
+>               self
 >             : SELF_TYPE
-3658c3658
-<               : Main
----
+>             app
+>             (
+>             #473
+>             _dispatch
+>               #473
+>               _object
+>                 self
 >               : SELF_TYPE
-3666c3666
-<                 : Main
----
+>               app
+>               (
+>               #473
+>               _dispatch
+>                 #473
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3676c3676
-<                 : Main
----
+>                 i
+>                 (
+>                 )
+>               : Expr
+>               #473
+>               _dispatch
+>                 #473
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3684c3684
-<                   : Main
----
+>                 app
+>                 (
+>                 #473
+>                 _dispatch
+>                   #473
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3694c3694
-<                   : Main
----
+>                   k
+>                   (
+>                   )
+>                 : Expr
+>                 #473
+>                 _dispatch
+>                   #473
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3708c3708
-<               : Main
----
+>                   s
+>                   (
+>                   )
+>                 : Expr
+>                 )
+>               : App
+>               )
+>             : App
+>             #473
+>             _dispatch
+>               #473
+>               _object
+>                 self
 >               : SELF_TYPE
-3716c3716
-<                 : Main
----
+>               app
+>               (
+>               #473
+>               _dispatch
+>                 #473
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3726c3726
-<                 : Main
----
+>                 k
+>                 (
+>                 )
+>               : Expr
+>               #473
+>               _dispatch
+>                 #473
+>                 _object
+>                   self
 >                 : SELF_TYPE
-3734c3734
-<                   : Main
----
+>                 app
+>                 (
+>                 #473
+>                 _dispatch
+>                   #473
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3744c3744
-<                   : Main
----
+>                   s
+>                   (
+>                   )
+>                 : Expr
+>                 #473
+>                 _dispatch
+>                   #473
+>                   _object
+>                     self
 >                   : SELF_TYPE
-3756c3756
-<         : Main
----
+>                   s
+>                   (
+>                   )
+>                 : Expr
+>                 )
+>               : App
+>               )
+>             : App
+>             )
+>           : App
+>           )
 >         : SELF_TYPE
+>         #474
+>         _int
+>           0
+>         : Int
+>       : Int
+>     )
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
-65c65
-<           : Board
----
->           : SELF_TYPE
-352,354c352,354
-<           : Board
-<         : Board
-<       : Board
----
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-392c392
-<           : CellularAutomaton
----
->           : SELF_TYPE
-400c400
-<         : CellularAutomaton
----
->         : SELF_TYPE
-404,405c404,405
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->         : SELF_TYPE
->       : SELF_TYPE
-433c433
-<               : CellularAutomaton
----
->               : SELF_TYPE
-441c441
-<             : CellularAutomaton
----
->             : SELF_TYPE
-462c462
-<                   : CellularAutomaton
----
->                   : SELF_TYPE
-484c484
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-490c490
-<                   : CellularAutomaton
----
->                   : SELF_TYPE
-498c498
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-521c521
-<               : CellularAutomaton
----
->               : SELF_TYPE
-529c529
-<             : CellularAutomaton
----
->             : SELF_TYPE
-533,536c533,536
-<             : CellularAutomaton
-<           : CellularAutomaton
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->             : SELF_TYPE
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-639c639
-<           : CellularAutomaton
----
->           : SELF_TYPE
-693c693
-<           : CellularAutomaton
----
->           : SELF_TYPE
-768c768
-<           : CellularAutomaton
----
->           : SELF_TYPE
-846c846
-<             : CellularAutomaton
----
->             : SELF_TYPE
-932c932
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1032c1032
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1132c1132
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1218c1218
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1269c1269
-<                             : CellularAutomaton
----
->                             : SELF_TYPE
-1301c1301
-<                             : CellularAutomaton
----
->                             : SELF_TYPE
-1334c1334
-<                           : CellularAutomaton
----
->                           : SELF_TYPE
-1367c1367
-<                         : CellularAutomaton
----
->                         : SELF_TYPE
-1400c1400
-<                       : CellularAutomaton
----
->                       : SELF_TYPE
-1433c1433
-<                     : CellularAutomaton
----
->                     : SELF_TYPE
-1466c1466
-<                   : CellularAutomaton
----
->                   : SELF_TYPE
-1499c1499
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-1541c1541
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1568c1568
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1591c1591
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-1641c1641
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1686c1686
-<                         : CellularAutomaton
----
->                         : SELF_TYPE
-1726,1730c1726,1730
-<               : CellularAutomaton
-<             : CellularAutomaton
-<           : CellularAutomaton
-<         : CellularAutomaton
-<       : CellularAutomaton
----
->               : SELF_TYPE
->             : SELF_TYPE
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-1751c1751
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1759c1759
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1765c1765
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1773c1773
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1779c1779
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1787c1787
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1793c1793
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1801c1801
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1807c1807
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1815c1815
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1821c1821
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1829c1829
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1835c1835
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1843c1843
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1849c1849
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1857c1857
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1863c1863
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1871c1871
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1877c1877
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1885c1885
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1891c1891
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1899c1899
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1905c1905
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1913c1913
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1919c1919
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1927c1927
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1933c1933
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1941c1941
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1947c1947
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1955c1955
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1961c1961
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1969c1969
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1975c1975
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1983c1983
-<             : CellularAutomaton
----
->             : SELF_TYPE
-1989c1989
-<               : CellularAutomaton
----
->               : SELF_TYPE
-1997c1997
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2003c2003
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2011c2011
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2017c2017
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2025c2025
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2031c2031
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2039c2039
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2045c2045
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2053c2053
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2059c2059
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2067c2067
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2076c2076
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-2087c2087
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2095c2095
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2501c2501
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2509c2509
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2515c2515
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2523c2523
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2532c2532
-<                 : CellularAutomaton
----
->                 : SELF_TYPE
-2543c2543
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2551c2551
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2595c2595
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2603c2603
-<           : CellularAutomaton
----
->           : SELF_TYPE
-2609c2609
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2617c2617
-<           : CellularAutomaton
----
->           : SELF_TYPE
-2623c2623
-<             : CellularAutomaton
----
->             : SELF_TYPE
-2631c2631
-<           : CellularAutomaton
----
->           : SELF_TYPE
-2640c2640
-<               : CellularAutomaton
----
->               : SELF_TYPE
-2711c2711
-<                 : Main
----
->                 : SELF_TYPE
-2719c2719
-<               : Main
----
->               : SELF_TYPE
-2725c2725
-<                 : Main
----
->                 : SELF_TYPE
-2733c2733
-<               : Main
----
->               : SELF_TYPE
-2741c2741
-<                   : Main
----
->                   : SELF_TYPE
-2764c2764
-<                       : Main
----
->                       : SELF_TYPE
-2811c2811
-<                         : Main
----
->                         : SELF_TYPE
-2854,2858c2854,2858
-<               : Main
-<             : Main
-<           : Main
-<         : Main
-<       : Main
----
->               : SELF_TYPE
->             : SELF_TYPE
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
-28c28
-<           : List
----
->           : SELF_TYPE
-49c49
-<           : List
----
->           : SELF_TYPE
-57,58c57,58
-<         : List
-<       : List
----
->         : SELF_TYPE
->       : SELF_TYPE
-82c82
-<         : List
----
->         : SELF_TYPE
-163,164c163,164
-<         : Cons
-<       : Cons
----
->         : SELF_TYPE
->       : SELF_TYPE
-204c204
-<           : Main
----
->           : SELF_TYPE
-212c212
-<         : Main
----
->         : SELF_TYPE
-220c220
-<             : Main
----
->             : SELF_TYPE
-234c234
-<           : Main
----
->           : SELF_TYPE
-240c240
-<             : Main
----
->             : SELF_TYPE
-248c248
-<           : Main
----
->           : SELF_TYPE
-254c254
-<             : Main
----
->             : SELF_TYPE
-357c357
-<               : Main
----
->               : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
-67c67
-<               : Main
----
->               : SELF_TYPE
-75c75
-<             : Main
----
->             : SELF_TYPE
-81c81
-<               : Main
----
->               : SELF_TYPE
-89,90c89,90
-<             : Main
-<           : Main
----
->             : SELF_TYPE
->           : SELF_TYPE
-130c130
-<               : Main
----
->               : SELF_TYPE
-138c138
-<             : Main
----
->             : SELF_TYPE
-144c144
-<               : Main
----
->               : SELF_TYPE
-152,155c152,155
-<             : Main
-<           : Main
-<         : Main
-<       : Main
----
->             : SELF_TYPE
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
-216,217c216,217
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-240c240
-<           : Complex
----
->           : SELF_TYPE
-248c248
-<         : Complex
----
->         : SELF_TYPE
-260c260
-<                 : Complex
----
->                 : SELF_TYPE
-268c268
-<               : Complex
----
->               : SELF_TYPE
-276c276
-<             : Complex
----
->             : SELF_TYPE
-284c284
-<           : Complex
----
->           : SELF_TYPE
-292,293c292,293
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-331,332c331,332
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-356,357c356,357
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
-381,382c381,382
-<         : Complex
-<       : Complex
----
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
-122c122
-<               : Main
----
->               : SELF_TYPE
-194c194
-<           : Main
----
->           : SELF_TYPE
-202c202
-<         : Main
----
->         : SELF_TYPE
-210c210
-<             : Main
----
->             : SELF_TYPE
-218c218
-<               : Main
----
->               : SELF_TYPE
-230c230
-<             : Main
----
->             : SELF_TYPE
-238c238
-<           : Main
----
->           : SELF_TYPE
-244c244
-<             : Main
----
->             : SELF_TYPE
-252,254c252,254
-<           : Main
-<         : Main
-<       : Main
----
->           : SELF_TYPE
->         : SELF_TYPE
->       : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
-28c28
-<           : Main
----
->           : SELF_TYPE
-36c36
-<         : Main
----
->         : SELF_TYPE
-221c221
-<                 : Main
----
->                 : SELF_TYPE
-229c229
-<               : Main
----
->               : SELF_TYPE
-235c235
-<                 : Main
----
->                 : SELF_TYPE
-243,244c243,244
-<               : Main
-<             : Main
----
->               : SELF_TYPE
->             : SELF_TYPE
 
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
-20c20
-<           : List
----
->           : SELF_TYPE
-61c61
-<           : List
----
->           : SELF_TYPE
-76c76
-<           : List
----
->           : SELF_TYPE
-97c97
-<           : List
----
->           : SELF_TYPE
-116c116
-<         : List
----
->         : SELF_TYPE
-130c130
-<         : List
----
->         : SELF_TYPE
-148c148
-<         : List
----
->         : SELF_TYPE
-166c166
-<         : List
----
->         : SELF_TYPE
-180c180
-<         : List
----
->         : SELF_TYPE
-247,248c247,248
-<         : Cons
-<       : Cons
----
->         : SELF_TYPE
->       : SELF_TYPE
-349c349
-<           : Cons
----
->           : SELF_TYPE
-428c428
-<           : Cons
----
->           : SELF_TYPE
-436c436
-<         : Cons
----
->         : SELF_TYPE
-442c442
-<           : Cons
----
->           : SELF_TYPE
-450c450
-<         : Cons
----
->         : SELF_TYPE
-484c484
-<       : Nil
----
->       : SELF_TYPE
-492c492
-<       : Nil
----
->       : SELF_TYPE
-506c506
-<         : Nil
----
->         : SELF_TYPE
-538c538
-<         : Nil
----
->         : SELF_TYPE
-660c660
-<           : Main
----
->           : SELF_TYPE
-668c668
-<         : Main
----
->         : SELF_TYPE
-680c680
-<                 : Main
----
->                 : SELF_TYPE
-688c688
-<                   : Main
----
->                   : SELF_TYPE
 
 
