@@ -87,3 +87,237 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
 
 
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  assignmentex.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_assignmentex.cl 
+1,2c1
+< bad_assignmentex.cl:10: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
+< bad_assignmentex.cl:10: Assign error: Type 'Int' of assigned expression  does not conform to declared type 'String' of identifier 'xcar'.
+---
+> bad_assignmentex.cl:17: Type Int of assigned expression does not conform to declared type String of identifier xcar.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad.cl 
+1,4c1,4
+< bad.cl:13: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
+< bad.cl:13: Dispatch Error: The formal types listed in dispatch call for expression of type 'C' do not match the formal types declared for method implementation.
+< <basic class>:1: getSignature Error: Class 'Object' does not have method 'iinit'
+< Segmentation fault (core dumped)
+---
+> bad.cl:16: In call of method init, type Int of parameter y does not conform to declared type Bool.
+> bad.cl:17: Method init called with wrong number of arguments.
+> bad.cl:18: Dispatch to undefined method iinit.
+> Compilation halted due to static semantic errors.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_dispatch3.cl 
+1c1
+< bad_dispatch3.cl:10: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
+---
+> bad_dispatch3.cl:16: Type Object of assigned expression does not conform to declared type Int of identifier b.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_dispatchex2.cl 
+1,2c1,2
+< bad_dispatchex2.cl:10: Assign error: Type 'Object' of assigned expression  does not conform to declared type 'Int' of identifier 'b'.
+< bad_dispatchex2.cl:10: Method error: 'testb' returns type 'Object' but type 'Bool' was declared.
+---
+> bad_dispatchex2.cl:16: Type Object of assigned expression does not conform to declared type Int of identifier b.
+> bad_dispatchex2.cl:14: Inferred return type Object of method testb does not conform to declared return type Bool.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_dispatchex.cl 
+1,2c1,2
+< <basic class>:2: getSignature Error: Class 'Object' does not have method 'test'
+< Segmentation fault (core dumped)
+---
+> bad_dispatchex.cl:17: Dispatch to undefined method test.
+> Compilation halted due to static semantic errors.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_methodex.cl 
+1c1
+< bad_methodex.cl:2: Formal error: x is not a distinct formal identifier for method test
+---
+> bad_methodex.cl:3: Formal parameter x is multiply defined.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  dispatchex.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  good.cl 
+1,124c1,2
+< #1
+< _program
+<   #1
+<   _class
+<     Silly
+<     Object
+<     "good.cl"
+<     (
+<     #2
+<     _method
+<       copy
+<       SELF_TYPE
+<       #2
+<       _object
+<         self
+<       : SELF_TYPE
+<     )
+<   #5
+<   _class
+<     Sally
+<     Silly
+<     "good.cl"
+<     (
+<     )
+<   #7
+<   _class
+<     Sully
+<     Sally
+<     "good.cl"
+<     (
+<     #8
+<     _method
+<       copy
+<       Sully
+<       #8
+<       _object
+<         self
+<       : SELF_TYPE
+<     )
+<   #11
+<   _class
+<     C
+<     Object
+<     "good.cl"
+<     (
+<     #12
+<     _attr
+<       a
+<       Int
+<       #0
+<       _no_expr
+<       : _no_type
+<     #13
+<     _attr
+<       b
+<       Bool
+<       #0
+<       _no_expr
+<       : _no_type
+<     #14
+<     _method
+<       init
+<       #14
+<       _formal
+<         x
+<         Int
+<       #14
+<       _formal
+<         y
+<         Bool
+<       C
+<       #15
+<       _block
+<         #16
+<         _assign
+<           a
+<           #16
+<           _object
+<             x
+<           : Int
+<         : Int
+<         #17
+<         _assign
+<           b
+<           #17
+<           _object
+<             y
+<           : Bool
+<         : Bool
+<         #18
+<         _object
+<           self
+<         : SELF_TYPE
+<       : SELF_TYPE
+<     )
+<   #23
+<   _class
+<     Main
+<     Object
+<     "good.cl"
+<     (
+<     #24
+<     _attr
+<       x
+<       Sally
+<       #24
+<       _dispatch
+<         #24
+<         _new
+<           Sally
+<         : Sally
+<         copy
+<         (
+<         )
+<       : Sally
+<     #26
+<     _method
+<       main
+<       Sally
+<       #26
+<       _object
+<         x
+<       : Sally
+<     )
+---
+> good.cl:8: In redefined method copy, return type Sully is different from original return type SELF_TYPE.
+> Compilation halted due to static semantic errors.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  inheritance_cycle.cl 
+1,2c1,3
+< inheritance_cycle.cl:11: C is part of a cycle in the inheritance graph.
+< inheritance_cycle.cl:11: Any valid COOL program must have a 'Main' class.
+---
+> inheritance_cycle.cl:11: Class C, or an ancestor of C, is involved in an inheritance cycle.
+> inheritance_cycle.cl:6: Class B, or an ancestor of B, is involved in an inheritance cycle.
+> inheritance_cycle.cl:1: Class A, or an ancestor of A, is involved in an inheritance cycle.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  main_params.cl 
+1c1
+< main_params.cl:20: The 'Main.main' method must take no formal parameters.
+---
+> main_params.cl:20: 'main' method in class Main should have no arguments.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  no_MainClass.cl 
+1c1
+< no_MainClass.cl:20: Any valid COOL program must have a 'Main' class.
+---
+> Class Main is not defined.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  no_mainMethod.cl 
+1c1
+< no_mainMethod.cl:20: The class 'Main' must have a 'main' method.
+---
+> no_mainMethod.cl:20: No 'main' method in class Main.
+
+
