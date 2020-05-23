@@ -114,27 +114,33 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         }
 
         // Now loop over features and collect method signatures
+        if(_DEBUG) printf("Adding class %s \n", curr_class->getName()->get_string());
         addSignature(curr_class);
     }
 
     _has_cycle = has_cycle_bfs();
 
     // Each program must have a Main class defined
-    if(classMethods.find(idtable.add_string("Main")) == classMethods.end()){
+    if(_DEBUG){
+        for(auto it = classMethods.begin(); it!=classMethods.end(); ++it){
+            printf("key: %s\n", it->first->get_string());
+        }
+    }
+    if(classMethods.find(Main) == classMethods.end()){
         ostream& err_stream = semant_error(curr_class);
         err_stream << "Any valid COOL program must have a 'Main' class."<<endl;
         return;
     }
     // The Main class must have a main method defined
-    curr_class = symb_class_map[idtable.add_string("Main")];
-    if(classMethods[curr_class->getName()].find(idtable.add_string("main")) ==
+    curr_class = symb_class_map[Main];
+    if(classMethods[curr_class->getName()].find(main_meth) ==
        classMethods[curr_class->getName()].end()) {
         ostream& err_stream = semant_error(curr_class);
         err_stream << "The class 'Main' must have a 'main' method."<<endl;
         return;
     }
     // The main method takes no formal parameters
-    std::vector<Symbol> main_signature = classMethods[curr_class->getName()][idtable.add_string("main")];
+    std::vector<Symbol> main_signature = classMethods[Main][main_meth];
     if(main_signature.size() != 1) {
         ostream& err_stream = semant_error(curr_class);
         err_stream << "The 'Main.main' method must take no formal parameters."<<endl;
