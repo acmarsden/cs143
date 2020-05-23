@@ -8,8 +8,10 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
-1,5c1,6
+1,7c1,6
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Let error: Declared type of variable: 'A2I' is not defined.
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: 'new' used on undefined type 'A2I'
+< /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:25: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' A2I'
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Dispatch Error: When trying to dispatch method 'a2i' from an expression of type 'A2I' found the type does not exist.
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:31: Let Error: Initialization expression type: 'Object' does not conform to declared type of variable: ' Int'
 < /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl:32: Dispatch Error: When trying to dispatch method 'i2a' from an expression of type 'A2I' found the type does not exist.
@@ -165,6 +167,16 @@ Parser out diff (< : ours, > : theirs) on:  badinherit.cl
 <     Return type is 'Sully'
 ---
 > badinherit.cl:8: In redefined method copy, return type Sully is different from original return type SELF_TYPE.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  bad_isvoid.cl 
+1,2c1,2
+< bad_isvoid.cl:15: Assign error: Variable 's' has not been defined
+< bad_isvoid.cl:14: Method error: 'looper' returns type 'Object' but type 'C' was declared.
+---
+> bad_isvoid.cl:15: Assignment to undeclared variable s.
+> bad_isvoid.cl:14: Inferred return type Object of method looper does not conform to declared return type C.
 
 
 ==============================================================

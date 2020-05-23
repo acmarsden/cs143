@@ -326,6 +326,10 @@ void ClassTable::install_basic_classes() {
 bool ClassTable::isDescendantOf(Symbol parent, Symbol query_type) {
     // Starting at parent, recursively checks its children to see if they
     // contain query_type
+    if(parent != SELF_TYPE && children.find(parent) == children.end()){
+        // This means that parent is not defined
+        return false;
+    }
     if(parent == SELF_TYPE){
         parent = getCurrentClass();
     }
@@ -358,6 +362,10 @@ std::vector<Symbol> ClassTable::getSignature(Symbol class_name, Symbol method_na
     if(semant_debug) printf("Called getSignature on class '%s'\n", class_name->get_string());
     std::vector<Symbol> curr_signature = classMethods[class_name][method_name];
     bool still_searching_for_method = true;
+    if(children.find(class_name) == children.end()){
+        still_searching_for_method = false;
+        if(semant_debug) printf("getSignature Error: Class '%s' is not defined \n", class_name->get_string());
+    }
     while(still_searching_for_method){
         if(semant_debug) printf("Searching for method '%s' in class %s\n", method_name->get_string(), class_name->get_string());
         if(semant_debug) printf("Signature size found:  %lu\n", curr_signature.size());
