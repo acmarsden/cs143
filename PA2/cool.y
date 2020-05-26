@@ -170,7 +170,7 @@
     /* Precedence declarations go here. */
     %right ASSIGN
     %left NOT
-    %precedence  LE '<' '='
+    %nonassoc  LE '<' '='
     %left '+' '-'
     %left '*' '/'
     %left ISVOID
