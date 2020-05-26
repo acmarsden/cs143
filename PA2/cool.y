@@ -185,10 +185,7 @@
     program : class_list  { @$ = @1; ast_root = program($1); }
     ;
 
-    class_list : /* empty class */
-      { $$ = nil_Classes();
-        parse_results = $$; }
-      | class ';'     /* single class */
+    class_list : class ';'     /* single class */
       { @$ = @1;
         SET_NODELOC(@1);
         $$ = single_Classes($1);
