@@ -31,8 +31,8 @@ private:
    void code_bools(int);
    void code_select_gc();
    void code_constants();
-   void code_prototypes();
-   void code_prototype(ostream&, CgenNodeP);
+   void code_prototypes(CgenNodeP, uint);
+   uint code_prototype(ostream&, CgenNodeP, uint);
 
 // The following creates an inheritance graph from
 // a list of classes.  The graph is implemented as

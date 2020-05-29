@@ -857,7 +857,7 @@ void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
     uint num_node_attr = code_prototype(str, curr_node, num_parent_attr);
     for(List<CgenNode> *l = curr_node->get_children(); l!=NULL; l=l->tl()){
         curr_child = l->hd();
-        code_prototypes(curr_child, num_node_attr)
+        code_prototypes(curr_child, num_node_attr);
     }
 }
 
