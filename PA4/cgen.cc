@@ -830,6 +830,7 @@ void CgenClassTable::code()
 
 //                 Add your code to emit
 //                   - prototype objects
+    code_prototypes();
 //                   - class_nameTab
 //                   - dispatch tables
 //
@@ -848,6 +849,37 @@ void CgenClassTable::code()
 CgenNodeP CgenClassTable::root()
 {
      return probe(Object);
+}
+
+void CgenClassTable::code_prototypes()
+{
+    CgenNode* curr_node = root();
+    CgenNode* curr_child;
+    for(List<CgenNode> *l = curr_children; l!=NULL; l=l->tl()){
+        curr_child = l->hd();
+        code_prototype(str, curr_child);
+    }
+}
+
+void CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class)
+{
+    uint num_slots = 0;
+    for(int i = curr_class->features->first(); curr_class->features->->more(i); i = curr_class->features->->next(i))
+        if(curr_class->features->nth(i)->is_attr()){
+            num_slots += 1;
+        }
+    // Add -1 eye catcher
+    s << WORD << "-1" << endl;
+
+    s << emit_protobj_ref(curr_class->name, s);  s << LABEL << endl;    // label
+    s << WORD << stringclasstag << endl;                                // tag
+    s << WORD << (DEFAULT_OBJFIELDS + num_slots) << endl                // size
+    s << WORD << endl;                                                  // dispatch table TODO
+    // Attributes
+    for(int i = curr_class->features->first(); curr_class->features->->more(i); i = curr_class->features->->next(i))
+        if(curr_class->features->nth(i)->is_attr()){
+            s << WORD << endl; // TODO: add default values for attributes
+        }
 }
 
 
