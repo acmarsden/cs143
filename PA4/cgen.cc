@@ -830,7 +830,8 @@ void CgenClassTable::code()
 
 //                 Add your code to emit
 //                   - prototype objects
-    code_prototypes(root(), 0);
+    uint curr_classtag = 0;
+    code_prototypes(root(), &curr_classtag, 0);
 //                   - class_nameTab
 //                   - dispatch tables
 //
@@ -851,17 +852,17 @@ CgenNodeP CgenClassTable::root()
      return probe(Object);
 }
 
-void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
+void CgenClassTable::code_prototypes(CgenNode* curr_node, uint* curr_classtag, uint num_parent_attr)
 {
     CgenNode* curr_child;
-    uint num_node_attr = code_prototype(str, curr_node, num_parent_attr);
+    uint num_node_attr = code_prototype(str, curr_node, curr_classtag, num_parent_attr);
     for(List<CgenNode> *l = curr_node->get_children(); l!=NULL; l=l->tl()){
         curr_child = l->hd();
-        code_prototypes(curr_child, num_node_attr);
+        code_prototypes(curr_child, curr_classtag, num_node_attr);
     }
 }
 
-uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint num_parent_attr)
+uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint* curr_classtag, uint num_parent_attr)
 {
     uint num_slots = 0;
     for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
@@ -872,12 +873,15 @@ uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint num_p
     s << WORD << "-1" << endl;
 
     emit_protobj_ref(curr_class->name, s);  s << LABEL;                 // label
-    s << WORD << stringclasstag << endl;                                // tag
+    s << WORD << *curr_classtag << endl;                                // tag
     s << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;               // size
     s << WORD << endl;                                                  // dispatch table TODO
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
         s << WORD << endl; // TODO: add default values for attributes
+
+    // Update curr_classtag
+    ++ *curr_classtag;
     return (num_parent_attr + num_slots);
 }
 
