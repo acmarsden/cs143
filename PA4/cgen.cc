@@ -830,7 +830,7 @@ void CgenClassTable::code()
 
 //                 Add your code to emit
 //                   - prototype objects
-    code_prototypes();
+    code_prototypes(root(), 0);
 //                   - class_nameTab
 //                   - dispatch tables
 //
@@ -851,17 +851,17 @@ CgenNodeP CgenClassTable::root()
      return probe(Object);
 }
 
-void CgenClassTable::code_prototypes()
+void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
 {
-    CgenNode* curr_node = root();
     CgenNode* curr_child;
+    uint num_node_attr = code_prototype(str, curr_node, num_parent_attr);
     for(List<CgenNode> *l = curr_node->get_children(); l!=NULL; l=l->tl()){
         curr_child = l->hd();
-        code_prototype(str, curr_child);
+        code_prototypes(curr_child, num_node_attr)
     }
 }
 
-void CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class)
+uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint num_parent_attr)
 {
     uint num_slots = 0;
     for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
@@ -873,13 +873,12 @@ void CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class)
 
     emit_protobj_ref(curr_class->name, s);  s << LABEL;                 // label
     s << WORD << stringclasstag << endl;                                // tag
-    s << WORD << (DEFAULT_OBJFIELDS + num_slots) << endl;               // size
+    s << WORD << (num_parent_attr + num_slots) << endl;               // size
     s << WORD << endl;                                                  // dispatch table TODO
     // Attributes
-    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
-        if(curr_class->features->nth(i)->is_attr()){
-            s << WORD << endl; // TODO: add default values for attributes
-        }
+    for(uint i=0; i<(num_parent_attr + num_slots); ++i)
+        s << WORD << endl; // TODO: add default values for attributes
+    return (num_parent_attr + num_slots);
 }
 
 
