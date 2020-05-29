@@ -873,7 +873,7 @@ uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint num_p
 
     emit_protobj_ref(curr_class->name, s);  s << LABEL;                 // label
     s << WORD << stringclasstag << endl;                                // tag
-    s << WORD << (num_parent_attr + num_slots) << endl;               // size
+    s << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;               // size
     s << WORD << endl;                                                  // dispatch table TODO
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
