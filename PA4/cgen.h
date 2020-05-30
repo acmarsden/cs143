@@ -3,6 +3,7 @@
 #include "emit.h"
 #include "cool-tree.h"
 #include "symtab.h"
+#include <map>
 
 enum Basicness     {Basic, NotBasic};
 #define TRUE 1
@@ -21,7 +22,7 @@ private:
    int stringclasstag;
    int intclasstag;
    int boolclasstag;
-
+   std::map<Symbol, uint> classtag_map;
 
 // The following methods emit code for
 // constants and global declarations.
@@ -34,14 +35,14 @@ private:
    void code_class_nameTab(CgenNodeP);
    void code_class_objTab(CgenNodeP);
    void code_dispatch_tables(CgenNodeP);
-   void code_prototypes(CgenNodeP, uint*, uint);
-   uint code_prototype(CgenNodeP, uint*, uint);
+   void code_prototypes(CgenNodeP, uint);
+   uint code_prototype(CgenNodeP, uint);
 
 // The following creates an inheritance graph from
 // a list of classes.  The graph is implemented as
 // a tree of `CgenNode', and class names are placed
 // in the base class symbol table.
-
+   void build_classtag_map(CgenNodeP, uint*);
    void install_basic_classes();
    void install_class(CgenNodeP nd);
    void install_classes(Classes cs);

@@ -628,7 +628,7 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
      install_basic_classes();
      install_classes(classes);
      build_inheritance_tree();
-
+      
      code();
      exitscope();
 }
@@ -837,9 +837,11 @@ void CgenClassTable::code()
     code_class_objTab(root());
 //  - dispatch tables
     code_dispatch_tables(root());
-//  - prototype objects
+//  - build classtag_map
     uint curr_classtag = 0;
-    code_prototypes(root(), &curr_classtag, 0);
+    build_classtag_map(root(), &curr_classtag);
+//  - prototype objects
+    code_prototypes(root(), 0);
 
     if (cgen_debug) cout << "coding global text" << endl;
     code_global_text();
@@ -854,6 +856,17 @@ void CgenClassTable::code()
 CgenNodeP CgenClassTable::root()
 {
      return probe(Object);
+}
+
+void CgenClassTable::build_classtag_map(CgenNode* curr_node, uint* curr_classtag)
+{
+    classtag_map[curr_node->name] = *curr_classtag;
+    ++ *curr_classtag;
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        build_classtag_map(curr_child, curr_classtag);
+    }
+
 }
 
 void CgenClassTable::code_class_nameTab(CgenNode* curr_node)
@@ -886,16 +899,16 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
     }
 }
 
-void CgenClassTable::code_prototypes(CgenNode* curr_node, uint* curr_classtag, uint num_parent_attr)
+void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
 {
-    uint num_node_attr = code_prototype(curr_node, curr_classtag, num_parent_attr);
+    uint num_node_attr = code_prototype(curr_node, num_parent_attr);
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_prototypes(curr_child, curr_classtag, num_node_attr);
+        code_prototypes(curr_child, num_node_attr);
     }
 }
 
-uint CgenClassTable::code_prototype(CgenNode* curr_class, uint* curr_classtag, uint num_parent_attr)
+uint CgenClassTable::code_prototype(CgenNode* curr_class, uint num_parent_attr)
 {
     uint num_slots = 0;
     for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
@@ -906,15 +919,13 @@ uint CgenClassTable::code_prototype(CgenNode* curr_class, uint* curr_classtag, u
     str << WORD << "-1" << endl;
 
     emit_protobj_ref(curr_class->name, str);  str << LABEL;                     // label
-    str << WORD << *curr_classtag << endl;                                      // tag
+    str << WORD << classtag_map[curr_class->name] << endl;                                      // tag
     str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;   // size
     str << WORD << endl;                                                        // dispatch table TODO
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
         str << WORD << endl; // TODO: add default values for attributes
 
-    // Update curr_classtag
-    ++ *curr_classtag;
     return (num_parent_attr + num_slots);
 }
 
