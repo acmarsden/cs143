@@ -31,9 +31,9 @@ private:
    void code_bools(int);
    void code_select_gc();
    void code_constants();
-   void code_class_nameTab(CgenNodeP, uint*);
-   void code_class_objTab(CgenNodeP, uint*);
-   void code_dispatch_tables(CgenNodeP, uint*);
+   void code_class_nameTab(CgenNodeP);
+   void code_class_objTab(CgenNodeP);
+   void code_dispatch_tables(CgenNodeP);
    void code_prototypes(CgenNodeP, uint*, uint);
    uint code_prototype(CgenNodeP, uint*, uint);
 

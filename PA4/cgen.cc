@@ -830,18 +830,15 @@ void CgenClassTable::code()
 
 //  Add your code to emit
 //  - class_nameTab
-    uint curr_classtag = 0;
     str << CLASSNAMETAB << LABEL;
-    code_class_nameTab(root(), &curr_classtag);
+    code_class_nameTab(root());
 //  - class_nameTab
-    curr_classtag = 0;
     str << CLASSOBJTAB << LABEL;
-    code_class_objTab(root(), &curr_classtag);
+    code_class_objTab(root());
 //  - dispatch tables
-    curr_classtag = 0;
-    code_dispatch_tables(root(), &curr_classtag);
+    code_dispatch_tables(root());
 //  - prototype objects
-    curr_classtag = 0;
+    uint curr_classtag = 0;
     code_prototypes(root(), &curr_classtag, 0);
 
     if (cgen_debug) cout << "coding global text" << endl;
@@ -859,29 +856,27 @@ CgenNodeP CgenClassTable::root()
      return probe(Object);
 }
 
-void CgenClassTable::code_class_nameTab(CgenNode* curr_node, uint* curr_classtag)
+void CgenClassTable::code_class_nameTab(CgenNode* curr_node)
 {
     StringEntry* entry = stringtable.add_string(curr_node->name->get_string());
     str << WORD; entry->code_ref(str); str << endl;
-    ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
         code_class_nameTab(curr_child, curr_classtag);
     }
 }
 
-void CgenClassTable::code_class_objTab(CgenNode* curr_node, uint* curr_classtag)
+void CgenClassTable::code_class_objTab(CgenNode* curr_node)
 {
     str << WORD << curr_node->name << PROTOBJ_SUFFIX << endl;
     str << WORD << curr_node->name << CLASSINIT_SUFFIX << endl;
-    ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
         code_class_objTab(curr_child, curr_classtag);
     }
 }
 
-void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, uint* curr_classtag)
+void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
 {
     str << curr_node->name << DISPTAB_SUFFIX << LABEL;
     // TODO: loop over methods and add words
