@@ -828,13 +828,21 @@ void CgenClassTable::code()
     if (cgen_debug) cout << "coding constants" << endl;
     code_constants();
 
-//                 Add your code to emit
-//                   - prototype objects
+//  Add your code to emit
+//  - class_nameTab
     uint curr_classtag = 0;
+    str << CLASSNAMETAB << LABEL;
+    code_class_nameTab(root(), &curr_classtag);
+//  - class_nameTab
+    uint curr_classtag = 0;
+    str << CLASSOBJTAB << LABEL;
+    code_class_objTab(root(), &curr_classtag);
+//  - dispatch tables
+    curr_classtag = 0;
+    code_dispatch_tables(root(), &curr_classtag);
+//  - prototype objects
+    curr_classtag = 0;
     code_prototypes(root(), &curr_classtag, 0);
-//                   - class_nameTab
-//                   - dispatch tables
-//
 
     if (cgen_debug) cout << "coding global text" << endl;
     code_global_text();
@@ -846,23 +854,54 @@ void CgenClassTable::code()
 
 }
 
-
 CgenNodeP CgenClassTable::root()
 {
      return probe(Object);
 }
 
+void CgenClassTable::code_class_nameTab(CgenNode* curr_node, uint* curr_classtag)
+{
+    StringEntry entry = stringtable.add_string(curr_node->name);
+    str << WORD; entry->code_ref(str); str << endl;
+    ++ *curr_classtag;
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        code_class_nameTab(curr_child, curr_classtag);
+    }
+}
+
+void CgenClassTable::code_class_objTab(CgenNode* curr_node, uint* curr_classtag)
+{
+    str << WORD << curr_node->name << PROTOBJ_SUFFIX << endl;
+    str << WORD << curr_node->name << CLASSINIT_SUFFIX << endl;
+    ++ *curr_classtag;
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        code_class_objTab(curr_child, curr_classtag);
+    }
+}
+
+void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, uint* curr_classtag)
+{
+    str << curr_node->name << DISPTAB_SUFFIX << LABEL;
+    // TODO: loop over methods and add words
+    ++ *curr_classtag;
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        code_dispatch_tables(curr_child, curr_classtag);
+    }
+}
+
 void CgenClassTable::code_prototypes(CgenNode* curr_node, uint* curr_classtag, uint num_parent_attr)
 {
-    CgenNode* curr_child;
-    uint num_node_attr = code_prototype(str, curr_node, curr_classtag, num_parent_attr);
-    for(List<CgenNode> *l = curr_node->get_children(); l!=NULL; l=l->tl()){
-        curr_child = l->hd();
+    uint num_node_attr = code_prototype(curr_node, curr_classtag, num_parent_attr);
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
         code_prototypes(curr_child, curr_classtag, num_node_attr);
     }
 }
 
-uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint* curr_classtag, uint num_parent_attr)
+uint CgenClassTable::code_prototype(CgenNode* curr_class, uint* curr_classtag, uint num_parent_attr)
 {
     uint num_slots = 0;
     for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
@@ -870,15 +909,15 @@ uint CgenClassTable::code_prototype(ostream &s, CgenNode* curr_class, uint* curr
             num_slots += 1;
         }
     // Add -1 eye catcher
-    s << WORD << "-1" << endl;
+    str << WORD << "-1" << endl;
 
-    emit_protobj_ref(curr_class->name, s);  s << LABEL;                 // label
-    s << WORD << *curr_classtag << endl;                                // tag
-    s << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;               // size
-    s << WORD << endl;                                                  // dispatch table TODO
+    emit_protobj_ref(curr_class->name, str);  str << LABEL;                     // label
+    str << WORD << *curr_classtag << endl;                                      // tag
+    str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;   // size
+    str << WORD << endl;                                                        // dispatch table TODO
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
-        s << WORD << endl; // TODO: add default values for attributes
+        str << WORD << endl; // TODO: add default values for attributes
 
     // Update curr_classtag
     ++ *curr_classtag;
