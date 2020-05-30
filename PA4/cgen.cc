@@ -533,7 +533,7 @@ void CgenClassTable::code_global_data()
     // Now define the global labels to proto and inits
     for(auto it=classtag_map.begin(); it!=classtag_map.end(); ++it){
         str << GLOBAL; emit_protobj_ref(it->first,str);   str << endl;
-        str << GLOBAL << it->first->name << CLASSINIT_SUFFIX << endl;
+        str << GLOBAL << it->first << CLASSINIT_SUFFIX << endl;
     }
     //
     // We also need to know the tag of the Int, String, and Bool classes
@@ -626,16 +626,19 @@ void CgenClassTable::code_constants()
 
 CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
 {
-     stringclasstag = 0 /* Change to your String class tag here */;
-     intclasstag =    0 /* Change to your Int class tag here */;
-     boolclasstag =   0 /* Change to your Bool class tag here */;
-
      enterscope();
      if (cgen_debug) cout << "Building CgenClassTable" << endl;
      install_basic_classes();
      install_classes(classes);
      build_inheritance_tree();
-      
+     //  build classtag_map
+     uint curr_classtag = 0;
+     build_classtag_map(root(), &curr_classtag); 
+     
+     stringclasstag = classtag_map[Str];
+     intclasstag =    classtag_map[Int];
+     boolclasstag =   classtag_map[Bool];
+     
      code();
      exitscope();
 }
@@ -848,9 +851,6 @@ void CgenClassTable::code()
 
 //  - dispatch tables
     code_dispatch_tables(root());
-//  - build classtag_map
-    uint curr_classtag = 0;
-    build_classtag_map(root(), &curr_classtag);
 //  - prototype objects
     code_prototypes(root(), 0);
 
