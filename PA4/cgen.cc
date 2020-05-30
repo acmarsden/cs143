@@ -895,7 +895,7 @@ void CgenClassTable::code_class_nameTab(CgenNode* curr_node)
 void CgenClassTable::code_class_objTab(CgenNode* curr_node)
 {
     str << WORD; emit_protobj_ref(curr_node->name, str); str << endl;
-    str << WORD: emit_init_ref(curr_node->name, str); str << endl;
+    str << WORD; emit_init_ref(curr_node->name, str); str << endl;
 
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
@@ -935,7 +935,7 @@ uint CgenClassTable::code_prototype(CgenNode* curr_class, uint num_parent_attr)
     emit_protobj_ref(curr_class->name, str);  str << LABEL;                     // label
     str << WORD << classtag_map[curr_class->name] << endl;                                      // tag
     str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;   // size
-    str << WORD; emit_disptable_ref(curr_node->name, str); str << endl;                  // dispatch table
+    str << WORD; emit_disptable_ref(curr_class->name, str); str << endl;                  // dispatch table
 
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
