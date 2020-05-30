@@ -862,7 +862,7 @@ void CgenClassTable::code_class_nameTab(CgenNode* curr_node)
     str << WORD; entry->code_ref(str); str << endl;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_class_nameTab(curr_child, curr_classtag);
+        code_class_nameTab(curr_child);
     }
 }
 
@@ -872,7 +872,7 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
     str << WORD << curr_node->name << CLASSINIT_SUFFIX << endl;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_class_objTab(curr_child, curr_classtag);
+        code_class_objTab(curr_child);
     }
 }
 
@@ -880,10 +880,9 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
 {
     str << curr_node->name << DISPTAB_SUFFIX << LABEL;
     // TODO: loop over methods and add words
-    ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_dispatch_tables(curr_child, curr_classtag);
+        code_dispatch_tables(curr_child);
     }
 }
 
