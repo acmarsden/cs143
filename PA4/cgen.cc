@@ -527,11 +527,18 @@ void CgenClassTable::code_global_data()
     str << GLOBAL << INTTAG << endl;
     str << GLOBAL << BOOLTAG << endl;
     str << GLOBAL << STRINGTAG << endl;
+    str << GLOBAL << MAXTAG << endl;
+    str << GLOBAL << CLASSOBJTAB << endl;
 
+    // Now define the global labels to proto and inits
+    for(auto it=classtag_map.begin(); it!=classtag_map.end(); ++it){
+        str << GLOBAL; emit_protobj_ref(it->first,str);   str << endl;
+        str << GLOBAL << it->first->name << CLASSINIT_SUFFIX << endl;
+    }
     //
     // We also need to know the tag of the Int, String, and Bool classes
     // during code generation.
-    //
+    ///String
     str << INTTAG << LABEL
             << WORD << intclasstag << endl;
     str << BOOLTAG << LABEL
@@ -832,9 +839,13 @@ void CgenClassTable::code()
 //  - class_nameTab
     str << CLASSNAMETAB << LABEL;
     code_class_nameTab(root());
-//  - class_nameTab
+//  - class_objTab
     str << CLASSOBJTAB << LABEL;
     code_class_objTab(root());
+
+    str << MAXTAG << LABEL;
+    str << WORD << (classtag_map.size()-1) << endl;
+
 //  - dispatch tables
     code_dispatch_tables(root());
 //  - build classtag_map
@@ -921,7 +932,7 @@ uint CgenClassTable::code_prototype(CgenNode* curr_class, uint num_parent_attr)
     emit_protobj_ref(curr_class->name, str);  str << LABEL;                     // label
     str << WORD << classtag_map[curr_class->name] << endl;                                      // tag
     str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;   // size
-    str << WORD << endl;                                                        // dispatch table TODO
+    str << WORD << curr_class->name << DISPTAB_SUFFIX << endl;                  // dispatch table
     // Attributes
     for(uint i=0; i<(num_parent_attr + num_slots); ++i)
         str << WORD << endl; // TODO: add default values for attributes
