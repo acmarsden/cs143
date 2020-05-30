@@ -403,6 +403,7 @@ void StringEntry::code_def(ostream& s, int stringclasstag)
 
 
  /***** Add dispatch information for class String ******/
+            emit_disptable_ref(Str, s);
 
             s << endl;                                              // dispatch table
             s << WORD;  lensym->code_ref(s);  s << endl;            // string length
@@ -445,6 +446,7 @@ void IntEntry::code_def(ostream &s, int intclasstag)
             << WORD;
 
  /***** Add dispatch information for class Int ******/
+            emit_disptable_ref(Int, s);
 
             s << endl;                                          // dispatch table
             s << WORD << str << endl;                           // integer value
@@ -489,6 +491,7 @@ void BoolConst::code_def(ostream& s, int boolclasstag)
             << WORD;
 
  /***** Add dispatch information for class Bool ******/
+            emit_disptable_ref(Bool, s);
 
             s << endl;                                            // dispatch table
             s << WORD << val << endl;                             // value (0 or 1)
@@ -633,12 +636,12 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
      build_inheritance_tree();
      //  build classtag_map
      uint curr_classtag = 0;
-     build_classtag_map(root(), &curr_classtag); 
-     
+     build_classtag_map(root(), &curr_classtag);
+
      stringclasstag = classtag_map[Str];
      intclasstag =    classtag_map[Int];
      boolclasstag =   classtag_map[Bool];
-     
+
      code();
      exitscope();
 }
