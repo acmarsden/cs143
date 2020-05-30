@@ -834,7 +834,7 @@ void CgenClassTable::code()
     str << CLASSNAMETAB << LABEL;
     code_class_nameTab(root(), &curr_classtag);
 //  - class_nameTab
-    uint curr_classtag = 0;
+    curr_classtag = 0;
     str << CLASSOBJTAB << LABEL;
     code_class_objTab(root(), &curr_classtag);
 //  - dispatch tables
@@ -861,7 +861,7 @@ CgenNodeP CgenClassTable::root()
 
 void CgenClassTable::code_class_nameTab(CgenNode* curr_node, uint* curr_classtag)
 {
-    StringEntry entry = stringtable.add_string(curr_node->name);
+    StringEntry* entry = stringtable.add_string(curr_node->name->get_string());
     str << WORD; entry->code_ref(str); str << endl;
     ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
