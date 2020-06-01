@@ -972,11 +972,16 @@ void CgenClassTable::code_prototypes(CgenNode* curr_node, std::vector<std::pair<
 }
 
 static void emit_default_for_class(ostream& str, Symbol curr_class){
-    if(curr_class == Str){
-        emit_string_constant(str, "");
-    }
-    // TODO: check for other defaults?
-    str << 0 << endl;
+    if(curr_class == prim_slot)
+        str << 0;
+    else if (curr_class == Int)
+        inttable.add_int(0)->code_ref(str);
+    else if (curr_class == Bool)
+        falsebool.code_ref(str);
+    else if (curr_class == Str)
+        stringtable.add_string("")->code_ref(str);
+    else // TODO: check for other defaults?
+        str << 0;
 }
 
 void CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
