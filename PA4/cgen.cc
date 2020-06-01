@@ -840,31 +840,33 @@ void CgenClassTable::code()
     if (cgen_debug) cout << "coding constants" << endl;
     code_constants();
 
-//  Add your code to emit
-//  - class_nameTab
+    // Add your code to emit
+    // - class_nameTab
     str << CLASSNAMETAB << LABEL;
     code_class_nameTab(root());
-//  - class_objTab
+    // - class_objTab
     str << CLASSOBJTAB << LABEL;
     code_class_objTab(root());
 
     str << MAXTAG << LABEL;
     str << WORD << (classtag_map.size()-1) << endl;
 
-//  - dispatch tables
+    // - dispatch tables
     std::map<Symbol, std::vector<Symbol> > methods;
     std::vector<Symbol> method_order;
     code_dispatch_tables(root(), &methods, &method_order);
-//  - prototype objects
+    // - prototype objects
     code_prototypes(root(), 0);
 
     if (cgen_debug) cout << "coding global text" << endl;
     code_global_text();
 
-//                 Add your code to emit
-//                   - object initializer
-//                   - the class methods
-//                   - etc...
+    // Add your code to emit
+    // - object initializer
+    code_object_initializers(root());
+
+    // - the class methods
+    // - etc...
 
 }
 
@@ -945,35 +947,73 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, 
         method_order->pop_back();
 }
 
-void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
+void CgenClassTable::code_prototypes(CgenNode* curr_node, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
-    uint num_node_attr = code_prototype(curr_node, num_parent_attr);
+    uint num_node_attr = code_prototype(curr_node, parent_attr);
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
         code_prototypes(curr_child, num_node_attr);
     }
 }
 
-uint CgenClassTable::code_prototype(CgenNode* curr_class, uint num_parent_attr)
+uint CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
     uint num_slots = 0;
-    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i))
+    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i)){
         if(curr_class->features->nth(i)->is_attr()){
             num_slots += 1;
         }
-    // Add -1 eye catcher
+    }
+    // Add -1 eye catcher for the GC
     str << WORD << "-1" << endl;
+    // label
+    emit_protobj_ref(curr_class->name, str);  str << LABEL;
+    // tag
+    str << WORD << classtag_map[curr_class->name] << endl;
+    // size
+    uint num_parent_attr = parent_attr->size();
+    str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;
+    // dispatch table
+    str << WORD; emit_disptable_ref(curr_class->name, str); str << endl;
 
-    emit_protobj_ref(curr_class->name, str);  str << LABEL;                     // label
-    str << WORD << classtag_map[curr_class->name] << endl;                                      // tag
-    str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;   // size
-    str << WORD; emit_disptable_ref(curr_class->name, str); str << endl;                  // dispatch table
-
-    // Attributes
-    for(uint i=0; i<(num_parent_attr + num_slots); ++i)
-        str << WORD << endl; // TODO: add default values for attributes
+    // Parent attributes
+    for(auto it=parent_attr->cbegin(); it!=parent_attr.cend(); ++it){
+        str << WORD;
+        // Default attr values
+        emit_default_for_class(it->first);
+        str << endl;
+    }
+    // Own Attributes
+    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i)){
+        if(curr_class->features->nth(i)->is_attr()){
+            str << WORD;
+            // Default attr values
+            emit_default_for_class(curr_class->features->nth(i)->get_type());
+            str << endl;
+        }
+    }
 
     return (num_parent_attr + num_slots);
+}
+
+static void emit_default_for_class(Symbol curr_class){
+    switch(curr_class){
+        case Int:   str << 0 << endl;
+                    break;
+        case Bool:  str << 0 << endl;
+                    break;
+        case Str:   emit_string_constant(str, stringtable.add_string(""));
+                    str << endl;
+                    str << 0 << endl;
+                    break;
+        default:    // TODO: default for types
+                    break;
+        }
+}
+
+void CgenClassTable::code_object_initializers(CgenNode* curr_node)
+{
+    // TODO
 }
 
 
