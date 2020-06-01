@@ -4,6 +4,7 @@
 #include "cool-tree.h"
 #include "symtab.h"
 #include <map>
+#include <vector>
 
 enum Basicness     {Basic, NotBasic};
 #define TRUE 1
@@ -34,7 +35,7 @@ private:
    void code_constants();
    void code_class_nameTab(CgenNodeP);
    void code_class_objTab(CgenNodeP);
-   void code_dispatch_tables(CgenNodeP);
+   void code_dispatch_tables(CgenNodeP, std::map<Symbol, std::vector<Symbol> >*, std::vector<Symbol>*);
    void code_prototypes(CgenNodeP, uint);
    uint code_prototype(CgenNodeP, uint);
 

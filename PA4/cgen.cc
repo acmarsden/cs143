@@ -852,7 +852,9 @@ void CgenClassTable::code()
     str << WORD << (classtag_map.size()-1) << endl;
 
 //  - dispatch tables
-    code_dispatch_tables(root());
+    std::map<Symbol, std::vector<Symbol> > methods;
+    std::vector<Symbol> method_order;
+    code_dispatch_tables(root(), &methods, &method_order);
 //  - prototype objects
     code_prototypes(root(), 0);
 
@@ -903,34 +905,44 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
     }
 }
 
-void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, Symbol>* methods)
+void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, std::vector<Symbol> >* methods,
+        std::vector<Symbol>* method_order)
 {
-    // Add this node's methods
+    // Add this node's methodsi
+    uint num_new_methods = 0;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!(curr_node->features->nth(i)->is_attr())){
             // NOTE: this will override methods witho most recent class's implementation
             Symbol method_name = curr_node->features->nth(i)->get_name();
-            methods[method_name] = curr_node->name;
+            if(methods->find(method_name) == methods->end()){
+                method_order->push_back(method_name);
+                ++num_new_methods;
+            }
+            (*methods)[method_name].push_back(curr_node->name);
         }
     }
     // Emit the references to the methods
     emit_disptable_ref(curr_node->name, str); str << LABEL;
-    for(auto it=methods.cbegin(); it!=methods.cend(); ++it){
-        str << WORD << it->second << "." << it->first << endl;
+    for(auto it=method_order->cbegin(); it!=method_order->cend(); ++it){
+        str << WORD << (*methods)[*it].back() << "." << *it << endl;
     }
     // Recurse on children
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_dispatch_tables(curr_child, methods);
+        code_dispatch_tables(curr_child, methods, method_order);
     }
     // Remove this node's methods
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!(curr_node->features->nth(i)->is_attr())){
             Symbol method_name = curr_node->features->nth(i)->get_name();
-            // TODO: fix this: don't remove if def exists in parent class
-            methods.erase(method_name);
+            (*methods)[method_name].pop_back();
+            if((*methods)[method_name].size()==0){
+                methods->erase(method_name);
+            }
         }
     }
+    for(uint i=0; i<num_new_methods; ++i)
+        method_order->pop_back();
 }
 
 void CgenClassTable::code_prototypes(CgenNode* curr_node, uint num_parent_attr)
