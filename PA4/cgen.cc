@@ -907,10 +907,10 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
 {
     emit_disptable_ref(curr_node->name, str); str << LABEL;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
-        Feature curr_feat = curr_node->features->nth(i);
-        if(!(curr_feat->is_attr())){
+        if(!(curr_node->features->nth(i)->is_attr())){
             // TODO: check inherited ones
-            str << WORD << curr_node->name << "." << curr_feat->name << endl;
+            Symbol method_name = curr_node->features->nth(i)->get_name();
+            str << WORD << curr_node->name << "." << method_name << endl;
         }
     }
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
