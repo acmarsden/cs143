@@ -903,19 +903,33 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
     }
 }
 
-void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
+void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, Symbol>* methods)
 {
-    emit_disptable_ref(curr_node->name, str); str << LABEL;
+    // Add this node's methods
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!(curr_node->features->nth(i)->is_attr())){
-            // TODO: check inherited ones
+            // NOTE: this will override methods witho most recent class's implementation
             Symbol method_name = curr_node->features->nth(i)->get_name();
-            str << WORD << curr_node->name << "." << method_name << endl;
+            methods[method_name] = curr_node->name;
         }
     }
+    // Emit the references to the methods
+    emit_disptable_ref(curr_node->name, str); str << LABEL;
+    for(auto it=methods.cbegin(); it!=methods.cend(); ++it){
+        str << WORD << it->second << "." << it->first << endl;
+    }
+    // Recurse on children
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_dispatch_tables(curr_child);
+        code_dispatch_tables(curr_child, methods);
+    }
+    // Remove this node's methods
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(!(curr_node->features->nth(i)->is_attr())){
+            Symbol method_name = curr_node->features->nth(i)->get_name();
+            // TODO: fix this: don't remove if def exists in parent class
+            methods.erase(method_name);
+        }
     }
 }
 
