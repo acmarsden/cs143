@@ -906,7 +906,13 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
 void CgenClassTable::code_dispatch_tables(CgenNode* curr_node)
 {
     emit_disptable_ref(curr_node->name, str); str << LABEL;
-    // TODO: loop over methods and add words
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        Feature curr_feat = curr_node->features->nth(i);
+        if(!(curr_feat->is_attr())){
+            // TODO: check inherited ones
+            str << WORD << curr_node->name << "." << curr_feat->name << endl;
+        }
+    }
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
         code_dispatch_tables(curr_child);
