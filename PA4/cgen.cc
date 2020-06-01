@@ -856,7 +856,8 @@ void CgenClassTable::code()
     std::vector<Symbol> method_order;
     code_dispatch_tables(root(), &methods, &method_order);
     // - prototype objects
-    code_prototypes(root(), 0);
+    std::vector<std::pair<Symbol, Symbol> > parent_attr;
+    code_prototypes(root(), &parent_attr);
 
     if (cgen_debug) cout << "coding global text" << endl;
     code_global_text();
@@ -949,17 +950,39 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, 
 
 void CgenClassTable::code_prototypes(CgenNode* curr_node, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
-    uint num_node_attr = code_prototype(curr_node, parent_attr);
+    code_prototype(curr_node, parent_attr);
+    // Add my attr as parent attr
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
+            parent_attr->push_back(std::pair<Symbol, Symbol>(curr_node->features->nth(i)->get_type(), 
+                                                             curr_node->features->nth(i)->get_name()));
+        }
+    }
+    // Recurse into children
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_prototypes(curr_child, num_node_attr);
+        code_prototypes(curr_child, parent_attr);
+    }
+    // Pop this parent's attributes
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
+            parent_attr->pop_back(); 
+        }
     }
 }
 
-uint CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
+static void emit_default_for_class(ostream& str, Symbol curr_class){
+    if(curr_class == Str){
+        emit_string_constant(str, "");
+    }
+    // TODO: check for other defaults?
+    str << 0 << endl;
+}
+
+void CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
     uint num_slots = 0;
-    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i)){
+    for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
         if(curr_class->features->nth(i)->is_attr()){
             num_slots += 1;
         }
@@ -977,10 +1000,10 @@ uint CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<
     str << WORD; emit_disptable_ref(curr_class->name, str); str << endl;
 
     // Parent attributes
-    for(auto it=parent_attr->cbegin(); it!=parent_attr.cend(); ++it){
+    for(auto it=parent_attr->cbegin(); it!=parent_attr->cend(); ++it){
         str << WORD;
         // Default attr values
-        emit_default_for_class(it->first);
+        emit_default_for_class(str, it->first);
         str << endl;
     }
     // Own Attributes
@@ -988,27 +1011,10 @@ uint CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<
         if(curr_class->features->nth(i)->is_attr()){
             str << WORD;
             // Default attr values
-            emit_default_for_class(curr_class->features->nth(i)->get_type());
+            emit_default_for_class(str, curr_class->features->nth(i)->get_type());
             str << endl;
         }
     }
-
-    return (num_parent_attr + num_slots);
-}
-
-static void emit_default_for_class(Symbol curr_class){
-    switch(curr_class){
-        case Int:   str << 0 << endl;
-                    break;
-        case Bool:  str << 0 << endl;
-                    break;
-        case Str:   emit_string_constant(str, stringtable.add_string(""));
-                    str << endl;
-                    str << 0 << endl;
-                    break;
-        default:    // TODO: default for types
-                    break;
-        }
 }
 
 void CgenClassTable::code_object_initializers(CgenNode* curr_node)

@@ -5,6 +5,7 @@
 #include "symtab.h"
 #include <map>
 #include <vector>
+#include <utility> // for std::pair
 
 enum Basicness     {Basic, NotBasic};
 #define TRUE 1
@@ -40,8 +41,8 @@ private:
    void code_dispatch_tables(CgenNodeP,
                              std::map<Symbol, std::vector<Symbol> >*,
                              std::vector<Symbol>*);
-   void code_prototypes(CgenNodeP, uint);
-   uint code_prototype(CgenNodeP, uint);
+   void code_prototypes(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
+   void code_prototype(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
    void code_object_initializers(CgenNodeP);
 
    // The following creates an inheritance graph from
