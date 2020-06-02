@@ -1068,12 +1068,15 @@ void CgenClassTable::code_object_initializers()
         }
 
         // initialize class attributes here
-        uint offset = 3;
-        for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
-            if(curr_node->features->nth(i)->is_attr()){
-                curr_node->features->nth(i)->code(str);
-                emit_store(ACC, offset, SELF, str);
-                ++offset;
+        Symbol curr_class = curr_node->name;
+        if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
+            uint offset = 3;
+            for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+                if(curr_node->features->nth(i)->is_attr()){
+                    curr_node->features->nth(i)->code(str);
+                    emit_store(ACC, offset, SELF, str);
+                    ++offset;
+                }
             }
         }
 
@@ -1086,7 +1089,7 @@ void CgenClassTable::code_object_initializers()
 void CgenClassTable::code_all_class_methods(){
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         Symbol curr_class = it->first;
-        if(curr_class != Object && curr_class != Str && curr_class != IO && curr_class != Bool){
+        if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
             CgenNode* curr_node = probe(it->first);
             assert(curr_node != NULL);
             code_class_methods(curr_node);
@@ -1101,7 +1104,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_class){
             str << LABEL;
             emit_store_AR(str);
             // TODO: handle arguments passed to code correctly
-            // TODO: code contents of method: begin recursive traversal
+            curr_class->features->nth(i)->code(str);
             emit_restore_AR(str);
             emit_return(str);
         }
@@ -1136,6 +1139,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //*****************************************************************
 
 void method_class::code(ostream &s){
+    expr->code(s);
 }
 
 void attr_class::code(ostream &s){
