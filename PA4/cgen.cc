@@ -1203,7 +1203,7 @@ void attr_class::code(ostream &s, int offset){
 
 void formal_class::code(ostream &s) {
     // Make room in the stack for the arguments
-    emit_addiu(SP, SP, -1*WORD_SIZE, str);
+    emit_addiu(SP, SP, -1*WORD_SIZE, s);
 }
 
 void assign_class::code(ostream &s) {
