@@ -396,8 +396,8 @@ void StringEntry::code_def(ostream& s, int stringclasstag)
     // Add -1 eye catcher
     s << WORD << "-1" << endl;
 
-    code_ref(s);  s  << LABEL                                             // label
-            << WORD << stringclasstag << endl                                 // tag
+    code_ref(s);  s  << LABEL                               // label
+            << WORD << stringclasstag << endl               // tag
             << WORD << (DEFAULT_OBJFIELDS + STRING_SLOTS + (len+4)/4) << endl // size
             << WORD;
 
@@ -405,10 +405,10 @@ void StringEntry::code_def(ostream& s, int stringclasstag)
  /***** Add dispatch information for class String ******/
             emit_disptable_ref(Str, s);
 
-            s << endl;                                              // dispatch table
-            s << WORD;  lensym->code_ref(s);  s << endl;            // string length
-    emit_string_constant(s,str);                                // ascii string
-    s << ALIGN;                                                 // align to word
+            s << endl;                                      // dispatch table
+            s << WORD;  lensym->code_ref(s);  s << endl;    // string length
+    emit_string_constant(s,str);                            // ascii string
+    s << ALIGN;                                             // align to word
 }
 
 //
@@ -440,7 +440,7 @@ void IntEntry::code_def(ostream &s, int intclasstag)
     // Add -1 eye catcher
     s << WORD << "-1" << endl;
 
-    code_ref(s);  s << LABEL                                // label
+    code_ref(s);  s << LABEL                                    // label
             << WORD << intclasstag << endl                      // class tag
             << WORD << (DEFAULT_OBJFIELDS + INT_SLOTS) << endl  // object size
             << WORD;
@@ -485,7 +485,7 @@ void BoolConst::code_def(ostream& s, int boolclasstag)
     // Add -1 eye catcher
     s << WORD << "-1" << endl;
 
-    code_ref(s);  s << LABEL                                  // label
+    code_ref(s);  s << LABEL                                      // label
             << WORD << boolclasstag << endl                       // class tag
             << WORD << (DEFAULT_OBJFIELDS + BOOL_SLOTS) << endl   // object size
             << WORD;
@@ -908,7 +908,8 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
     }
 }
 
-void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, std::vector<Symbol> >* methods,
+void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
+        std::map<Symbol, std::vector<Symbol> >* methods,
         std::vector<Symbol>* method_order)
 {
     // Add this node's methodsi
@@ -948,13 +949,14 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node, std::map<Symbol, 
         method_order->pop_back();
 }
 
-void CgenClassTable::code_prototypes(CgenNode* curr_node, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
+void CgenClassTable::code_prototypes(CgenNode* curr_node,
+        std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
     code_prototype(curr_node, parent_attr);
     // Add my attr as parent attr
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(curr_node->features->nth(i)->is_attr()){
-            parent_attr->push_back(std::pair<Symbol, Symbol>(curr_node->features->nth(i)->get_type(), 
+            parent_attr->push_back(std::pair<Symbol, Symbol>(curr_node->features->nth(i)->get_type(),
                                                              curr_node->features->nth(i)->get_name()));
         }
     }
@@ -966,7 +968,7 @@ void CgenClassTable::code_prototypes(CgenNode* curr_node, std::vector<std::pair<
     // Pop this parent's attributes
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(curr_node->features->nth(i)->is_attr()){
-            parent_attr->pop_back(); 
+            parent_attr->pop_back();
         }
     }
 }
@@ -980,11 +982,16 @@ static void emit_default_for_class(ostream& str, Symbol curr_class){
         falsebool.code_ref(str);
     else if (curr_class == Str)
         stringtable.add_string("")->code_ref(str);
-    else // TODO: check for other defaults?
+    else
         str << 0;
+    // Cool Runtime Page 2: The value void is a null pointer and is represented
+    // by the 32-bit value 0,  All uninitialized variables(except variables of
+    // type Int, Bool, and String; see the Cool Reference Manual)
+    // should be set to void by default.
 }
 
-void CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<Symbol, Symbol> >* parent_attr)
+void CgenClassTable::code_prototype(CgenNode* curr_class,
+        std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
     uint num_slots = 0;
     for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
@@ -1022,9 +1029,38 @@ void CgenClassTable::code_prototype(CgenNode* curr_class, std::vector<std::pair<
     }
 }
 
-void CgenClassTable::code_object_initializers(CgenNode* curr_node)
+static void emit_store_AR(ostream& str){
+    str << ADDIU << SP << SP << -12 << endl;
+    str << SW << FP << 12 << "(" << SP << ")" << endl;
+    str << SW << SELF << 8 << "(" << SP << ")" << endl;
+    str << SW << ACC << 4 << "(" << SP << ")" << endl;
+    str << ADDIU << FP << SP << 16 << endl;
+    str << MOVE << SELF << ACC << endl;
+}
+
+static void emit_restore_AR(ostream& str){
+    str << MOVE << ACC << SELF << endl;
+    str << LW << FP << 12 << "(" << SP << ")" << endl;
+    str << LW << SELF << 8 << "(" << SP << ")" << endl;
+    str << LW << ACC << 4 << "(" << SP << ")" << endl;
+    str << ADDIU << SP << SP << 12 << endl;
+}
+
+void CgenClassTable::code_object_initializers()
 {
-    // TODO
+    for(auto it=classtag_map.cbegin(), it!=classtag_map.cend(); ++it){
+        str << emit_init_ref(it->first, str) << LABEL;
+        emit_store_AR(str);
+        CgenNode* curr_node = probe(it->first);
+        assert(curr_node != NULL);
+        if(curr_node->get_parent() != NULL){
+            str << JAL;
+            emit_init_ref(curr_node->get_parent(), str);
+            str << endl;
+        }
+        emit_restore_AR(str);
+        str << JR << RA << endl;
+    }
 }
 
 
