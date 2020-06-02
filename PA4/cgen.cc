@@ -1051,9 +1051,14 @@ static void emit_restore_AR(ostream& str){
 
 void CgenClassTable::code_object_initializers()
 {
+    // Loop over classes in no particular order
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
+        // Label to the class init methdd
         emit_init_ref(it->first, str); str << LABEL;
+        // Store the AR header
         emit_store_AR(str);
+
+        // Call init of parent class
         CgenNode* curr_node = probe(it->first);
         assert(curr_node != NULL);
         if(curr_node->get_parent() != No_class){
@@ -1061,7 +1066,18 @@ void CgenClassTable::code_object_initializers()
             emit_init_ref(curr_node->get_parent(), str);
             str << endl;
         }
-        // TODO: initialize class attributes here
+
+        // initialize class attributes here
+        uint offset = 3;
+        for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+            if(curr_node->features->nth(i)->is_attr()){
+                curr_node->features->nth(i)->code(str);
+                emit_store(ACC, offset, SELF, str);
+                ++offset;
+            }
+        }
+
+        // Restore AR header
         emit_restore_AR(str);
         emit_return(str);
     }
@@ -1118,6 +1134,14 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //   constant integers, strings, and booleans are provided.
 //
 //*****************************************************************
+
+void method_class::code(ostream &s){
+}
+
+void attr_class::code(ostream &s){
+    // the reference to the value the thing is initialized to
+    init.code(s);
+}
 
 void assign_class::code(ostream &s) {
 }
