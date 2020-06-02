@@ -1117,7 +1117,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_class){
             emit_move(SELF, ACC,  str);
 
             // TODO: handle arguments (formals) passed to code correctly
-            curr_class->features->nth(i)->code(str);
+            curr_class->features->nth(i)->code(str, 0);
             // Postcond: result is in ACC
 
             // Restore AR
@@ -1159,9 +1159,10 @@ void method_class::code(ostream &s, int offset){
 }
 
 void attr_class::code(ostream &s, int offset){
-    // the reference to the value the thing is initialized to
+    // Precond: ACC can be discarded, SELF has reference to self object
     init->code(s);
-    if(init != no_expr){
+    // Postcond: ACC has the reference to the value the thing is initialized to
+    if(init.get_type() != No_type){
         // If there was an initilization, then store it.
         // Otherwise, leave default value from protobj
         // Precond: SELF has self object, ACC has value to store
