@@ -521,16 +521,13 @@ void CgenClassTable::code_global_data()
     //
     // The following global names must be defined first.
     //
-    str << GLOBAL << CLASSNAMETAB << endl;
-    str << GLOBAL; emit_protobj_ref(main,str);    str << endl;
-    str << GLOBAL; emit_protobj_ref(integer,str); str << endl;
-    str << GLOBAL; emit_protobj_ref(string,str);  str << endl;
     str << GLOBAL; falsebool.code_ref(str);  str << endl;
     str << GLOBAL; truebool.code_ref(str);   str << endl;
     str << GLOBAL << INTTAG << endl;
     str << GLOBAL << BOOLTAG << endl;
     str << GLOBAL << STRINGTAG << endl;
     str << GLOBAL << MAXTAG << endl;
+    str << GLOBAL << CLASSNAMETAB << endl;
     str << GLOBAL << CLASSOBJTAB << endl;
 
     // Now define the global labels to proto and inits
