@@ -43,7 +43,7 @@ private:
                              std::vector<Symbol>*);
    void code_prototypes(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
    void code_prototype(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
-   void code_object_initializers(CgenNodeP);
+   void code_object_initializers();
 
    // The following creates an inheritance graph from
    // a list of classes.  The graph is implemented as

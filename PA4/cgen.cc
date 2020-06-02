@@ -864,7 +864,7 @@ void CgenClassTable::code()
 
     // Add your code to emit
     // - object initializer
-    code_object_initializers(root());
+    code_object_initializers();
 
     // - the class methods
     // - etc...
@@ -1030,26 +1030,26 @@ void CgenClassTable::code_prototype(CgenNode* curr_class,
 }
 
 static void emit_store_AR(ostream& str){
-    str << ADDIU << SP << SP << -12 << endl;
-    str << SW << FP << 12 << "(" << SP << ")" << endl;
-    str << SW << SELF << 8 << "(" << SP << ")" << endl;
-    str << SW << ACC << 4 << "(" << SP << ")" << endl;
-    str << ADDIU << FP << SP << 16 << endl;
-    str << MOVE << SELF << ACC << endl;
+    emit_addiu(SP, SP, -12, str);
+    emit_store(FP, 3, SP, str);
+    emit_store(SELF, 2, SP, str);
+    emit_store(ACC, 1, SP, str);
+    emit_addiu(FP, SP, 16, str);
+    emit_move(SELF, ACC,  str);
 }
 
 static void emit_restore_AR(ostream& str){
-    str << MOVE << ACC << SELF << endl;
-    str << LW << FP << 12 << "(" << SP << ")" << endl;
-    str << LW << SELF << 8 << "(" << SP << ")" << endl;
-    str << LW << ACC << 4 << "(" << SP << ")" << endl;
-    str << ADDIU << SP << SP << 12 << endl;
+    emit_move(ACC, SELF, str);
+    emit_load(FP, 3, SP, str);
+    emit_load(SELF, 2, SP, str);
+    emit_load(ACC, 1, SP, str);
+    emit_addiu(SP, SP, 12, str);
 }
 
 void CgenClassTable::code_object_initializers()
 {
-    for(auto it=classtag_map.cbegin(), it!=classtag_map.cend(); ++it){
-        str << emit_init_ref(it->first, str) << LABEL;
+    for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
+        emit_init_ref(it->first, str); str << LABEL;
         emit_store_AR(str);
         CgenNode* curr_node = probe(it->first);
         assert(curr_node != NULL);
@@ -1059,7 +1059,7 @@ void CgenClassTable::code_object_initializers()
             str << endl;
         }
         emit_restore_AR(str);
-        str << JR << RA << endl;
+        emit_return(str);
     }
 }
 
