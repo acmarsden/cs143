@@ -864,9 +864,11 @@ void CgenClassTable::code()
 
     // Add your code to emit
     // - object initializer
+    // This handles class attributes
     code_object_initializers();
 
     // - the class methods
+    // This handles class methods
     code_all_class_methods();
 
     // - etc...
@@ -1033,30 +1035,32 @@ void CgenClassTable::code_prototype(CgenNode* curr_class,
 }
 
 static void emit_store_AR(ostream& str){
-    emit_addiu(SP, SP, -12, str);
+    emit_addiu(SP, SP, -3*WORD_SIZE, str);
     emit_store(FP, 3, SP, str);
     emit_store(SELF, 2, SP, str);
     emit_store(RA, 1, SP, str);
-    emit_addiu(FP, SP, 16, str);
-    emit_move(SELF, ACC,  str);
+    emit_addiu(FP, SP, 4*WORD_SIZE, str);
 }
 
 static void emit_restore_AR(ostream& str){
-    emit_move(ACC, SELF, str);
     emit_load(FP, 3, SP, str);
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
-    emit_addiu(SP, SP, 12, str);
+    emit_addiu(SP, SP, 3*WORD_SIZE, str);
 }
 
 void CgenClassTable::code_object_initializers()
 {
     // Loop over classes in no particular order
+    // TODO: actually might need to do this in DFS order in inheritance
+    // tree, since we need to account for offsets in inherited attrss
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         // Label to the class init methdd
         emit_init_ref(it->first, str); str << LABEL;
         // Store the AR header
         emit_store_AR(str);
+        // Remember self obj in SELF, since ACC is not stored in the AR
+        emit_move(SELF, ACC,  str);
 
         // Call init of parent class
         CgenNode* curr_node = probe(it->first);
@@ -1068,18 +1072,24 @@ void CgenClassTable::code_object_initializers()
         }
 
         // initialize class attributes here
+        // Precond: SELF has addr to self object
+        //          ACC will be used to load obj addresses and store them
+        //              to the SELF address
         Symbol curr_class = curr_node->name;
         if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
-            uint offset = 3;
+            int offset = DEFAULT_OBJFIELDS; // skipping the default object fields: this should be computed from parent recursively
             for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
                 if(curr_node->features->nth(i)->is_attr()){
-                    curr_node->features->nth(i)->code(str);
-                    emit_store(ACC, offset, SELF, str);
+                    // Precond: SELF has self object, ACC can be discarded
+                    curr_node->features->nth(i)->code(str, offset);
                     ++offset;
                 }
             }
         }
 
+        // After using return values, restore SELF to ACC, before it is
+        // overwritten by the restore of the AR
+        emit_move(ACC, SELF, str);
         // Restore AR header
         emit_restore_AR(str);
         emit_return(str);
@@ -1103,8 +1113,14 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_class){
             emit_method_ref(curr_class->name, curr_class->features->nth(i)->get_name(), str);
             str << LABEL;
             emit_store_AR(str);
-            // TODO: handle arguments passed to code correctly
+            // Remember SELF
+            emit_move(SELF, ACC,  str);
+
+            // TODO: handle arguments (formals) passed to code correctly
             curr_class->features->nth(i)->code(str);
+            // Postcond: result is in ACC
+
+            // Restore AR
             emit_restore_AR(str);
             emit_return(str);
         }
@@ -1138,13 +1154,19 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //
 //*****************************************************************
 
-void method_class::code(ostream &s){
+void method_class::code(ostream &s, int offset){
     expr->code(s);
 }
 
-void attr_class::code(ostream &s){
+void attr_class::code(ostream &s, int offset){
     // the reference to the value the thing is initialized to
     init->code(s);
+    if(init != no_expr){
+        // If there was an initilization, then store it.
+        // Otherwise, leave default value from protobj
+        // Precond: SELF has self object, ACC has value to store
+        emit_store(ACC, offset, SELF, str);
+    }
 }
 
 void assign_class::code(ostream &s) {
@@ -1227,5 +1249,3 @@ void no_expr_class::code(ostream &s) {
 
 void object_class::code(ostream &s) {
 }
-
-
