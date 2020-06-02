@@ -867,6 +867,8 @@ void CgenClassTable::code()
     code_object_initializers();
 
     // - the class methods
+    code_class_methods();
+
     // - etc...
 
 }
@@ -928,7 +930,8 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
     // Emit the references to the methods
     emit_disptable_ref(curr_node->name, str); str << LABEL;
     for(auto it=method_order->cbegin(); it!=method_order->cend(); ++it){
-        str << WORD << (*methods)[*it].back() << "." << *it << endl;
+        str << WORD; emit_method_ref((*methods)[*it].back(), *it, str); str << endl;
+
     }
     // Recurse on children
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
@@ -1019,7 +1022,7 @@ void CgenClassTable::code_prototype(CgenNode* curr_class,
         str << endl;
     }
     // Own Attributes
-    for(int i = curr_class->features->first(); curr_class->features->more(i); i = curr_class->features->next(i)){
+    for(int i = curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
         if(curr_class->features->nth(i)->is_attr()){
             str << WORD;
             // Default attr values
@@ -1058,8 +1061,30 @@ void CgenClassTable::code_object_initializers()
             emit_init_ref(curr_node->get_parent(), str);
             str << endl;
         }
+        // TODO: initialize class attributes here
         emit_restore_AR(str);
         emit_return(str);
+    }
+}
+
+void CgenClassTable::code_all_class_methods(){
+    for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
+        if(*it != Object && *it != Str && *it != IO && *it != Bool)
+            code_class_methods(*it);
+    }
+}
+
+void CgenClassTable::code_class_methods(CgenNode curr_class){
+    for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
+        if(!curr_class->features->nth(i)->is_attr()){
+            emit_method_ref(curr_class->name, curr_class->features->nth(i)->get_name(), str);
+            str << LABEL;
+            emit_store_AR(str);
+            // TODO: handle arguments passed to code correctly
+            // TODO: code contents of method: begin recursive traversal
+            emit_restore_AR(str);
+            emit_return(str);
+        }
     }
 }
 
