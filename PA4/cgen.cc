@@ -564,18 +564,23 @@ void CgenClassTable::code_global_text()
     str << GLOBAL << HEAP_START << endl
             << HEAP_START << LABEL
             << WORD << 0 << endl
-            << "\t.text" << endl
-            << GLOBAL;
-    emit_init_ref(idtable.add_string("Main"), str);
-    str << endl << GLOBAL;
-    emit_init_ref(idtable.add_string("Int"),str);
-    str << endl << GLOBAL;
-    emit_init_ref(idtable.add_string("String"),str);
-    str << endl << GLOBAL;
-    emit_init_ref(idtable.add_string("Bool"),str);
-    str << endl << GLOBAL;
-    emit_method_ref(idtable.add_string("Main"), idtable.add_string("main"), str);
-    str << endl;
+            << "\t.text" << endl;
+
+    // Emit global labels for all methods
+    for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
+        Symbol curr_class = it->first;
+        if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
+            CgenNode* curr_node = probe(it->first);
+            assert(curr_node != NULL);
+            for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+                if(!curr_node->features->nth(i)->is_attr()){
+                    str << GLOBAL;
+                    emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
+                    str << endl;
+                }
+            }
+        }
+    }
 }
 
 void CgenClassTable::code_bools(int boolclasstag)
