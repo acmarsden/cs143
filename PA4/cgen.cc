@@ -1133,10 +1133,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node){
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
             str << LABEL;
             emit_store_AR(str);
-            // Remember SELF
-            emit_move(SELF, ACC,  str);
 
-            // TODO: handle arguments (formals) passed to code correctly
             curr_node->features->nth(i)->code(str, 0);
             // Postcond: result is in ACC
 
@@ -1175,6 +1172,14 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //*****************************************************************
 
 void method_class::code(ostream &s, int offset){
+    // Handle arguments (formals) passed: make space in the AR for them
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)){
+        formals->nth(i)->code(s);
+    }
+    // TODO: also make space for the number of temporaries?
+
+    // Remember SELF
+    emit_move(SELF, ACC,  s);
     expr->code(s);
 }
 
@@ -1189,6 +1194,11 @@ void attr_class::code(ostream &s, int offset){
         // Precond: SELF has self object, ACC has value to store
         emit_store(ACC, offset, SELF, s);
     }
+}
+
+void formal_class::code(ostream &s) {
+    // Make room in the stack for the arguments
+    emit_addiu(SP, SP, -1*WORD_SIZE, str);
 }
 
 void assign_class::code(ostream &s) {
