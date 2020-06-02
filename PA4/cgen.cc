@@ -867,7 +867,7 @@ void CgenClassTable::code()
     code_object_initializers();
 
     // - the class methods
-    code_class_methods();
+    code_all_class_methods();
 
     // - etc...
 
@@ -1036,7 +1036,7 @@ static void emit_store_AR(ostream& str){
     emit_addiu(SP, SP, -12, str);
     emit_store(FP, 3, SP, str);
     emit_store(SELF, 2, SP, str);
-    emit_store(ACC, 1, SP, str);
+    emit_store(RA, 1, SP, str);
     emit_addiu(FP, SP, 16, str);
     emit_move(SELF, ACC,  str);
 }
@@ -1045,7 +1045,7 @@ static void emit_restore_AR(ostream& str){
     emit_move(ACC, SELF, str);
     emit_load(FP, 3, SP, str);
     emit_load(SELF, 2, SP, str);
-    emit_load(ACC, 1, SP, str);
+    emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 12, str);
 }
 
@@ -1056,7 +1056,7 @@ void CgenClassTable::code_object_initializers()
         emit_store_AR(str);
         CgenNode* curr_node = probe(it->first);
         assert(curr_node != NULL);
-        if(curr_node->get_parent() != NULL){
+        if(curr_node->get_parent() != No_class){
             str << JAL;
             emit_init_ref(curr_node->get_parent(), str);
             str << endl;
@@ -1069,12 +1069,16 @@ void CgenClassTable::code_object_initializers()
 
 void CgenClassTable::code_all_class_methods(){
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
-        if(*it != Object && *it != Str && *it != IO && *it != Bool)
-            code_class_methods(*it);
+        Symbol curr_class = it->first;
+        if(curr_class != Object && curr_class != Str && curr_class != IO && curr_class != Bool){
+            CgenNode* curr_node = probe(it->first);
+            assert(curr_node != NULL);
+            code_class_methods(curr_node);
+        }
     }
 }
 
-void CgenClassTable::code_class_methods(CgenNode curr_class){
+void CgenClassTable::code_class_methods(CgenNodeP curr_class){
     for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
         if(!curr_class->features->nth(i)->is_attr()){
             emit_method_ref(curr_class->name, curr_class->features->nth(i)->get_name(), str);
