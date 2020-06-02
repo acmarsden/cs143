@@ -1162,7 +1162,8 @@ void attr_class::code(ostream &s, int offset){
     // Precond: ACC can be discarded, SELF has reference to self object
     init->code(s);
     // Postcond: ACC has the reference to the value the thing is initialized to
-    if(init->get_type() != No_type){
+    //if(init->get_type() != No_type){ // our semant implementation
+    if(init->get_type() != NULL){ // their semant implementation
         // If there was an initilization, then store it.
         // Otherwise, leave default value from protobj
         // Precond: SELF has self object, ACC has value to store
