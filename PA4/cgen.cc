@@ -1140,7 +1140,7 @@ void method_class::code(ostream &s){
 
 void attr_class::code(ostream &s){
     // the reference to the value the thing is initialized to
-    init.code(s);
+    init->code(s);
 }
 
 void assign_class::code(ostream &s) {
