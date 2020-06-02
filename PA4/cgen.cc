@@ -995,26 +995,26 @@ static void emit_default_for_class(ostream& str, Symbol curr_class){
     // should be set to void by default.
 }
 
-void CgenClassTable::code_prototype(CgenNode* curr_class,
+void CgenClassTable::code_prototype(CgenNode* curr_node,
         std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
     uint num_slots = 0;
-    for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
-        if(curr_class->features->nth(i)->is_attr()){
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
             num_slots += 1;
         }
     }
     // Add -1 eye catcher for the GC
     str << WORD << "-1" << endl;
     // label
-    emit_protobj_ref(curr_class->name, str);  str << LABEL;
+    emit_protobj_ref(curr_node->name, str);  str << LABEL;
     // tag
-    str << WORD << classtag_map[curr_class->name] << endl;
+    str << WORD << classtag_map[curr_node->name] << endl;
     // size
     uint num_parent_attr = parent_attr->size();
     str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;
     // dispatch table
-    str << WORD; emit_disptable_ref(curr_class->name, str); str << endl;
+    str << WORD; emit_disptable_ref(curr_node->name, str); str << endl;
 
     // Parent attributes
     for(auto it=parent_attr->cbegin(); it!=parent_attr->cend(); ++it){
@@ -1024,11 +1024,11 @@ void CgenClassTable::code_prototype(CgenNode* curr_class,
         str << endl;
     }
     // Own Attributes
-    for(int i = curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
-        if(curr_class->features->nth(i)->is_attr()){
+    for(int i = curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
             str << WORD;
             // Default attr values
-            emit_default_for_class(str, curr_class->features->nth(i)->get_type());
+            emit_default_for_class(str, curr_node->features->nth(i)->get_type());
             str << endl;
         }
     }
@@ -1107,17 +1107,17 @@ void CgenClassTable::code_all_class_methods(){
     }
 }
 
-void CgenClassTable::code_class_methods(CgenNodeP curr_class){
-    for(int i=curr_class->features->first(); curr_class->features->more(i); i=curr_class->features->next(i)){
-        if(!curr_class->features->nth(i)->is_attr()){
-            emit_method_ref(curr_class->name, curr_class->features->nth(i)->get_name(), str);
+void CgenClassTable::code_class_methods(CgenNodeP curr_node){
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(!curr_node->features->nth(i)->is_attr()){
+            emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
             str << LABEL;
             emit_store_AR(str);
             // Remember SELF
             emit_move(SELF, ACC,  str);
 
             // TODO: handle arguments (formals) passed to code correctly
-            curr_class->features->nth(i)->code(str, 0);
+            curr_node->features->nth(i)->code(str, 0);
             // Postcond: result is in ACC
 
             // Restore AR
