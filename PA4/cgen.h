@@ -43,7 +43,8 @@ private:
                              std::vector<Symbol>*);
    void code_prototypes(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
    void code_prototype(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
-   void code_object_initializers();
+   void code_object_initializers(CgenNodeP, uint*);
+   void code_object_initializer(CgenNodeP, uint*);
    void code_all_class_methods();
    void code_class_methods(CgenNodeP);
 
