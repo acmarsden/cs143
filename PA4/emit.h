@@ -70,7 +70,7 @@
 #define A1   "$a1"    // For arguments to prim funcs
 #define A2   "$a2"    // Cause runtime doc says we can use it
 #define SELF "$s0"    // Ptr to self (callee saves)
-#define T1   "$t0"    // Temporary 0
+#define T0   "$t0"    // Temporary 0
 #define T1   "$t1"    // Temporary 1
 #define T2   "$t2"    // Temporary 2
 #define T3   "$t3"    // Temporary 3
