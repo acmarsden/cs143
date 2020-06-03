@@ -50,6 +50,7 @@ Symbol
              concat,
              cool_abort,
              copy,
+             _copy,
              Int,
              in_int,
              in_string,
@@ -81,6 +82,7 @@ static void initialize_constants(void)
     concat      = idtable.add_string("concat");
     cool_abort  = idtable.add_string("abort");
     copy        = idtable.add_string("copy");
+    _copy       = idtable.add_string("copy");
     Int         = idtable.add_string("Int");
     in_int      = idtable.add_string("in_int");
     in_string   = idtable.add_string("in_string");
@@ -1242,7 +1244,9 @@ void plus_class::code(ostream &s) {
 
     // Create a space in memory to store the result:
     // Copy of object passed in $a0: result of e2 :)
-    s << JAL; emit_method_ref(Object, copy, s); s << endl;
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
     // Resulting object is in ACC ($a0)
 
     // Get the actual integers to add:
