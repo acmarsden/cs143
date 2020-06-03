@@ -68,13 +68,22 @@
 #define ZERO "$zero"    // Zero register
 #define ACC  "$a0"    // Accumulator
 #define A1   "$a1"    // For arguments to prim funcs
+#define A2   "$a2"    // Cause runtime doc says we can use it
 #define SELF "$s0"    // Ptr to self (callee saves)
+#define T1   "$t0"    // Temporary 0
 #define T1   "$t1"    // Temporary 1
 #define T2   "$t2"    // Temporary 2
 #define T3   "$t3"    // Temporary 3
+#define T4   "$t4"    // Temporary 4
 #define SP   "$sp"    // Stack pointer
 #define FP   "$fp"    // Frame pointer
 #define RA   "$ra"    // Return address
+#define S1   "$s1"    // Scratch 1
+#define S2   "$s2"    // Scratch 2
+#define S3   "$s3"    // Scratch 3
+#define S4   "$s4"    // Scratch 4
+#define S5   "$s5"    // Scratch 5
+#define S6   "$s6"    // Scratch 6
 
 //
 // Opcodes

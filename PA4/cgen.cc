@@ -1200,6 +1200,10 @@ void attr_class::code(ostream &s, int offset){
 
 void formal_class::code(ostream &s) {
     // Make room in the stack for the arguments
+    // TODO: seems like we do not need this in the method code:
+    // This will probably only be relevant for dispatch.
+    // Method code assumes arguments will be at a fixed offset from the frame
+    // pointer: make sure dispatch creates the AR correctly
     emit_addiu(SP, SP, -1*WORD_SIZE, s);
 }
 
@@ -1228,6 +1232,34 @@ void let_class::code(ostream &s) {
 }
 
 void plus_class::code(ostream &s) {
+    e1->code(s);
+    // ACC has result address, save this somewhere: the stack maybe? $s1 for now
+    // TODO: maybe save the contents of S1 before we destroy them?
+    emit_move(S1, ACC, s);
+
+    e2->code(s);
+    // ACC ($a0) has result address.
+
+    // Create a space in memory to store the result:
+    // Copy of object passed in $a0: result of e2 :)
+    s << JAL; emit_method_ref(Object, copy, s); s << endl;
+    // Resulting object is in ACC ($a0)
+
+    // Get the actual integers to add:
+    // From our object layout, we KNOW the value for the int is offset 3 words
+    // from the address of the int object
+    emit_load(T2, 3, ACC, s);
+    emit_load(T1, 3, S1, s);
+
+    // Compute addition
+    emit_add(T1, T1, T2, s);
+
+    // Save it to the newly created object
+    emit_store(T1, 3, ACC, s);
+
+    // TODO: maybe restore the contents of S1 we had saved?
+
+    // At this point, ACC still has a reference to the result of the addition
 }
 
 void sub_class::code(ostream &s) {
