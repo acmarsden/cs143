@@ -1237,6 +1237,10 @@ void plus_class::code(ostream &s) {
     e1->code(s);
     // ACC has result address, save this somewhere: the stack maybe? $s1 for now
     // TODO: maybe save the contents of S1 before we destroy them?
+    // Save S1 to the 
+
+    emit_store(S1, 1, SP, s);
+    emit_addiu(SP, SP, -1*WORD_SIZE,s);
     emit_move(S1, ACC, s);
 
     e2->code(s);
@@ -1261,7 +1265,9 @@ void plus_class::code(ostream &s) {
     // Save it to the newly created object
     emit_store(T1, 3, ACC, s);
 
-    // TODO: maybe restore the contents of S1 we had saved?
+    // Restore the contents of S1 we had saved?
+    emit_addiu(SP, SP, WORD_SIZE,s);
+    emit_load(S1, 1, SP, s);
 
     // At this point, ACC still has a reference to the result of the addition
 }
