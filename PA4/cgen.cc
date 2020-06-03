@@ -1234,12 +1234,11 @@ void let_class::code(ostream &s) {
 }
 
 void plus_class::code(ostream &s) {
-    e1->code(s);
     
     // Save S1 to the stack
-    emit_store(S1, 0, SP, s);
-    emit_addiu(SP, SP, -1*WORD_SIZE,s);
+    emit_push(S1,s);
     
+    e1->code(s);
     emit_move(S1, ACC, s);
 
     e2->code(s);
@@ -1254,11 +1253,50 @@ void plus_class::code(ostream &s) {
     // Get the actual integers to add:
     // From our object layout, we KNOW the value for the int is offset 3 words
     // from the address of the int object
-    emit_load(T2, 3, ACC, s);
-    emit_load(T1, 3, S1, s);
+    emit_fetch_int(T2, ACC, s);
+    emit_fetch_int(T1, S1, s);
+
 
     // Compute addition
     emit_add(T1, T1, T2, s);
+
+    // Save it to the newly created object
+    //emit_store(T1, 3, ACC, s);
+    emit_store_int(T1, ACC, s);
+
+    // Restore the contents of S1 we had saved
+    emit_load(S1, 1, SP, s);
+    emit_addiu(SP, SP, WORD_SIZE,s);
+
+    // At this point, ACC still has a reference to the result of the addition
+}
+
+void sub_class::code(ostream &s) {
+    
+    // Save S1 to the stack
+    emit_push(S1,s);
+    
+    
+    e1->code(s);
+    emit_move(S1, ACC, s);
+
+    e2->code(s);
+    // ACC ($a0) has result address.
+    
+    // Copy of object passed in $a0: result of e2 :)
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
+    // Resulting object is in ACC ($a0)
+
+    // Get the actual integers to add:
+    // From our object layout, we KNOW the value for the int is offset 3 words
+    // from the address of the int object
+    emit_fetch_int(T2, ACC, s);
+    emit_fetch_int(T1, S1, s);
+    
+    // Compute subtraction
+    emit_sub(T1, T1, T2, s);
 
     // Save it to the newly created object
     emit_store(T1, 3, ACC, s);
@@ -1270,19 +1308,128 @@ void plus_class::code(ostream &s) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void sub_class::code(ostream &s) {
-}
-
 void mul_class::code(ostream &s) {
+    
+    // Save S1 to the stack
+    emit_push(S1,s);
+   
+
+    e1->code(s);
+    emit_move(S1, ACC, s);
+
+    e2->code(s);
+    // ACC ($a0) has result address.
+    
+    // Copy of object passed in $a0: result of e2 :)
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
+    // Resulting object is in ACC ($a0)
+
+    // Get the actual integers to add:
+    // From our object layout, we KNOW the value for the int is offset 3 words
+    // from the address of the int object
+    emit_fetch_int(T2, ACC, s);
+    emit_fetch_int(T1, S1, s);
+
+    // Compute multiplication
+    emit_mul(T1, T1, T2, s);
+
+    // Save it to the newly created object
+    emit_store(T1, 3, ACC, s);
+
+    // Restore the contents of S1 we had saved
+    emit_load(S1, 1, SP, s);
+    emit_addiu(SP, SP, WORD_SIZE,s);
+
+    // At this point, ACC still has a reference to the result of the addition
 }
 
 void divide_class::code(ostream &s) {
+    
+    // Save S1 to the stack
+    emit_push(S1,s);
+   
+
+    e1->code(s);
+    emit_move(S1, ACC, s);
+
+    e2->code(s);
+    // ACC ($a0) has result address.
+    
+    // Copy of object passed in $a0: result of e2 :)
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
+    // Resulting object is in ACC ($a0)
+
+    // Get the actual integers to add:
+    // From our object layout, we KNOW the value for the int is offset 3 words
+    // from the address of the int object
+    emit_fetch_int(T2, ACC, s);
+    emit_fetch_int(T1, S1, s);
+    
+    //TODO: Check that divisor isn't 0.
+    // Compute division
+    emit_div(T1, T1, T2, s);
+
+    // Save it to the newly created object
+    emit_store(T1, 3, ACC, s);
+
+    // Restore the contents of S1 we had saved
+    emit_load(S1, 1, SP, s);
+    emit_addiu(SP, SP, WORD_SIZE,s);
+
+    // At this point, ACC still has a reference to the result of the addition
 }
 
 void neg_class::code(ostream &s) {
+    e1->code(s);
+    //Copy of object passed in $a0, this will create memory for our result
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
+    // ACC holds address to our result
+    // 3 down gives the numerical value
+    emit_load(T1, 3, ACC, s);
+    // Compute negation
+    emit_neg(T1, T1, s);
+
+    // Save it to our new object
+    emit_store(T1, 3, ACC, s);
+ 
+    // Restore the contents of S1 we had saved
+    emit_load(S1, 1, SP, s);
+    emit_addiu(SP, SP, WORD_SIZE,s);
 }
 
 void lt_class::code(ostream &s) {
+    
+    // Save S1 to the stack
+    emit_push(S1,s);
+
+    e1->code(s);
+    emit_move(S1, ACC, s);
+
+    e2->code(s);
+    // ACC ($a0) has result address.
+    
+    // Result is Bool not Integer, so we need to copy Bool prototype
+    // How do we do this?
+    
+    // Get the actual integers to add:
+    emit_fetch_int(T1, S1, s);
+    emit_fetch_int(T2, ACC, s);
+    
+    // Compute blt
+    // What is the label we provide?
+    //emit_blt(T1, T2, 0, s);
+
+
+    // Restore the contents of S1 we had saved
+    emit_load(S1, 1, SP, s);
+    emit_addiu(SP, SP, WORD_SIZE,s);
+
 }
 
 void eq_class::code(ostream &s) {
