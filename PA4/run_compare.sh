@@ -1,6 +1,11 @@
 #!/bin/bash
 
 filename=$1
+if [ -z $example ]
+then
+    filename="example"
+fi
+
 rm -f our_$filename.s
 rm -f their_$filename.s
 
