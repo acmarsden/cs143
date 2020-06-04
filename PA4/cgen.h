@@ -25,6 +25,7 @@ private:
    int intclasstag;
    int boolclasstag;
    std::map<Symbol, uint> classtag_map;
+   Scopetable objectST;
 
    // The following methods emit code for
    // constants and global declarations.

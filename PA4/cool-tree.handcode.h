@@ -8,8 +8,11 @@
 #include "tree.h"
 #include "cool.h"
 #include "stringtab.h"
+#include "symtab.h"
 #define yylineno curr_lineno;
 extern int yylineno;
+
+typedef SymbolTable<Symbol, char*> Scopetable;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}
@@ -70,22 +73,20 @@ void dump_with_types(ostream&,int);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0;       \
-virtual void code(ostream&, int) = 0;
+virtual void code(ostream&, int, Scopetable*) = 0;
 
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);       \
-void code(ostream&, int);
+void code(ostream&, int, Scopetable*);
 
 
 #define Formal_EXTRAS                              \
-virtual void dump_with_types(ostream&,int) = 0;     \
-virtual void code(ostream&) = 0;
+virtual void dump_with_types(ostream&,int) = 0;
 
 
 #define formal_EXTRAS                           \
-void dump_with_types(ostream&,int);      \
-void code(ostream&);
+void dump_with_types(ostream&,int);
 
 
 #define Case_EXTRAS                             \
@@ -100,13 +101,13 @@ void dump_with_types(ostream& ,int);
 Symbol type;                                 \
 Symbol get_type() { return type; }           \
 Expression set_type(Symbol s) { type = s; return this; } \
-virtual void code(ostream&) = 0; \
+virtual void code(ostream&, Scopetable*) = 0; \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
 Expression_class() { type = (Symbol) NULL; }
 
 #define Expression_SHARED_EXTRAS           \
-void code(ostream&);         \
+void code(ostream&, Scopetable*);         \
 void dump_with_types(ostream&,int);
 
 #endif
