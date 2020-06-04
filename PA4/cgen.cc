@@ -1263,6 +1263,8 @@ void loop_class::code(ostream &s) {
 
     // End of loop
     emit_label_def(pool_label, s);
+    // Loop returns void
+    emit_move(ACC, ZERO);
 }
 
 void typcase_class::code(ostream &s) {
