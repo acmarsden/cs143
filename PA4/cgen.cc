@@ -1268,8 +1268,7 @@ void typcase_class::code(ostream &s) {
 
 void block_class::code(ostream &s) {
     for(int i=body->first(); body->more(i); i=body->next(i)) {
-        curr_expr = body->nth(i);
-        curr_expr->code(s);
+        body->nth(i)->code(s);
     }
 }
 
