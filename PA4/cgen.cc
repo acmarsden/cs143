@@ -576,9 +576,9 @@ void CgenClassTable::code_global_text()
     // Emit global labels for all methods
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         Symbol curr_class = it->first;
-        if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
-            CgenNode* curr_node = probe(it->first);
-            assert(curr_node != NULL);
+        CgenNode* curr_node = probe(it->first);
+        assert(curr_node != NULL);
+        if(!curr_node->basic()){
             for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
                 if(!curr_node->features->nth(i)->is_attr()){
                     str << GLOBAL;
@@ -1108,7 +1108,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
     //          ACC will be used to load obj addresses and store them
     //              to the SELF address
 
-    if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
+    if(!curr_node->basic()){
         // skipping the default object fields and the number of parent attributes
         int offset = DEFAULT_OBJFIELDS + *num_parent_attr;
         for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
@@ -1131,9 +1131,9 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
 void CgenClassTable::code_all_class_methods(){
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         Symbol curr_class = it->first;
-        if(curr_class != Object && curr_class != Int && curr_class != Str && curr_class != IO && curr_class != Bool){
-            CgenNode* curr_node = probe(it->first);
-            assert(curr_node != NULL);
+        CgenNode* curr_node = probe(it->first);
+        assert(curr_node != NULL);
+        if(!curr_node->basic()){
             code_class_methods(curr_node);
         }
     }
