@@ -1227,7 +1227,7 @@ void dispatch_class::code(ostream &s) {
 }
 
 void cond_class::code(ostream &s) {
-    int end_if_label = GLOBAL_LABEL_CTR++
+    int end_if_label = GLOBAL_LABEL_CTR++;
     int else_label = GLOBAL_LABEL_CTR++;
     pred->code(s);
     // ACC contains a bool object
@@ -1247,7 +1247,7 @@ void cond_class::code(ostream &s) {
 
 void loop_class::code(ostream &s) {
     int loop_label = GLOBAL_LABEL_CTR++;
-    int pool_label = GLOBAL_LABEL_CTR++
+    int pool_label = GLOBAL_LABEL_CTR++;
     emit_label_def(loop_label, s);
     pred->code(s);
     // ACC contains a bool object
