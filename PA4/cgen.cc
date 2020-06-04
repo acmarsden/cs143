@@ -1242,8 +1242,7 @@ void let_class::code(ostream &s) {
 }
 
 void plus_class::code(ostream &s) {
-
-    // Save S1 to the stack
+    // Push temporaries to the stack
     emit_push(S1,s);
 
     e1->code(s);
@@ -1271,15 +1270,14 @@ void plus_class::code(ostream &s) {
     // Save it to the newly created object
     emit_store_int(T1, ACC, s);
 
-    // Restore the contents of S1 we had saved
+    // Restore temporaries from the stack
     emit_pop(S1, s);
 
     // At this point, ACC still has a reference to the result of the addition
 }
 
 void sub_class::code(ostream &s) {
-
-    // Save S1 to the stack
+    // Push temporaries to the stack
     emit_push(S1,s);
 
 
@@ -1307,15 +1305,14 @@ void sub_class::code(ostream &s) {
     // Save it to the newly created object
     emit_store_int(T1, ACC, s);
 
-    // Restore the contents of S1 we had saved
+    // Restore temporaries from
     emit_pop(S1, s);
 
     // At this point, ACC still has a reference to the result of the addition
 }
 
 void mul_class::code(ostream &s) {
-
-    // Save S1 to the stack
+    // Save temporaries to the stack
     emit_push(S1,s);
 
 
@@ -1343,15 +1340,14 @@ void mul_class::code(ostream &s) {
     // Save it to the newly created object
     emit_store_int(T1, ACC, s);
 
-    // Restore the contents of S1 we had saved
+    // Restore temporaries from the stack
     emit_pop(S1, s);
 
     // At this point, ACC still has a reference to the result of the addition
 }
 
 void divide_class::code(ostream &s) {
-
-    // Save S1 to the stack
+    // Save temporaries to the stack
     emit_push(S1,s);
 
 
@@ -1403,7 +1399,7 @@ void neg_class::code(ostream &s) {
 }
 
 void lt_class::code(ostream &s) {
-    // Save S1 to the stack
+    // Save temporaries to the stack
     emit_push(S1,s);
 
     e1->code(s);
@@ -1422,13 +1418,13 @@ void lt_class::code(ostream &s) {
     emit_load_bool(ACC, falsebool, s);
     emit_label_def(GLOBAL_LABEL_CTR++, s);
 
-    // Restore the contents of S1 we had saved
+    // Restore temporaries from the stack
     emit_pop(S1, s);
 }
 
 void eq_class::code(ostream &s) {
-    // Save S1 to the stack
-    emit_push(S1,s);
+    // Save temporaries to the stack
+    emit_push(T1,s);
 
     e1->code(s);
     emit_move(T1, ACC, s);
@@ -1449,12 +1445,12 @@ void eq_class::code(ostream &s) {
     emit_jal("equality_test", s);
     emit_label_def(GLOBAL_LABEL_CTR++, s);
 
-    // Restore the contents of S1 we had saved
-    emit_pop(S1, s);
+    // Restore temporaries from the stack
+    emit_pop(T1, s);
 }
 
 void leq_class::code(ostream &s) {
-    // Save S1 to the stack
+    // Push temporaries to the stack
     emit_push(S1,s);
 
     e1->code(s);
@@ -1473,7 +1469,7 @@ void leq_class::code(ostream &s) {
     emit_load_bool(ACC, falsebool, s);
     emit_label_def(GLOBAL_LABEL_CTR++, s);
 
-    // Restore the contents of S1 we had saved
+    // Restore temporaries from the stack
     emit_pop(S1, s);
 }
 
@@ -1513,6 +1509,7 @@ void new__class::code(ostream &s) {
 }
 
 void isvoid_class::code(ostream &s) {
+
 }
 
 void no_expr_class::code(ostream &s) {
