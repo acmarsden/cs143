@@ -1509,7 +1509,15 @@ void new__class::code(ostream &s) {
 }
 
 void isvoid_class::code(ostream &s) {
-
+    e1->code(s);
+    emit_move(T1, ACC, s);
+    // T1 holds the address of the result of the expression
+    // Is this just zero when void?
+    // If so: Check ACC to see if it is zero
+    emit_load_bool(ACC, truebool, s);
+    emit_beqz(T1, GLOBAL_LABEL_CTR, s);
+    emit_load_bool(ACC, falsebool, s);
+    emit_label_def(GLOBAL_LABEL_CTR++, s);
 }
 
 void no_expr_class::code(ostream &s) {
