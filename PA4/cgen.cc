@@ -1230,6 +1230,22 @@ void cond_class::code(ostream &s) {
 }
 
 void loop_class::code(ostream &s) {
+    emit_label_def(GLOBAL_LABEL_CTR+1, s);
+    pred->code(s);
+    // ACC contains a bool object
+
+    // Get the actual value of the expr
+    emit_fetch_int(T1, ACC, s);
+    // If predicate is false, jump to bottom: end loop
+    emit_beqz(T1, GLOBAL_LABEL_CTR+2, s);
+    // loop body
+    body->code(s);
+    // Unconditional branch to top: evaluate predicate
+    emit_branch(GLOBAL_LABEL_CTR+1, s);
+
+    // End of loop
+    emit_label_def(GLOBAL_LABEL_CTR+2, s);
+    GLOBAL_LABEL_CTR += 2;
 }
 
 void typcase_class::code(ostream &s) {
