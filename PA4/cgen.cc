@@ -1227,40 +1227,42 @@ void dispatch_class::code(ostream &s) {
 }
 
 void cond_class::code(ostream &s) {
+    int end_if_label = GLOBAL_LABEL_CTR++
+    int else_label = GLOBAL_LABEL_CTR++;
     pred->code(s);
     // ACC contains a bool object
 
     // Get the actual value of the expr
     emit_fetch_int(T1, ACC, s);
-    // If predicate is false, jump to then
-    emit_beqz(T1, GLOBAL_LABEL_CTR, s);
+    // If predicate is false, jump to else
+    emit_beqz(T1, else_label, s);
     then_exp->code(s);
     // Unconditional branch to bottom: end if
-    emit_branch(GLOBAL_LABEL_CTR+1, s);
-    emit_label_def(GLOBAL_LABEL_CTR, s);
+    emit_branch(end_if_label, s);
+    emit_label_def(else_label, s);
     else_exp->code(s);
     // End if
-    emit_label_def(GLOBAL_LABEL_CTR+1, s);
-    GLOBAL_LABEL_CTR += 2;
+    emit_label_def(end_if_label, s);
 }
 
 void loop_class::code(ostream &s) {
-    emit_label_def(GLOBAL_LABEL_CTR, s);
+    int loop_label = GLOBAL_LABEL_CTR++;
+    int pool_label = GLOBAL_LABEL_CTR++
+    emit_label_def(loop_label, s);
     pred->code(s);
     // ACC contains a bool object
 
     // Get the actual value of the expr
     emit_fetch_int(T1, ACC, s);
     // If predicate is false, jump to bottom: end loop
-    emit_beqz(T1, GLOBAL_LABEL_CTR+1, s);
+    emit_beqz(T1, pool_label, s);
     // loop body
     body->code(s);
     // Unconditional branch to top: evaluate predicate
-    emit_branch(GLOBAL_LABEL_CTR, s);
+    emit_branch(loop_label, s);
 
     // End of loop
-    emit_label_def(GLOBAL_LABEL_CTR+1, s);
-    GLOBAL_LABEL_CTR += 2;
+    emit_label_def(pool_label, s);
 }
 
 void typcase_class::code(ostream &s) {
@@ -1433,6 +1435,7 @@ void neg_class::code(ostream &s) {
 }
 
 void lt_class::code(ostream &s) {
+    int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(S1,s);
 
@@ -1448,15 +1451,16 @@ void lt_class::code(ostream &s) {
 
     // Compute blt
     emit_load_bool(ACC, truebool, s);
-    emit_blt(T1, T2, GLOBAL_LABEL_CTR, s);
+    emit_blt(T1, T2, end_label, s);
     emit_load_bool(ACC, falsebool, s);
-    emit_label_def(GLOBAL_LABEL_CTR++, s);
+    emit_label_def(end_label, s);
 
     // Restore temporaries from the stack
     emit_pop(S1, s);
 }
 
 void eq_class::code(ostream &s) {
+    int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(T1,s);
 
@@ -1472,18 +1476,19 @@ void eq_class::code(ostream &s) {
     emit_load_bool(ACC, truebool, s);
     // Compares the addresses of the arguments,
     // if same, then done, else, check for equality
-    emit_beq(T1, T2, GLOBAL_LABEL_CTR, s);
+    emit_beq(T1, T2, end_label, s);
     emit_load_bool(A1, falsebool, s);
     // perform the equality test provided by the runtime
     // Returns A0 if T1 == T2, else A1. Return value in A0
     emit_jal("equality_test", s);
-    emit_label_def(GLOBAL_LABEL_CTR++, s);
+    emit_label_def(end_label, s);
 
     // Restore temporaries from the stack
     emit_pop(T1, s);
 }
 
 void leq_class::code(ostream &s) {
+    int end_label = GLOBAL_LABEL_CTR++;
     // Push temporaries to the stack
     emit_push(S1,s);
 
@@ -1499,15 +1504,16 @@ void leq_class::code(ostream &s) {
 
     // Compute bleq
     emit_load_bool(ACC, truebool, s);
-    emit_bleq(T1, T2, GLOBAL_LABEL_CTR, s);
+    emit_bleq(T1, T2, end_label, s);
     emit_load_bool(ACC, falsebool, s);
-    emit_label_def(GLOBAL_LABEL_CTR++, s);
+    emit_label_def(end_label, s);
 
     // Restore temporaries from the stack
     emit_pop(S1, s);
 }
 
 void comp_class::code(ostream &s) {
+    int end_label = GLOBAL_LABEL_CTR++;
     e1->code(s);
     // ACC holds address to our result: BOOL obj
 
@@ -1516,9 +1522,9 @@ void comp_class::code(ostream &s) {
 
     // Compute complement
     emit_load_bool(ACC, truebool, s);
-    emit_beqz(T1, GLOBAL_LABEL_CTR, s);
+    emit_beqz(T1, end_label, s);
     emit_load_bool(ACC, falsebool, s);
-    emit_label_def(GLOBAL_LABEL_CTR++, s);
+    emit_label_def(end_label, s);
 }
 
 void int_const_class::code(ostream& s)
@@ -1543,15 +1549,16 @@ void new__class::code(ostream &s) {
 }
 
 void isvoid_class::code(ostream &s) {
+    int end_label = GLOBAL_LABEL_CTR++;
     e1->code(s);
     emit_move(T1, ACC, s);
     // T1 holds the address of the result of the expression
     // Is this just zero when void?
     // If so: Check ACC to see if it is zero
     emit_load_bool(ACC, truebool, s);
-    emit_beqz(T1, GLOBAL_LABEL_CTR, s);
+    emit_beqz(T1, end_label, s);
     emit_load_bool(ACC, falsebool, s);
-    emit_label_def(GLOBAL_LABEL_CTR++, s);
+    emit_label_def(end_label, s);
 }
 
 void no_expr_class::code(ostream &s) {
