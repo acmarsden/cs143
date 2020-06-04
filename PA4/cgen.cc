@@ -1431,19 +1431,22 @@ void eq_class::code(ostream &s) {
     emit_push(S1,s);
 
     e1->code(s);
-    emit_move(S1, ACC, s);
+    emit_move(T1, ACC, s);
+    // T1 has the addr of the first argument
 
     e2->code(s);
-    // ACC ($a0) has result address.
-
-    // Get the actual integers to compare:
-    emit_fetch_int(T1, S1, s);
-    emit_fetch_int(T2, ACC, s);
+    emit_move(T2, ACC, s);
+    // T2 has the addr of the second argument
 
     // Compute beq
     emit_load_bool(ACC, truebool, s);
+    // Compares the addresses of the arguments,
+    // if same, then done, else, check for equality
     emit_beq(T1, T2, GLOBAL_LABEL_CTR, s);
-    emit_load_bool(ACC, falsebool, s);
+    emit_load_bool(A1, falsebool, s);
+    // perform the equality test provided by the runtime
+    // Returns A0 if T1 == T2, else A1. Return value in A0
+    emit_jal('equality_test', s);
     emit_label_def(GLOBAL_LABEL_CTR++, s);
 
     // Restore the contents of S1 we had saved
