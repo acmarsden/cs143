@@ -1239,6 +1239,21 @@ void attr_class::code(ostream &s, int offset, Scopetable* objectST){
 }
 
 void assign_class::code(ostream &s, Scopetable* objectST) {
+    // Save contents of S1    
+    emit_push(S1,s);
+
+    // Evaluate expression and save in ACC
+    expr->code(s, objectST);
+    
+    // Get adress of Id, store in S1
+    auto* lookup = objectST->lookup(name);
+    assert(lookup != NULL);
+    printf("# BEGIN resolved address\n");
+    emit_load(S1, lookup->second, lookup->first, s);
+    printf("# END resolved address\n");
+
+    emit_store(ACC, S1, s); 
+
 }
 
 void static_dispatch_class::code(ostream &s, Scopetable* objectST) {
