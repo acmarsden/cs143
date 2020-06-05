@@ -887,7 +887,8 @@ void CgenClassTable::code()
 
     // - the class methods
     // This handles class methods
-    code_all_class_methods(root());
+    num_parent_attr = 0;
+    code_all_class_methods(root(), &num_parent_attr);
 
     // - etc...
 
