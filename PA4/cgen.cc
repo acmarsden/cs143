@@ -888,7 +888,7 @@ void CgenClassTable::code()
 
     // - the class methods
     // This handles class methods
-    code_all_class_methods();
+    code_all_class_methods(root());
 
     // - etc...
 
@@ -1134,18 +1134,22 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
     emit_return(str);
 }
 
-void CgenClassTable::code_all_class_methods(){
-    for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
-        Symbol curr_class = it->first;
-        CgenNode* curr_node = probe(it->first);
-        assert(curr_node != NULL);
-        if(!curr_node->basic()){
-            code_class_methods(curr_node);
-        }
+void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
+    // Doing this in DFS order to account for correct scoping
+    objectST.enterscope();
+    if(!curr_node->basic()){
+        code_class_methods(curr_node);
     }
+    // Recurse into children
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        code_all_class_methods(curr_child);
+    }
+    objectST.enterscope();
 }
 
 void CgenClassTable::code_class_methods(CgenNodeP curr_node){
+    int j = 0;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!curr_node->features->nth(i)->is_attr()){
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
@@ -1158,6 +1162,17 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node){
             // Restore AR
             emit_restore_AR(str);
             emit_return(str);
+        }else{
+            // For attributes, just add them to the scope. This means they
+            // will be loaded from the class object, not from the AR
+            std::ostringstream load_code_str;
+            load_code_str << "# variable: " << curr_node->get_name();
+            load_code_str << "." << curr_node->features->nth(i)->get_name();
+            load_code_str <<" identified as a class attribute. Load code: " << endl;
+            // TODO: emit code to access corresponding class attr
+            load_code_str << "# END load code." << endl;
+            addToScope(curr_node->features->nth(i)->get_name(), load_code_str, objectST);
+            ++j;
         }
     }
 }
@@ -1583,4 +1598,12 @@ void no_expr_class::code(ostream &s, Scopetable* objectST) {
 }
 
 void object_class::code(ostream &s, Scopetable* objectST) {
+    if(name == self){
+        // TODO: emit code to store ref to self in ACC
+        s << "#TODO load reference to self in ACC\n";
+        return;
+    }
+    Symbol* lookup = objectST->lookup(name);
+    assert(lookup != NULL);
+    s << *lookup;
 }
