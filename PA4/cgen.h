@@ -46,8 +46,8 @@ private:
    void code_prototype(CgenNodeP, std::vector<std::pair<Symbol, Symbol> >*);
    void code_object_initializers(CgenNodeP, uint*);
    void code_object_initializer(CgenNodeP, uint*);
-   void code_all_class_methods(CgenNodeP);
-   void code_class_methods(CgenNodeP);
+   void code_all_class_methods(CgenNodeP, uint*);
+   void code_class_methods(CgenNodeP, uint*);
 
    // The following creates an inheritance graph from
    // a list of classes.  The graph is implemented as

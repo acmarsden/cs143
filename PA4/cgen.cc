@@ -1143,22 +1143,35 @@ static void addToScope(Symbol name, char* register_name, int offset, Scopetable*
     objectST->addid(name, &(pair_container.back()));
 }
 
-void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
+void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, uint* num_parent_attr){
     // Doing this in DFS order to account for correct scoping
     objectST.enterscope();
+
     if(!curr_node->basic()){
-        code_class_methods(curr_node);
+        code_class_methods(curr_node, num_parent_attr);
+    }
+    // Count my attributes as parent attr
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
+            ++(*num_parent_attr);
+        }
     }
     // Recurse into children
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        code_all_class_methods(curr_child);
+        code_all_class_methods(curr_child, num_parent_attr);
+    }
+    // Un-count my attributes as parent attr
+    for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
+        if(curr_node->features->nth(i)->is_attr()){
+            --(*num_parent_attr);
+        }
     }
     objectST.exitscope();
 }
 
-void CgenClassTable::code_class_methods(CgenNodeP curr_node){
-    int j = 1;
+void CgenClassTable::code_class_methods(CgenNodeP curr_node, uint* num_parent_attr){
+    int offset = DEFAULT_OBJFIELDS + *num_parent_attr;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!curr_node->features->nth(i)->is_attr()){
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
@@ -1175,8 +1188,8 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node){
             // For attributes, just add them to the scope. This means they
             // will be loaded from the class object, not from the AR
             // TODO: what regiser are we offsetting from? Self?
-            addToScope(curr_node->features->nth(i)->get_name(), SELF, j, &objectST);
-            ++j;
+            addToScope(curr_node->features->nth(i)->get_name(), SELF, offset, &objectST);
+            ++offset;
         }
     }
 }
