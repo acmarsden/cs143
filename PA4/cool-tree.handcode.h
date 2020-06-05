@@ -9,11 +9,11 @@
 #include "cool.h"
 #include "stringtab.h"
 #include "symtab.h"
-#include <string>
+#include <pair>
 #define yylineno curr_lineno;
 extern int yylineno;
 
-typedef SymbolTable<Symbol, std::Pair<char*, int > > Scopetable;
+typedef SymbolTable<Symbol, std::pair<char*, int > > Scopetable;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
 inline void assert_Boolean(Boolean) {}

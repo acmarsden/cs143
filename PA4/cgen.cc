@@ -24,9 +24,6 @@
 
 #include "cgen.h"
 #include "cgen_gc.h"
-#include <string>
-#include <cstring>
-#include <sstream>
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
@@ -74,6 +71,8 @@ Symbol
              substr,
              type_name,
              val;
+
+std::vector<std::pair<char*, int > > pair_container;
 //
 // Initializing the predefined symbols.
 //
@@ -1134,12 +1133,14 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
     emit_return(str);
 }
 
-static void addToScope(Symbol name, std::string code_to_emit, Scopetable* objectST){
+static void addToScope(Symbol name, char* register_name, int offset, Scopetable* objectST){
     //char * load_code = new char [code.str().length()+1];
     //std::strcpy (load_code, code.str().c_str());
     //std::string code_to_emit = code.str();
     //const char* code_to_emit_ = code_to_emit.c_str();
-    objectST->addid(name, &code_to_emit);
+    std::pair<char*, int> pair(register_name, offset);
+    pair_container.push_back(pair);
+    objectST->addid(name, &pair);
 }
 
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
@@ -1173,13 +1174,8 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node){
         }else{
             // For attributes, just add them to the scope. This means they
             // will be loaded from the class object, not from the AR
-            std::ostringstream load_code_str;
-            load_code_str << "# variable: " << curr_node->get_name()->get_string();
-            load_code_str << "." << curr_node->features->nth(i)->get_name()->get_string();
-            load_code_str <<" identified as a class attribute. Load code: " << endl;
-            // TODO: emit code to access corresponding class attr
-            load_code_str << "# END load code." << endl;
-            addToScope(curr_node->features->nth(i)->get_name(), load_code_str.str(), &objectST);
+            // TODO: what regiser are we offsetting from? Self?
+            addToScope(curr_node->features->nth(i)->get_name(), SELF, j, &objectST);
             ++j;
         }
     }
@@ -1216,13 +1212,8 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 0;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)){
-        std::ostringstream load_code_str;
-        load_code_str << "" << formals->nth(i)->get_name()->get_string();
-        load_code_str << " identified as a formal. Load code: " << endl;
-        // TODO: define formal layour in AR, and emit code to access it
-        load_code_str << "# END load code." << endl;
-        printf(load_code_str.str().c_str());
-        addToScope(formals->nth(i)->get_name(), load_code_str.str(), objectST);
+        // TODO: check what happens with nested calls
+        addToScope(formals->nth(i)->get_name(), FP, j, objectST);
         ++j;
     }
 
@@ -1606,8 +1597,9 @@ void object_class::code(ostream &s, Scopetable* objectST) {
         s << "# TODO load reference to self in ACC\n";
         return;
     }
-    std::string* lookup = objectST->lookup(name);
-    printf("%s", *lookup);
+    auto* lookup = objectST->lookup(name);
     assert(lookup != NULL);
-    s << *lookup;
+    printf("# BEGIN resolved address\n");
+    emit_load(ACC, (*lookup)->second, (*lookup)->first, s);
+    printf("# END resolved address\n");
 }
