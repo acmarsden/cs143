@@ -1134,6 +1134,12 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
     emit_return(str);
 }
 
+static void addToScope(Symbol name, std::ostringstream& code, Scopetable* objectST){
+    char * load_code = new char [code.str().length()+1];
+    std::strcpy (load_code, code.str().c_str());
+    objectST->addid(name, &load_code);
+}
+
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
     // Doing this in DFS order to account for correct scoping
     objectST.enterscope();
@@ -1171,7 +1177,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node){
             load_code_str <<" identified as a class attribute. Load code: " << endl;
             // TODO: emit code to access corresponding class attr
             load_code_str << "# END load code." << endl;
-            addToScope(curr_node->features->nth(i)->get_name(), load_code_str, objectST);
+            addToScope(curr_node->features->nth(i)->get_name(), load_code_str, &objectST);
             ++j;
         }
     }
@@ -1191,12 +1197,6 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
      basic_status(bstatus)
 {
      stringtable.add_string(name->get_string());          // Add class name to string table
-}
-
-static void addToScope(Symbol name, std::ostringstream& code, Scopetable* objectST){
-    char * load_code = new char [code.str().length()+1];
-    std::strcpy (load_code, code.str().c_str());
-    objectST->addid(name, &load_code);
 }
 
 //******************************************************************
@@ -1603,7 +1603,7 @@ void object_class::code(ostream &s, Scopetable* objectST) {
         s << "#TODO load reference to self in ACC\n";
         return;
     }
-    Symbol* lookup = objectST->lookup(name);
+    char** lookup = objectST->lookup(name);
     assert(lookup != NULL);
     s << *lookup;
 }
