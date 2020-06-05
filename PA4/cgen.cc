@@ -647,6 +647,7 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
 {
      enterscope();
      objectST.enterscope();
+     if (cgen_debug) objectST.addid(No_class, NULL);
      if (cgen_debug) cout << "Building CgenClassTable" << endl;
      install_basic_classes();
      install_classes(classes);
@@ -1206,6 +1207,8 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
         addToScope(formals->nth(i)->get_name(), load_code_str, objectST);
         ++j;
     }
+
+    if(cgen_debug) objectST->dump();
 
     // Remember SELF
     emit_move(SELF, ACC, s);
