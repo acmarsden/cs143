@@ -24,6 +24,8 @@
 
 #include "cgen.h"
 #include "cgen_gc.h"
+#include <string>
+#include <cstring>
 #include <sstream>
 
 extern void emit_string_constant(ostream& str, char *s);
@@ -1175,10 +1177,9 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
      stringtable.add_string(name->get_string());          // Add class name to string table
 }
 
-static void addToScope(Symbol name, ostream& code, Scopetable* objectST){
-    std::stringstream ss;
-    ss << out.rdbuf();
-    char* load_code = ss.str().c_str();
+static void addToScope(Symbol name, std::ostringstream& code, Scopetable* objectST){
+    char * load_code = new char [code.str().length()+1];
+    std::strcpy (load_code, code.str().c_str());
     objectST->addid(name, &load_code);
 }
 
@@ -1197,9 +1198,12 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 0;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)){
-        ostream* load_code_str;
+        std::ostringstream load_code_str;
+        load_code_str << "# variable: " << formals->nth(i)->get_name();
+        load_code_str <<" identified as a formal. Load code: " << endl;
         // TODO: define formal layour in AR, and emit code to access it
-        addToScope(name, load_code_str, objectST);
+        load_code_str << "# END load code." << endl;
+        addToScope(formals->nth(i)->get_name(), load_code_str, objectST);
         ++j;
     }
 
@@ -1269,7 +1273,7 @@ void loop_class::code(ostream &s, Scopetable* objectST) {
     // End of loop
     emit_label_def(pool_label, s);
     // Loop returns void
-    emit_move(ACC, ZERO);
+    emit_move(ACC, ZERO, s);
 }
 
 void typcase_class::code(ostream &s, Scopetable* objectST) {
