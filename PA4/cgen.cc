@@ -1158,7 +1158,7 @@ void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
 }
 
 void CgenClassTable::code_class_methods(CgenNodeP curr_node){
-    int j = 0;
+    int j = 1;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!curr_node->features->nth(i)->is_attr()){
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
@@ -1210,7 +1210,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 void method_class::code(ostream &s, int offset, Scopetable* objectST){
     objectST->enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
-    int j = 0;
+    int j = 1;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)){
         // TODO: check what happens with nested calls
         addToScope(formals->nth(i)->get_name(), FP, j, objectST);
@@ -1592,14 +1592,14 @@ void no_expr_class::code(ostream &s, Scopetable* objectST) {
 }
 
 void object_class::code(ostream &s, Scopetable* objectST) {
+    if(cgen_debug) printf("# BEGIN resolved address\n");
     if(name == self){
-        // TODO: emit code to store ref to self in ACC
-        s << "# TODO load reference to self in ACC\n";
+        // TODO: emit code to store ref to self in ACC?
+        emit_move(ACC, SELF, s);
         return;
     }
     auto* lookup = objectST->lookup(name);
     assert(lookup != NULL);
-    printf("# BEGIN resolved address\n");
     emit_load(ACC, lookup->second, lookup->first, s);
-    printf("# END resolved address\n");
+    if(cgen_debug) printf("# END resolved address\n");
 }
