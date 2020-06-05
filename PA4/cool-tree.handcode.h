@@ -9,7 +9,7 @@
 #include "cool.h"
 #include "stringtab.h"
 #include "symtab.h"
-#include <pair>
+#include <utility> // for std::pair
 #define yylineno curr_lineno;
 extern int yylineno;
 

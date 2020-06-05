@@ -1140,7 +1140,7 @@ static void addToScope(Symbol name, char* register_name, int offset, Scopetable*
     //const char* code_to_emit_ = code_to_emit.c_str();
     std::pair<char*, int> pair(register_name, offset);
     pair_container.push_back(pair);
-    objectST->addid(name, &pair);
+    objectST->addid(name, &(pair_container.back()));
 }
 
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node){
@@ -1600,6 +1600,6 @@ void object_class::code(ostream &s, Scopetable* objectST) {
     auto* lookup = objectST->lookup(name);
     assert(lookup != NULL);
     printf("# BEGIN resolved address\n");
-    emit_load(ACC, (*lookup)->second, (*lookup)->first, s);
+    emit_load(ACC, lookup->second, lookup->first, s);
     printf("# END resolved address\n");
 }
