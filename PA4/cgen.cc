@@ -1270,6 +1270,23 @@ void static_dispatch_class::code(ostream &s, Scopetable* objectST, int let_flag)
 }
 
 void dispatch_class::code(ostream &s, Scopetable* objectST, int let_flag) {
+
+    // Loop through the expressions 
+    //for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+    //     actual->nth(i)->code(s, objectST, let_flag);
+    //    emit_push(ACC, s);
+    //    // Manual indicates we should store these in heap but I don't see the ref doing that
+    //    //s << JAL;
+    //    //emit_method_ref(Object, _copy, s);
+    //    //s << endl;
+    //}
+    //expr->code(s, objectST, let_flag);
+
+    // TODO: make sure expression isn't VOID. 
+    //In the acc we have the class tag, we have the method name, now we need the implementation
+   
+
+
 }
 
 void cond_class::code(ostream &s, Scopetable* objectST, int let_flag) {
@@ -1326,32 +1343,29 @@ void block_class::code(ostream &s, Scopetable* objectST, int let_flag) {
 }
 
 void let_class::code(ostream &s, Scopetable* objectST, int let_flag) {
-    
+    // If init is of type no_expr we initialize the identifier variable to default value of declared type
     init->code(s, objectST, let_flag);
-    // Put init expr into heap memory
-    s << JAL;
-    emit_method_ref(Object, _copy, s);
-    s << endl;
-    
-    //To add this to the environment we check whether we are already in a let statement
-    if(let_flag == 0) {
-        //emit_store_AR(s);
-        objectST->enterscope();
+
+    if(init->get_type() == NULL) {    
+        // Put init expr into heap memory
+        // If there is no initialization then leave default from protobj
+        s << JAL;
+        emit_method_ref(Object, _copy, s);
+        s << endl;
     }
 
-    let_flag++;
-    // push new let binding onto the scratch 6
-    emit_store(ACC, let_flag, S6, s);
+    // Store address on the stack using global_fp_off
+    emit_push(ACC, s);
+
     // add it to objectST
-    addToScope(identifier, S6, let_flag, objectST);
+    addToScope(identifier, FP, let_flag, objectST);
     
+    // Eval body
     body -> code(s, objectST, let_flag);
+
+    // Now we restore the stack, we don't care about saving their values, T0 isn't important to preserve
+    emit_pop(T0, s);
     
-    if(let_flag == 1){
-        let_flag = 0;
-        objectST -> exitscope();
-        //emit_restore_AR(s);
-    };
 
 }
 
