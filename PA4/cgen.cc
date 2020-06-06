@@ -1335,22 +1335,22 @@ void let_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     
     //To add this to the environment we check whether we are already in a let statement
     if(let_flag == 0) {
-        emit_store_AR(s);
+        //emit_store_AR(s);
         objectST->enterscope();
     }
 
     let_flag++;
-    // push new let binding onto the stack
-    emit_push(ACC, s);
+    // push new let binding onto the scratch 6
+    emit_store(ACC, let_flag, S6, s);
     // add it to objectST
-    addToScope(identifier, FP, let_flag, objectST);
+    addToScope(identifier, S6, let_flag, objectST);
     
     body -> code(s, objectST, let_flag);
     
     if(let_flag == 1){
         let_flag = 0;
         objectST -> exitscope();
-        emit_restore_AR(s);
+        //emit_restore_AR(s);
     };
 
 }

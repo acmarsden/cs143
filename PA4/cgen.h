@@ -63,7 +63,6 @@ public:
    CgenClassTable(Classes, ostream& str);
    void code();
    CgenNodeP root();
-   bool* let_flag;
 };
 
 
