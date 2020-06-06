@@ -115,7 +115,8 @@ static char *gc_collect_names[] =
     { "_NoGC_Collect", "_GenGC_Collect", "_ScnGC_Collect" };
 
 // A global label counter to generate labels on the fly for branching code
-static uint GLOBAL_LABEL_CTR = 0;
+static int GLOBAL_LABEL_CTR = 0;
+static int GLOBAL_FP_OFF = 0;
 
 //  BoolConst is a class that implements code generation for operations
 //  on the two booleans, which are given global names here.
@@ -324,12 +325,14 @@ static void emit_branch(int l, ostream& s)
 //
 static void emit_push(char *reg, ostream& str)
 {
+    GLOBAL_FP_OFF -= 4;
     emit_store(reg,0,SP,str);
     emit_addiu(SP,SP,-4,str);
 }
 
 static void emit_pop(char *reg, ostream& str)
 {
+    GLOBAL_FP_OFF += 4;
     emit_load(reg,1,SP,str);
     emit_addiu(SP,SP,4,str);
 }
@@ -1053,19 +1056,35 @@ void CgenClassTable::code_prototype(CgenNode* curr_node,
     }
 }
 
-static void emit_store_AR(ostream& str){
-    emit_addiu(SP, SP, -3*WORD_SIZE, str);
-    emit_store(FP, 3, SP, str);
-    emit_store(SELF, 2, SP, str);
-    emit_store(RA, 1, SP, str);
-    emit_addiu(FP, SP, 4*WORD_SIZE, str);
+
+// This is called by the callee (function def)
+static void emit_end_store_AR(ostream& str){
+    // Make FP point to the point in memory where the RA is stored (one above SP)
+    emit_move(FP, SP, str);
+    emit_push(RA, str);
+    // Reset this offset, which we'll use for new let or case bindings
+    GLOBAL_FP_OFF = 0;
 }
 
-static void emit_restore_AR(ostream& str){
-    emit_load(FP, 3, SP, str);
-    emit_load(SELF, 2, SP, str);
-    emit_load(RA, 1, SP, str);
-    emit_addiu(SP, SP, 3*WORD_SIZE, str);
+// This is a no param  AR
+static void emit_store_AR(ostream& str){
+    emit_push(FP, str);
+    // TODO: function arguments here, in reverse order
+    emit_push(SELF, str);
+    emit_end_store_AR(str);
+}
+
+// This is called by the callee, at the end of the function def
+static void emit_restore_AR(int num_formals, ostream& str){
+    emit_pop(RA, str); // adds 4 to SP
+    emit_pop(SELF, str); // adds 4 to SP
+     // pop parameters
+    emit_addiu(SP, SP, num_formals*WORD_SIZE, str); // adds n to SP
+    // // inefficient implementation of the above
+    // for(int i=0; i<num_formals; ++i){
+    //     emit_pop(FP, str)
+    // }
+    emit_pop(FP, str); // adds 4 to SP
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, uint* num_parent_attr)
@@ -1130,7 +1149,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
     // overwritten by the restore of the AR
     emit_move(ACC, SELF, str);
     // Restore AR header
-    emit_restore_AR(str);
+    emit_restore_AR(0, str);
     emit_return(str);
 }
 
@@ -1175,16 +1194,18 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, uint* num_parent_at
     int offset = DEFAULT_OBJFIELDS + *num_parent_attr;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!curr_node->features->nth(i)->is_attr()){
+            // BEGIN method def
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
             str << LABEL;
-            emit_store_AR(str);
+            emit_end_store_AR(str);
 
-            curr_node->features->nth(i)->code(str, 0, &objectST);
+            int num_formals = curr_node->features->nth(i)->code(str, 0, &objectST);
             // Postcond: result is in ACC
 
             // Restore AR
-            emit_restore_AR(str);
+            emit_restore_AR(num_formals, str);
             emit_return(str);
+            // END method def
         }else{
             // For attributes, just add them to the scope. This means they
             // will be loaded from the class object, not from the AR
@@ -1221,7 +1242,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //
 //*****************************************************************
 
-void method_class::code(ostream &s, int offset, Scopetable* objectST){
+int method_class::code(ostream &s, int offset, Scopetable* objectST){
     objectST->enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 1;
@@ -1237,9 +1258,10 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
     emit_move(SELF, ACC, s);
     expr->code(s, objectST);
     objectST->exitscope();
+    return j-1;
 }
 
-void attr_class::code(ostream &s, int offset, Scopetable* objectST){
+int attr_class::code(ostream &s, int offset, Scopetable* objectST){
     // Precond: ACC can be discarded, SELF has reference to self object
     init->code(s, objectST);
     // Postcond: ACC has the reference to the value the thing is initialized to
@@ -1250,6 +1272,7 @@ void attr_class::code(ostream &s, int offset, Scopetable* objectST){
         // Precond: SELF has self object, ACC has value to store
         emit_store(ACC, offset, SELF, s);
     }
+    return 0;
 }
 
 void assign_class::code(ostream &s, Scopetable* objectST) {
@@ -1267,9 +1290,37 @@ void assign_class::code(ostream &s, Scopetable* objectST) {
 }
 
 void static_dispatch_class::code(ostream &s, Scopetable* objectST) {
+
+    emit_push(FP, s);
+    // TODO: function arguments here, in reverse order
+    emit_push(SELF, s);
+    emit_end_store_AR(s);
+
+
 }
 
 void dispatch_class::code(ostream &s, Scopetable* objectST) {
+
+    emit_push(FP, s);
+    // TODO: function arguments here, in reverse order
+    emit_push(SELF, s);
+    emit_end_store_AR(s);
+    // Loop through the expressions
+    //for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+    //     actual->nth(i)->code(s, objectST);
+    //    emit_push(ACC, s);
+    //    // Manual indicates we should store these in heap but I don't see the ref doing that
+    //    //s << JAL;
+    //    //emit_method_ref(Object, _copy, s);
+    //    //s << endl;
+    //}
+    //expr->code(s, objectST);
+
+    // TODO: make sure expression isn't VOID.
+    //In the acc we have the class tag, we have the method name, now we need the implementation
+
+
+
 }
 
 void cond_class::code(ostream &s, Scopetable* objectST) {
@@ -1326,8 +1377,29 @@ void block_class::code(ostream &s, Scopetable* objectST) {
 }
 
 void let_class::code(ostream &s, Scopetable* objectST) {
-    objectST->enterscope();
-    objectST->exitscope();
+    // If init is of type no_expr we initialize the identifier variable to default value of declared type
+    init->code(s, objectST);
+
+    if(init->get_type() == NULL) {
+        // Put init expr into heap memory
+        // If there is no initialization then leave default from protobj
+        s << JAL;
+        emit_method_ref(Object, _copy, s);
+        s << endl;
+    }
+
+    // Store address on the stack using GLOBAL_FP_OFF
+    emit_push(ACC, s);
+
+    // add it to objectST
+    addToScope(identifier, FP, GLOBAL_FP_OFF, objectST);
+
+    // Eval body
+    body -> code(s, objectST);
+
+    // Now we restore the stack, we don't care about saving their values, T0 isn't important to preserve
+    emit_pop(T0, s);
+
 }
 
 void plus_class::code(ostream &s, Scopetable* objectST) {
