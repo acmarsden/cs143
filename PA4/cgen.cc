@@ -1316,16 +1316,7 @@ void dispatch_class::code(ostream &s, Scopetable* objectST) {
         emit_push(ACC, s); }
     emit_push(SELF, s);
     emit_end_store_AR(s);
-    // Loop through the expressions
-    //for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
-    //     actual->nth(i)->code(s, objectST);
-    //    emit_push(ACC, s);
-    //    // Manual indicates we should store these in heap but I don't see the ref doing that
-    //    //s << JAL;
-    //    //emit_method_ref(Object, _copy, s);
-    //    //s << endl;
-    //}
-    //expr->code(s, objectST);
+    expr->code(s, objectST);
 
     // TODO: make sure expression isn't VOID.
     //In the acc we have the class tag, we have the method name, now we need the implementation
