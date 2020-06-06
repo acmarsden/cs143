@@ -1304,17 +1304,17 @@ void dispatch_class::code(ostream &s, Scopetable* objectST) {
     emit_push(FP, s);
     // TODO: function arguments here, in reverse order
     
-    std::vector<Symbol> reverse_helper;
+    //std::vector<Symbol> reverse_helper;
     for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
-        
+        //reverse_helper.push_back(actual);
     }
         
         
-        actual->nth(i)->code(s, objectST);
-        s << JAL;
-        emit_method_ref(Object, _copy, s);
-        s << endl;
-        emit_push(ACC, s); }
+        //actual->nth(i)->code(s, objectST);
+        //s << JAL;
+        //emit_method_ref(Object, _copy, s);
+        //s << endl;
+        //emit_push(ACC, s); }
     emit_push(SELF, s);
     emit_end_store_AR(s);
     // Loop through the expressions
