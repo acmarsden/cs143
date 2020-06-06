@@ -1235,13 +1235,13 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
 
     // Remember SELF
     emit_move(SELF, ACC, s);
-    expr->code(s, objectST);
+    expr->code(s, objectST, 0);
     objectST->exitscope();
 }
 
 void attr_class::code(ostream &s, int offset, Scopetable* objectST){
     // Precond: ACC can be discarded, SELF has reference to self object
-    init->code(s, objectST);
+    init->code(s, objectST, 0);
     // Postcond: ACC has the reference to the value the thing is initialized to
     //if(init->get_type() != No_type){ // our semant implementation
     if(init->get_type() != NULL){ // their semant implementation
@@ -1252,10 +1252,10 @@ void attr_class::code(ostream &s, int offset, Scopetable* objectST){
     }
 }
 
-void assign_class::code(ostream &s, Scopetable* objectST) {
+void assign_class::code(ostream &s, Scopetable* objectST, int let_flag) {
 
     // Evaluate expression and save in ACC
-    expr->code(s, objectST);
+    expr->code(s, objectST, let_flag);
     
     // Get adress of Id, store in S1
     auto* lookup = objectST->lookup(name);
@@ -1266,36 +1266,36 @@ void assign_class::code(ostream &s, Scopetable* objectST) {
 
 }
 
-void static_dispatch_class::code(ostream &s, Scopetable* objectST) {
+void static_dispatch_class::code(ostream &s, Scopetable* objectST, int let_flag) {
 }
 
-void dispatch_class::code(ostream &s, Scopetable* objectST) {
+void dispatch_class::code(ostream &s, Scopetable* objectST, int let_flag) {
 }
 
-void cond_class::code(ostream &s, Scopetable* objectST) {
+void cond_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_if_label = GLOBAL_LABEL_CTR++;
     int else_label = GLOBAL_LABEL_CTR++;
-    pred->code(s, objectST);
+    pred->code(s, objectST, let_flag);
     // ACC contains a bool object
 
     // Get the actual value of the expr
     emit_fetch_int(T1, ACC, s);
     // If predicate is false, jump to else
     emit_beqz(T1, else_label, s);
-    then_exp->code(s, objectST);
+    then_exp->code(s, objectST, let_flag);
     // Unconditional branch to bottom: end if
     emit_branch(end_if_label, s);
     emit_label_def(else_label, s);
-    else_exp->code(s, objectST);
+    else_exp->code(s, objectST, let_flag);
     // End if
     emit_label_def(end_if_label, s);
 }
 
-void loop_class::code(ostream &s, Scopetable* objectST) {
+void loop_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int loop_label = GLOBAL_LABEL_CTR++;
     int pool_label = GLOBAL_LABEL_CTR++;
     emit_label_def(loop_label, s);
-    pred->code(s, objectST);
+    pred->code(s, objectST, let_flag);
     // ACC contains a bool object
 
     // Get the actual value of the expr
@@ -1303,7 +1303,7 @@ void loop_class::code(ostream &s, Scopetable* objectST) {
     // If predicate is false, jump to bottom: end loop
     emit_beqz(T1, pool_label, s);
     // loop body
-    body->code(s, objectST);
+    body->code(s, objectST, let_flag);
     // Unconditional branch to top: evaluate predicate
     emit_branch(loop_label, s);
 
@@ -1313,31 +1313,55 @@ void loop_class::code(ostream &s, Scopetable* objectST) {
     emit_move(ACC, ZERO, s);
 }
 
-void typcase_class::code(ostream &s, Scopetable* objectST) {
+void typcase_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     // For every branch
     objectST->enterscope();
     objectST->exitscope();
 }
 
-void block_class::code(ostream &s, Scopetable* objectST) {
+void block_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     for(int i=body->first(); body->more(i); i=body->next(i)) {
-        body->nth(i)->code(s, objectST);
+        body->nth(i)->code(s, objectST, let_flag);
     }
 }
 
-void let_class::code(ostream &s, Scopetable* objectST) {
-    objectST->enterscope();
-    objectST->exitscope();
+void let_class::code(ostream &s, Scopetable* objectST, int let_flag) {
+    
+    init->code(s, objectST, let_flag);
+    // Put init expr into heap memory
+    s << JAL;
+    emit_method_ref(Object, _copy, s);
+    s << endl;
+    
+    //To add this to the environment we check whether we are already in a let statement
+    if(let_flag == 0) {
+        emit_store_AR(s);
+        objectST->enterscope();
+    }
+
+    let_flag++;
+    // push new let binding onto the stack
+    emit_push(ACC, s);
+    // add it to objectST
+    addToScope(identifier, FP, let_flag, objectST);
+    
+    body -> code(s, objectST, let_flag);
+    
+    if(let_flag == 1){
+        objectST -> exitscope();
+        emit_restore_AR(s);
+    };
+
 }
 
-void plus_class::code(ostream &s, Scopetable* objectST) {
+void plus_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     // Push temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1365,15 +1389,15 @@ void plus_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void sub_class::code(ostream &s, Scopetable* objectST) {
+void sub_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     // Push temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1400,15 +1424,15 @@ void sub_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void mul_class::code(ostream &s, Scopetable* objectST) {
+void mul_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     // Save temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1435,15 +1459,15 @@ void mul_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void divide_class::code(ostream &s, Scopetable* objectST) {
+void divide_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     // Save temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1470,8 +1494,8 @@ void divide_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void neg_class::code(ostream &s, Scopetable* objectST) {
-    e1->code(s, objectST);
+void neg_class::code(ostream &s, Scopetable* objectST, int let_flag) {
+    e1->code(s, objectST, let_flag);
     //Copy of object passed in $a0, this will create memory for our result
     s << JAL;
     emit_method_ref(Object, _copy, s);
@@ -1486,15 +1510,15 @@ void neg_class::code(ostream &s, Scopetable* objectST) {
     emit_store_int(T1, ACC, s);
 }
 
-void lt_class::code(ostream &s, Scopetable* objectST) {
+void lt_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Get the actual integers to compare:
@@ -1502,7 +1526,7 @@ void lt_class::code(ostream &s, Scopetable* objectST) {
     emit_fetch_int(T2, ACC, s);
 
     // Compute blt
-    emit_load_bool(ACC, truebool, s);
+    emit_load_int(ACC, truebool, s);
     emit_blt(T1, T2, end_label, s);
     emit_load_bool(ACC, falsebool, s);
     emit_label_def(end_label, s);
@@ -1511,16 +1535,16 @@ void lt_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(S1, s);
 }
 
-void eq_class::code(ostream &s, Scopetable* objectST) {
+void eq_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(T1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(T1, ACC, s);
     // T1 has the addr of the first argument
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     emit_move(T2, ACC, s);
     // T2 has the addr of the second argument
 
@@ -1539,15 +1563,15 @@ void eq_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(T1, s);
 }
 
-void leq_class::code(ostream &s, Scopetable* objectST) {
+void leq_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Push temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, let_flag);
     // ACC ($a0) has result address.
 
     // Get the actual integers to compare:
@@ -1564,9 +1588,9 @@ void leq_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(S1, s);
 }
 
-void comp_class::code(ostream &s, Scopetable* objectST) {
+void comp_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_label = GLOBAL_LABEL_CTR++;
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     // ACC holds address to our result: BOOL obj
 
     // Bool value is at same offset as int value in bool proto
@@ -1579,7 +1603,7 @@ void comp_class::code(ostream &s, Scopetable* objectST) {
     emit_label_def(end_label, s);
 }
 
-void int_const_class::code(ostream& s, Scopetable* objectST)
+void int_const_class::code(ostream& s, Scopetable* objectST, int let_flag)
 {
     //
     // Need to be sure we have an IntEntry *, not an arbitrary Symbol
@@ -1587,22 +1611,22 @@ void int_const_class::code(ostream& s, Scopetable* objectST)
     emit_load_int(ACC,inttable.lookup_string(token->get_string()),s);
 }
 
-void string_const_class::code(ostream& s, Scopetable* objectST)
+void string_const_class::code(ostream& s, Scopetable* objectST, int let_flag)
 {
     emit_load_string(ACC,stringtable.lookup_string(token->get_string()),s);
 }
 
-void bool_const_class::code(ostream& s, Scopetable* objectST)
+void bool_const_class::code(ostream& s, Scopetable* objectST, int let_flag)
 {
     emit_load_bool(ACC, BoolConst(val), s);
 }
 
-void new__class::code(ostream &s, Scopetable* objectST) {
+void new__class::code(ostream &s, Scopetable* objectST, int let_flag) {
 }
 
-void isvoid_class::code(ostream &s, Scopetable* objectST) {
+void isvoid_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     int end_label = GLOBAL_LABEL_CTR++;
-    e1->code(s, objectST);
+    e1->code(s, objectST, let_flag);
     emit_move(T1, ACC, s);
     // T1 holds the address of the result of the expression
     // Is this just zero when void?
@@ -1613,10 +1637,10 @@ void isvoid_class::code(ostream &s, Scopetable* objectST) {
     emit_label_def(end_label, s);
 }
 
-void no_expr_class::code(ostream &s, Scopetable* objectST) {
+void no_expr_class::code(ostream &s, Scopetable* objectST, int let_flag) {
 }
 
-void object_class::code(ostream &s, Scopetable* objectST) {
+void object_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     if(cgen_debug) printf("# BEGIN resolved address\n");
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
