@@ -1527,7 +1527,7 @@ void lt_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     emit_fetch_int(T2, ACC, s);
 
     // Compute blt
-    emit_load_int(ACC, truebool, s);
+    emit_load_bool(ACC, truebool, s);
     emit_blt(T1, T2, end_label, s);
     emit_load_bool(ACC, falsebool, s);
     emit_label_def(end_label, s);
