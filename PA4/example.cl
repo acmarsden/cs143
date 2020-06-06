@@ -2,8 +2,12 @@
 (*  Example cool program testing as many aspects of the code generator
     as possible.
  *)
+class A {
+    a_dispatch(x : Int, y : Bool) : Int {if y then x else x + 1 fi};
+};
 
 class Main {
+  a : A;
   main():Int { 0 };
   plus_test(): Int { 1+2 };
   minus_test(): Int { 4-3 };
@@ -24,5 +28,7 @@ class Main {
   let_test(): Int {let x:Int <- 4, y:Int <-3 in x+y};
   new_test(): Object {new Main};
   new_self_test(): Object {new SELF_TYPE};
+  let_test(x: Int): Int {let a : Int <- 3 in x};
+  dispatch_test() : Int {a.a_dispatch(0, true)};
 };
 
