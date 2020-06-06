@@ -74,12 +74,12 @@ void dump_with_types(ostream&,int);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0;       \
-virtual void code(ostream&, int, Scopetable*) = 0;
+virtual int code(ostream&, int, Scopetable*) = 0;
 
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);       \
-void code(ostream&, int, Scopetable*);
+int code(ostream&, int, Scopetable*);
 
 
 #define Formal_EXTRAS                              \

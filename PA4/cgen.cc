@@ -1199,7 +1199,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, uint* num_parent_at
             str << LABEL;
             emit_end_store_AR(str);
 
-            curr_node->features->nth(i)->code(str, 0, &objectST);
+            int num_formals = curr_node->features->nth(i)->code(str, 0, &objectST);
             // Postcond: result is in ACC
 
             // Restore AR
@@ -1242,7 +1242,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //
 //*****************************************************************
 
-void method_class::code(ostream &s, int offset, Scopetable* objectST){
+int method_class::code(ostream &s, int offset, Scopetable* objectST){
     objectST->enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 1;
@@ -1258,9 +1258,10 @@ void method_class::code(ostream &s, int offset, Scopetable* objectST){
     emit_move(SELF, ACC, s);
     expr->code(s, objectST);
     objectST->exitscope();
+    return j-1;
 }
 
-void attr_class::code(ostream &s, int offset, Scopetable* objectST){
+int attr_class::code(ostream &s, int offset, Scopetable* objectST){
     // Precond: ACC can be discarded, SELF has reference to self object
     init->code(s, objectST);
     // Postcond: ACC has the reference to the value the thing is initialized to
@@ -1271,6 +1272,7 @@ void attr_class::code(ostream &s, int offset, Scopetable* objectST){
         // Precond: SELF has self object, ACC has value to store
         emit_store(ACC, offset, SELF, s);
     }
+    return 0;
 }
 
 void assign_class::code(ostream &s, Scopetable* objectST) {
