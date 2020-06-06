@@ -21,5 +21,8 @@ class Main {
   loop_test(): Object { while 1<2 loop 3 pool };
   if_test(): Object {if 1<2 then 3 else 4 fi};
   block_test(): Int {{1; 2; 3; 2+3;}};
+  let_test(): Int {let x:Int <- 4, y:Int <-3 in x+y};
+  new_test(): Object {new Main};
+  new_self_test(): Object {new SELF_TYPE};
 };
 
