@@ -1686,7 +1686,7 @@ void new__class::code(ostream &s, Scopetable* objectST) {
         // actually need to get the type from s0 reference, from the classtag
         emit_push(S1, s);
         // get the class object table (where the ref to the proto is stored)
-        emit_partial_load_address(T1, CLASSOBJTAB, s);
+        emit_load_address(T1, CLASSOBJTAB, s);
         // get the class object tag from the self object
         emit_load(S1, 0, SELF, s);
         // Multiply this value by 8 (2 words) via a logical shift
