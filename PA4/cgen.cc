@@ -1348,6 +1348,7 @@ void let_class::code(ostream &s, Scopetable* objectST, int let_flag) {
     body -> code(s, objectST, let_flag);
     
     if(let_flag == 1){
+        let_flag = 0;
         objectST -> exitscope();
         emit_restore_AR(s);
     };
