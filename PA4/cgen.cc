@@ -1256,7 +1256,7 @@ void assign_class::code(ostream &s, Scopetable* objectST) {
 
     // Evaluate expression and save in ACC
     expr->code(s, objectST);
-    
+
     // Get adress of Id, store in S1
     auto* lookup = objectST->lookup(name);
     assert(lookup != NULL);
@@ -1598,6 +1598,43 @@ void bool_const_class::code(ostream& s, Scopetable* objectST)
 }
 
 void new__class::code(ostream &s, Scopetable* objectST) {
+    if(type_name == SELF_TYPE){
+        // actually need to get the type from s0 reference, from the classtag
+        emit_push(S1, s);
+        // get the class object table (where the ref to the proto is stored)
+        emit_partial_load_address(T1, CLASSOBJTAB, s);
+        // get the class object tag from the self object
+        emit_load(S1, 0, SELF, s);
+        // Multiply this value by 8 (2 words) via a logical shift
+        emit_sll(S1, S1, 3, s);
+        // Index into the class object table at the corresponding protobj location
+        emit_addu(T1, T1, S1, s);
+        // Get the protobj location address into S1, so it is saved if Object.copy modifies it
+        emit_move(S1, T1, s);
+        // Load the proto object address
+        emit_load(ACC, 0, S1, s);
+
+        // Now we have the protobj to copy in ACC
+        // Allocate it:
+        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+        // get the object init address: one offset from the protobj ref (should have been restores by Object.copy)
+        emit_load(T1, 1, S1, s);
+        // Initialize it:
+        emit_jalr(T1, s);
+
+        emit_pop(S1, s);
+        // DONE
+    }else{
+        emit_partial_load_address(ACC, s);
+        emit_protobj_ref(type_name ,s);
+        s << endl;
+        // Now we have the protobj to copy in ACC
+        // Allocate it:
+        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+        // Initialize it:
+        s << JAL; emit_init_ref(type_name, s); s << endl;
+        // DONE
+    }
 }
 
 void isvoid_class::code(ostream &s, Scopetable* objectST) {
