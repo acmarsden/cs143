@@ -1288,9 +1288,9 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     // Get adress of Id, store in S1
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
-    printf("# BEGIN resolved address\n");
+    printf("# BEGIN resolved address (assign) \n");
     emit_store(ACC, lookup->second, lookup->first, s);
-    printf("# END resolved address\n");
+    printf("# END resolved address (assign) \n");
 
 }
 
@@ -1798,14 +1798,15 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 }
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
-    if(cgen_debug) printf("# BEGIN resolved address\n");
+    if(cgen_debug) printf("# BEGIN resolved address (object)\n");
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);
+        if(cgen_debug) printf("# END resolved address (self)\n");
         return;
     }
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
     emit_load(ACC, lookup->second, lookup->first, s);
-    if(cgen_debug) printf("# END resolved address\n");
+    if(cgen_debug) printf("# END resolved address (object)\n");
 }
