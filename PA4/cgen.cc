@@ -24,6 +24,7 @@
 
 #include "cgen.h"
 #include "cgen_gc.h"
+#include <memory>
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
@@ -72,12 +73,13 @@ Symbol
              type_name,
              val;
 
-std::vector<std::pair<char*, int > > pair_container;
+typedef std::unique_ptr<std::pair<char*, int > > PairPointer ;
+std::vector<PairPointer> pair_container;
 
 static void dump_pair_container(){
     cout << "[";
     for(auto it=pair_container.cbegin(); it!=pair_container.cend(); ++it){
-        cout << "(" << it->first << ", " << it->second;
+        cout << "(" << (**it).first << ", " << (**it).second;
         cout << ")";
     }
     cout << "]\n";
@@ -1168,15 +1170,10 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
 }
 
 static void addToScope(Symbol name, char* register_name, int offset, Scopetable* objectST){
-    //char * load_code = new char [code.str().length()+1];
-    //std::strcpy (load_code, code.str().c_str());
-    //std::string code_to_emit = code.str();
-    //const char* code_to_emit_ = code_to_emit.c_str();
-    std::pair<char*, int> pair(register_name, offset);
-    pair_container.push_back(pair);
-    if(cgen_debug) printf("# SCOPE: adding register %s\n", pair.first);
-    if(cgen_debug) printf("# SCOPE: at offset: %d\n", pair.second);
-    objectST->addid(name, &(pair_container[pair_container.size()-1]));
+    pair_container.push_back(std::make_unique<std::pair<char*, int> >(register_name, offset));
+    if(cgen_debug) printf("# SCOPE: adding register %s\n", register_name);
+    if(cgen_debug) printf("# SCOPE: at offset: %d\n", offset);
+    objectST->addid(name, (pair_container.back().get()));
 }
 
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent_attr){
