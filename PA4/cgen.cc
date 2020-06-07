@@ -1085,7 +1085,7 @@ static void emit_end_store_AR(ostream& str){
 // This is a no param  AR
 static void emit_store_AR(ostream& str){
     emit_push(FP, str);
-    // TODO: function arguments here, in reverse order
+    // In a function dispatch, function arguments would go here, in reverse order
     emit_push(SELF, str);
     emit_end_store_AR(str);
 }
@@ -1323,7 +1323,6 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_push(ACC, s); }
 
     emit_push(SELF, s);
-    emit_end_store_AR(s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
@@ -1380,7 +1379,6 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_push(ACC, s); }
 
     emit_push(SELF, s);
-    emit_end_store_AR(s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
