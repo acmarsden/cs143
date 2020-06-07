@@ -77,7 +77,7 @@ typedef std::unique_ptr<std::pair<char*, int > > PairPointer ;
 std::vector<PairPointer> pair_container;
 
 static void dump_pair_container(){
-    cout << "[";
+    cout << "# pair_container: [";
     for(auto it=pair_container.cbegin(); it!=pair_container.cend(); ++it){
         cout << "(" << (**it).first << ", " << (**it).second;
         cout << ")";
@@ -1085,7 +1085,7 @@ static void emit_end_store_AR(ostream& str){
 // This is a no param  AR
 static void emit_store_AR(ostream& str){
     emit_push(FP, str);
-    // TODO: function arguments here, in reverse order
+    // In a function dispatch, function arguments would go here, in reverse order
     emit_push(SELF, str);
     emit_end_store_AR(str);
 }
@@ -1182,7 +1182,7 @@ void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent
 
     if(!curr_node->basic()){
         // Set the current class so you can get it at compile time during AST traversal
-        this->current_class = curr_node->name;
+        this->current_node = curr_node;
         code_class_methods(curr_node, num_parent_attr);
     }
     // Count my attributes as parent attr
@@ -1297,7 +1297,7 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
     if(cgen_debug) printf("# Assign: BEGIN resolved address (assign) \n");
-    if(cgen_debug) printf("# "); dump_pair_container();
+    if(cgen_debug) dump_pair_container();
     emit_store(ACC, lookup->second, lookup->first, s);
     if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
@@ -1323,7 +1323,6 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_push(ACC, s); }
 
     emit_push(SELF, s);
-    emit_end_store_AR(s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
@@ -1332,7 +1331,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1380,7 +1379,6 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_push(ACC, s); }
 
     emit_push(SELF, s);
-    emit_end_store_AR(s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
@@ -1389,7 +1387,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1402,7 +1400,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Compute which method is being used based on the name to get the right offset from T1
     Symbol dispatch_class_type = expr->get_type();
     if(dispatch_class_type == SELF_TYPE){
-        dispatch_class_type = cgentable->getCurrentClass();
+        dispatch_class_type = cgentable->getCurrentNode()->name;
         if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
     }
 
@@ -1476,7 +1474,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_bne(ACC, ZERO, begin_case_label, s);
     // Case abort requires line number in T1 and filename in ACC
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(cgentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_case_abort2", s);
 
@@ -1866,7 +1864,7 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Object: resolved address (object)\n");
-    if(cgen_debug) printf("# "); dump_pair_container();
+    if(cgen_debug) dump_pair_container();
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);

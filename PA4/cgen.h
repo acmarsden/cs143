@@ -26,7 +26,7 @@ private:
    int stringclasstag;
    int intclasstag;
    int boolclasstag;
-   Symbol current_class;
+   CgenNodeP current_node;
 
    // The following methods emit code for
    // constants and global declarations.
@@ -64,7 +64,7 @@ public:
    CgenClassTable(Classes, ostream& str);
    void code();
    CgenNodeP root();
-   Symbol getCurrentClass(){return current_class;}
+   CgenNodeP getCurrentNode(){return current_node;}
    std::map<Symbol, std::vector<Symbol> > dispatch_table;
    std::map<Symbol, uint> classtag_map;
    Scopetable objectST;
