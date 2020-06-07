@@ -64,7 +64,7 @@ public:
    CgenClassTable(Classes, ostream& str);
    void code();
    CgenNodeP root();
-   Symbol getCurrentNode(){return current_node;}
+   CgenNodeP getCurrentNode(){return current_node;}
    std::map<Symbol, std::vector<Symbol> > dispatch_table;
    std::map<Symbol, uint> classtag_map;
    Scopetable objectST;

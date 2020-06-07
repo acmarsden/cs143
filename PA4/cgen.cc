@@ -1182,7 +1182,7 @@ void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent
 
     if(!curr_node->basic()){
         // Set the current class so you can get it at compile time during AST traversal
-        this->current_class = curr_node->name;
+        this->current_node = curr_node;
         code_class_methods(curr_node, num_parent_attr);
     }
     // Count my attributes as parent attr
@@ -1332,7 +1332,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1389,7 +1389,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1402,7 +1402,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Compute which method is being used based on the name to get the right offset from T1
     Symbol dispatch_class_type = expr->get_type();
     if(dispatch_class_type == SELF_TYPE){
-        dispatch_class_type = cgentable->getCurrentClass()->name;
+        dispatch_class_type = cgentable->getCurrentNode()->name;
         if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
     }
 
@@ -1476,7 +1476,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_bne(ACC, ZERO, begin_case_label, s);
     // Case abort requires line number in T1 and filename in ACC
     emit_partial_load_address(ACC,s);
-    stringtable.add_string(cgentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_case_abort2", s);
 
