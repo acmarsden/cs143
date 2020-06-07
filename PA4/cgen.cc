@@ -1303,10 +1303,60 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
+    int dispatch_label = GLOBAL_LABEL_CTR++;
+
+    //Create clean AR
     emit_push(FP, s);
-    // TODO: function arguments here, in reverse order
+
+    // Add the arguments in reverse order
+    std::vector<Expression> reverse_helper;
+    for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+        reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
+    }
+    for(uint i=0; i<reverse_helper.size(); ++i){
+        reverse_helper[i]->code(s, cgentable);
+        //s << JAL;
+        //emit_method_ref(Object, _copy, s);
+        //s << endl;
+        emit_push(ACC, s); }
+
     emit_push(SELF, s);
     emit_end_store_AR(s);
+
+    // Cgen expression calling method dispatch
+    expr->code(s, cgentable);
+    
+    // If expression is void then we call dispatch_abort as in cool runtime manual
+    // Dispatch abort requires line number in T1 and filename in ACC
+    emit_bne(ACC, ZERO, dispatch_label, s);
+    emit_partial_load_address(ACC,s);
+    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
+    emit_load_imm(T1, get_line_number(), s);
+    emit_jal("_dispatch_abort", s);
+
+    // Otherwise we run the dispatch
+    emit_label_def(dispatch_label, s);
+    // The ACC now holds the address to the resulting object in memory after evaluationg expr
+    // Load the address of the dispatch table into T1
+    //emit_load(T1, 2, ACC, s);
+    // For static dispatch we load the dispatch table of the declared type
+    emit_disptable_ref(type_name, s);
+    char CURR_DISPTAB = type_name->get_string() << DISPTAB_SUFFIX;
+    emit_load_address(T1, CURR_DISPTAB, s);
+    //
+    // Compute which method is being used based on the name to get the right offset from T1
+    std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
+    int method_offset=0;
+    for(uint i=0; i<methods.size(); ++i){
+        if(methods[i] == name) {
+            break;
+        }
+        ++method_offset;
+    }
+    if(cgen_debug) printf("# Dispatch: method size: %lu\n", methods.size());
+    if(cgen_debug) printf("# Dispatch: method offset: %i\n", method_offset);
+    emit_load(T1, method_offset, T1, s);
+    emit_jalr(T1,s);
 
 }
 
@@ -1333,11 +1383,16 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
+    
     // If expression is void then we call dispatch_abort as in cool runtime manual
+    // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
+    emit_partial_load_address(ACC,s);
+    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
+    emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
-    // Otherwise we rn the dispatch
+    // Otherwise we run the dispatch
     emit_label_def(dispatch_label, s);
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
     // Load the address of the dispatch table into T1
@@ -1356,8 +1411,6 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Dispatch: method offset: %i\n", method_offset);
     emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
-
-    // TODO: make sure expression isn't VOID.
 
 }
 
