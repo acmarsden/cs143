@@ -10,10 +10,9 @@ class B inherits A{
   a_dispatch(x: Int, y: Int) : Int {x - y};
 };
 
-class Main {
+class Main inherits IO {
   a : A;
   b : B;
-  main():Int { 0 };
   plus_test(): Int { 1+2 };
   minus_test(): Int { 4-3 };
   mult_test(): Int { 5*6 };
@@ -41,5 +40,11 @@ class Main {
   dispatch_test1() : Int {a.a_dispatch(0, 1)};
   dispatch_test2() : Int {plus_test()};
   static_dispatch_test() : Int {b@A.a_dispatch(0, 1)};
+  main():SELF_TYPE { 
+    { (*out_string("Testing dispatch1 \n"); out_int(dispatch_test1());*)
+       out_string("\n Testing dispatch2 \n"); out_int(dispatch_test2());
+      out_string("\n Testing static_dispatch_test \n"); out_int(static_dispatch_test());
+    }
+  };
 };
 
