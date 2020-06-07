@@ -1340,10 +1340,9 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Load the address of the dispatch table into T1
     //emit_load(T1, 2, ACC, s);
     // For static dispatch we load the dispatch table of the declared type
-    emit_disptable_ref(type_name, s);
-    char CURR_DISPTAB = type_name->get_string() << DISPTAB_SUFFIX;
-    emit_load_address(T1, CURR_DISPTAB, s);
-    //
+    emit_partial_load_address(T1, s);
+    s << type_name->get_string() << DISPTAB_SUFFIX << endl;
+    
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
     int method_offset=0;
