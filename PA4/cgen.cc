@@ -1402,7 +1402,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Compute which method is being used based on the name to get the right offset from T1
     Symbol dispatch_class_type = expr->get_type();
     if(dispatch_class_type == SELF_TYPE){
-        dispatch_class_type = cgentable->getCurrentClass();
+        dispatch_class_type = cgentable->getCurrentClass()->name;
         if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
     }
 
