@@ -1072,6 +1072,19 @@ void CgenClassTable::code_prototype(CgenNode* curr_node,
     }
 }
 
+// This is to make FP, S0 and RA caller saved
+static void emit_remember_regs(ostream& str){
+    emit_push(FP, str);
+    emit_push(SELF, str);
+    emit_push(RA, str);
+}
+
+// Aaaaand to restore them
+static void emit_restore_remember_regs(ostream& str){
+    emit_push(RA, str);
+    emit_push(SELF, str);
+    emit_push(FP, str);
+}
 
 // This is called by the callee (function def)
 static void emit_end_store_AR(ostream& str){
@@ -1082,24 +1095,18 @@ static void emit_end_store_AR(ostream& str){
     GLOBAL_FP_OFF = 0;
 }
 
-// This is a no param  AR
-static void emit_store_AR(ostream& str){
-    emit_push(FP, str);
-    // In a function dispatch, function arguments would go here, in reverse order
-    emit_push(SELF, str);
-    emit_end_store_AR(str);
-}
-
 // This is called by the callee, at the end of the function def
 static void emit_restore_AR(int num_formals, ostream& str){
     emit_pop(RA, str); // adds 4 to SP
     emit_pop(SELF, str); // adds 4 to SP
      // pop parameters
-    emit_addiu(SP, SP, num_formals*WORD_SIZE, str); // adds n to SP
-    // // inefficient implementation of the above
-    // for(int i=0; i<num_formals; ++i){
-    //     emit_pop(FP, str)
-    // }
+    if(num_formals > 0){
+        emit_addiu(SP, SP, num_formals*WORD_SIZE, str); // adds n to SP
+        // // inefficient implementation of the above
+        // for(int i=0; i<num_formals; ++i){
+        //     emit_pop(FP, str)
+        // }
+    }
     emit_pop(FP, str); // adds 4 to SP
 }
 
@@ -1132,7 +1139,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
     // Label to the class init methdd
     emit_init_ref(curr_class, str); str << LABEL;
     // Store the AR header
-    emit_store_AR(str);
+    emit_remember_regs(str);
     // Remember self obj in SELF, since ACC is not stored in the AR
     emit_move(SELF, ACC,  str);
 
@@ -1165,7 +1172,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
     // overwritten by the restore of the AR
     emit_move(ACC, SELF, str);
     // Restore AR header
-    emit_restore_AR(0, str);
+    emit_restore_remember_regs(str);
     emit_return(str);
 }
 
