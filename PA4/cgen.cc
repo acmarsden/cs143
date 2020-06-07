@@ -1339,7 +1339,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
     int method_offset;
-    for(uint i = 0; i<methods.size(); i++){
+    for(int i = 0; i<methods.size(); i++){
         if(methods[i] == name) {
             method_offset = i;
             break;
