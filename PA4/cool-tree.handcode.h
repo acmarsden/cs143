@@ -13,6 +13,9 @@
 #define yylineno curr_lineno;
 extern int yylineno;
 
+class CgenClassTable;
+typedef CgenClassTable *CgenClassTableP;
+
 typedef SymbolTable<Symbol, std::pair<char*, int > > Scopetable;
 
 inline Boolean copy_Boolean(Boolean b) {return b; }
@@ -74,12 +77,12 @@ void dump_with_types(ostream&,int);
 
 #define Feature_EXTRAS                                        \
 virtual void dump_with_types(ostream&,int) = 0;       \
-virtual int code(ostream&, int, Scopetable*) = 0;
+virtual int code(ostream&, int, Scopetable*, CgenClassTable*) = 0;
 
 
 #define Feature_SHARED_EXTRAS                                       \
 void dump_with_types(ostream&,int);       \
-int code(ostream&, int, Scopetable*);
+int code(ostream&, int, Scopetable*, CgenClassTable*);
 
 
 #define Formal_EXTRAS                              \
@@ -102,13 +105,13 @@ void dump_with_types(ostream& ,int);
 Symbol type;                                 \
 Symbol get_type() { return type; }           \
 Expression set_type(Symbol s) { type = s; return this; } \
-virtual void code(ostream&, Scopetable*) = 0; \
+virtual void code(ostream&, Scopetable*, CgenClassTable*) = 0; \
 virtual void dump_with_types(ostream&,int) = 0;  \
 void dump_type(ostream&, int);               \
 Expression_class() { type = (Symbol) NULL; }
 
 #define Expression_SHARED_EXTRAS           \
-void code(ostream&, Scopetable*);         \
+void code(ostream&, Scopetable*, CgenClassTable*);         \
 void dump_with_types(ostream&,int);
 
 #endif

@@ -1139,7 +1139,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_pare
         for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
             if(curr_node->features->nth(i)->is_attr()){
                 // Precond: SELF has self object, ACC can be discarded
-                curr_node->features->nth(i)->code(str, offset, &objectST);
+                curr_node->features->nth(i)->code(str, offset, &objectST, this);
                 ++offset;
             }
         }
@@ -1199,7 +1199,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, uint* num_parent_at
             str << LABEL;
             emit_end_store_AR(str);
 
-            int num_formals = curr_node->features->nth(i)->code(str, 0, &objectST);
+            int num_formals = curr_node->features->nth(i)->code(str, 0, &objectST, this);
             // Postcond: result is in ACC
 
             // Restore AR
@@ -1242,7 +1242,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 //
 //*****************************************************************
 
-int method_class::code(ostream &s, int offset, Scopetable* objectST){
+int method_class::code(ostream &s, int offset, Scopetable* objectST, CgenClassTable* cgentable){
     objectST->enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 1;
@@ -1256,14 +1256,14 @@ int method_class::code(ostream &s, int offset, Scopetable* objectST){
 
     // Remember SELF
     emit_move(SELF, ACC, s);
-    expr->code(s, objectST);
+    expr->code(s, objectST, cgentable);
     objectST->exitscope();
     return j-1;
 }
 
-int attr_class::code(ostream &s, int offset, Scopetable* objectST){
+int attr_class::code(ostream &s, int offset, Scopetable* objectST, CgenClassTable* cgentable){
     // Precond: ACC can be discarded, SELF has reference to self object
-    init->code(s, objectST);
+    init->code(s, objectST, cgentable);
     // Postcond: ACC has the reference to the value the thing is initialized to
     //if(init->get_type() != No_type){ // our semant implementation
     if(init->get_type() != NULL){ // their semant implementation
@@ -1275,10 +1275,10 @@ int attr_class::code(ostream &s, int offset, Scopetable* objectST){
     return 0;
 }
 
-void assign_class::code(ostream &s, Scopetable* objectST) {
+void assign_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
 
     // Evaluate expression and save in ACC
-    expr->code(s, objectST);
+    expr->code(s, objectST, cgentable);
 
     // Get adress of Id, store in S1
     auto* lookup = objectST->lookup(name);
@@ -1289,17 +1289,16 @@ void assign_class::code(ostream &s, Scopetable* objectST) {
 
 }
 
-void static_dispatch_class::code(ostream &s, Scopetable* objectST) {
+void static_dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
 
     emit_push(FP, s);
     // TODO: function arguments here, in reverse order
     emit_push(SELF, s);
     emit_end_store_AR(s);
 
-
 }
 
-void dispatch_class::code(ostream &s, Scopetable* objectST) {
+void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
 
     emit_push(FP, s);
     // TODO: function arguments here, in reverse order
@@ -1309,46 +1308,66 @@ void dispatch_class::code(ostream &s, Scopetable* objectST) {
         reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
     }
     for(uint i=0; i<reverse_helper.size(); ++i){
-        reverse_helper[i]->code(s, objectST);
+        reverse_helper[i]->code(s, objectST, cgentable);
         s << JAL;
         emit_method_ref(Object, _copy, s);
         s << endl;
         emit_push(ACC, s); }
     emit_push(SELF, s);
     emit_end_store_AR(s);
-    expr->code(s, objectST);
+    expr->code(s, objectST, cgentable);
+    // The ACC now holds the address to the resulting object in memory after evaluationg expr
+    emit_load(T1, 8, ACC, s);
+    // Now T1 holds the address for the dispatch table
+    // Compute which method is being used based on the name
+
+    emit_jalr(T1,s);
+    // Wait afterwards in the ACC do we have the address where the value of the result is? Or the address of where the layout for the resulting expression is? I think it is the second?
+    //emit_load(T1, ACC, 2*WORD_SIZE);
+    //emit_jalr(T1, s);
+    // Or the accumulator just holds the value evaluated, then we need to get the type info, then use classobjtab
 
     // TODO: make sure expression isn't VOID.
     //In the acc we have the class tag, we have the method name, now we need the implementation
 
+    // Get the class object table
+    emit_load_address(T1, CLASSOBJTAB, s);
+    // Get the class object tag from ACC
+    emit_load(S1, 0, ACC, s);
+    // Multiply this value by 8 because object table stores 2 words per class
+    emit_sll(S1, S1, 3, s);
+    // Index into the class object table
+    emit_addu(T1, T1, S1, s);
+    //  
+    emit_load(T1, 0, S1, s);
 
 
 }
 
-void cond_class::code(ostream &s, Scopetable* objectST) {
+void cond_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_if_label = GLOBAL_LABEL_CTR++;
     int else_label = GLOBAL_LABEL_CTR++;
-    pred->code(s, objectST);
+    pred->code(s, objectST, cgentable);
     // ACC contains a bool object
 
     // Get the actual value of the expr
     emit_fetch_int(T1, ACC, s);
     // If predicate is false, jump to else
     emit_beqz(T1, else_label, s);
-    then_exp->code(s, objectST);
+    then_exp->code(s, objectST, cgentable);
     // Unconditional branch to bottom: end if
     emit_branch(end_if_label, s);
     emit_label_def(else_label, s);
-    else_exp->code(s, objectST);
+    else_exp->code(s, objectST, cgentable);
     // End if
     emit_label_def(end_if_label, s);
 }
 
-void loop_class::code(ostream &s, Scopetable* objectST) {
+void loop_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int loop_label = GLOBAL_LABEL_CTR++;
     int pool_label = GLOBAL_LABEL_CTR++;
     emit_label_def(loop_label, s);
-    pred->code(s, objectST);
+    pred->code(s, objectST, cgentable);
     // ACC contains a bool object
 
     // Get the actual value of the expr
@@ -1356,7 +1375,7 @@ void loop_class::code(ostream &s, Scopetable* objectST) {
     // If predicate is false, jump to bottom: end loop
     emit_beqz(T1, pool_label, s);
     // loop body
-    body->code(s, objectST);
+    body->code(s, objectST, cgentable);
     // Unconditional branch to top: evaluate predicate
     emit_branch(loop_label, s);
 
@@ -1366,21 +1385,21 @@ void loop_class::code(ostream &s, Scopetable* objectST) {
     emit_move(ACC, ZERO, s);
 }
 
-void typcase_class::code(ostream &s, Scopetable* objectST) {
+void typcase_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // For every branch
     objectST->enterscope();
     objectST->exitscope();
 }
 
-void block_class::code(ostream &s, Scopetable* objectST) {
+void block_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     for(int i=body->first(); body->more(i); i=body->next(i)) {
-        body->nth(i)->code(s, objectST);
+        body->nth(i)->code(s, objectST, cgentable);
     }
 }
 
-void let_class::code(ostream &s, Scopetable* objectST) {
+void let_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // If init is of type no_expr we initialize the identifier variable to default value of declared type
-    init->code(s, objectST);
+    init->code(s, objectST, cgentable);
 
     if(init->get_type() == NULL) {
         // Put init expr into heap memory
@@ -1397,21 +1416,21 @@ void let_class::code(ostream &s, Scopetable* objectST) {
     addToScope(identifier, FP, GLOBAL_FP_OFF, objectST);
 
     // Eval body
-    body -> code(s, objectST);
+    body -> code(s, objectST, cgentable);
 
     // Now we restore the stack, we don't care about saving their values, T0 isn't important to preserve
     emit_pop(T0, s);
 
 }
 
-void plus_class::code(ostream &s, Scopetable* objectST) {
+void plus_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // Push temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1439,15 +1458,15 @@ void plus_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void sub_class::code(ostream &s, Scopetable* objectST) {
+void sub_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // Push temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1474,15 +1493,15 @@ void sub_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void mul_class::code(ostream &s, Scopetable* objectST) {
+void mul_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // Save temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1509,15 +1528,15 @@ void mul_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void divide_class::code(ostream &s, Scopetable* objectST) {
+void divide_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     // Save temporaries to the stack
     emit_push(S1,s);
 
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Copy of object passed in $a0: result of e2 :)
@@ -1544,8 +1563,8 @@ void divide_class::code(ostream &s, Scopetable* objectST) {
     // At this point, ACC still has a reference to the result of the addition
 }
 
-void neg_class::code(ostream &s, Scopetable* objectST) {
-    e1->code(s, objectST);
+void neg_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
+    e1->code(s, objectST, cgentable);
     //Copy of object passed in $a0, this will create memory for our result
     s << JAL;
     emit_method_ref(Object, _copy, s);
@@ -1560,15 +1579,15 @@ void neg_class::code(ostream &s, Scopetable* objectST) {
     emit_store_int(T1, ACC, s);
 }
 
-void lt_class::code(ostream &s, Scopetable* objectST) {
+void lt_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Get the actual integers to compare:
@@ -1585,16 +1604,16 @@ void lt_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(S1, s);
 }
 
-void eq_class::code(ostream &s, Scopetable* objectST) {
+void eq_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Save temporaries to the stack
     emit_push(T1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(T1, ACC, s);
     // T1 has the addr of the first argument
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     emit_move(T2, ACC, s);
     // T2 has the addr of the second argument
 
@@ -1613,15 +1632,15 @@ void eq_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(T1, s);
 }
 
-void leq_class::code(ostream &s, Scopetable* objectST) {
+void leq_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_label = GLOBAL_LABEL_CTR++;
     // Push temporaries to the stack
     emit_push(S1,s);
 
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(S1, ACC, s);
 
-    e2->code(s, objectST);
+    e2->code(s, objectST, cgentable);
     // ACC ($a0) has result address.
 
     // Get the actual integers to compare:
@@ -1638,9 +1657,9 @@ void leq_class::code(ostream &s, Scopetable* objectST) {
     emit_pop(S1, s);
 }
 
-void comp_class::code(ostream &s, Scopetable* objectST) {
+void comp_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_label = GLOBAL_LABEL_CTR++;
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     // ACC holds address to our result: BOOL obj
 
     // Bool value is at same offset as int value in bool proto
@@ -1653,7 +1672,7 @@ void comp_class::code(ostream &s, Scopetable* objectST) {
     emit_label_def(end_label, s);
 }
 
-void int_const_class::code(ostream& s, Scopetable* objectST)
+void int_const_class::code(ostream& s, Scopetable* objectST, CgenClassTable* cgentable)
 {
     //
     // Need to be sure we have an IntEntry *, not an arbitrary Symbol
@@ -1661,17 +1680,17 @@ void int_const_class::code(ostream& s, Scopetable* objectST)
     emit_load_int(ACC,inttable.lookup_string(token->get_string()),s);
 }
 
-void string_const_class::code(ostream& s, Scopetable* objectST)
+void string_const_class::code(ostream& s, Scopetable* objectST, CgenClassTable* cgentable)
 {
     emit_load_string(ACC,stringtable.lookup_string(token->get_string()),s);
 }
 
-void bool_const_class::code(ostream& s, Scopetable* objectST)
+void bool_const_class::code(ostream& s, Scopetable* objectST, CgenClassTable* cgentable)
 {
     emit_load_bool(ACC, BoolConst(val), s);
 }
 
-void new__class::code(ostream &s, Scopetable* objectST) {
+void new__class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     if(type_name == SELF_TYPE){
         // actually need to get the type from s0 reference, from the classtag
         emit_push(S1, s);
@@ -1711,9 +1730,9 @@ void new__class::code(ostream &s, Scopetable* objectST) {
     }
 }
 
-void isvoid_class::code(ostream &s, Scopetable* objectST) {
+void isvoid_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int end_label = GLOBAL_LABEL_CTR++;
-    e1->code(s, objectST);
+    e1->code(s, objectST, cgentable);
     emit_move(T1, ACC, s);
     // T1 holds the address of the result of the expression
     // Is this just zero when void?
@@ -1724,10 +1743,10 @@ void isvoid_class::code(ostream &s, Scopetable* objectST) {
     emit_label_def(end_label, s);
 }
 
-void no_expr_class::code(ostream &s, Scopetable* objectST) {
+void no_expr_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
 }
 
-void object_class::code(ostream &s, Scopetable* objectST) {
+void object_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# BEGIN resolved address\n");
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
