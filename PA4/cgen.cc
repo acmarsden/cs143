@@ -1305,10 +1305,10 @@ void static_dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTabl
 
 void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
     int dispatch_label = GLOBAL_LABEL_CTR++;
-    
+
     //Create clean AR
     emit_push(FP, s);
-    
+
     // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
     for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
@@ -1320,14 +1320,14 @@ void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgen
         //emit_method_ref(Object, _copy, s);
         //s << endl;
         emit_push(ACC, s); }
-    
+
     emit_push(SELF, s);
     emit_end_store_AR(s);
-    
+
     // Cgen expression calling method dispatch
     expr->code(s, objectST, cgentable);
     // If expression is void then we call dispatch_abort as in cool runtime manual
-	emit_bne(ACC, ZERO, dispatch_label, s);
+    emit_bne(ACC, ZERO, dispatch_label, s);
     emit_jal("_dispatch_abort", s);
 
     // Otherwise we rn the dispatch
@@ -1335,7 +1335,7 @@ void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgen
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
     // Load the address of the dispatch table into T1
     emit_load(T1, 2, ACC, s);
-    
+
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
     int method_offset;
@@ -1343,9 +1343,9 @@ void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgen
         if(methods[i] == name) {
             method_offset = i;
             break;
-        }   
+        }
     }
-    
+
     emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
 
@@ -1395,9 +1395,50 @@ void loop_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentabl
 }
 
 void typcase_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
-    // For every branch
-    objectST->enterscope();
-    objectST->exitscope();
+    int begin_case_label = GLOBAL_LABEL_CTR++;
+    int end_case_label = GLOBAL_LABEL_CTR++;
+    int next_case_label;
+
+    emit_push(S1, s);
+
+    // check object for void
+    expr->code(s, objectST);
+    // Object from the expr is in ACC
+
+    emit_bne(ACC, ZERO, begin_case_label, s);
+    // Case abort requires line number in T1 and filename in ACC
+    // TODO: how to get the filename: it is an attr of enclosing class
+    emit_load_address(stringtable.add_string("<basic class>")->code_ref(s));
+    emit_load_imm(T1, get_line_number(), s);
+    emit_jal("_case_abort2", s);
+
+    // Begn the case
+    emit_label_def(begin_case_label, s);
+    // Get the classtag into T2
+    emit_load(T2, 0, ACC, s);
+    for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
+        objectST->enterscope(); // TODO: do we need to addToScope the ids in the case? Maybe
+        next_case_label = GLOBAL_LABEL_CTR++;
+        emit_blti(T2, classtag_map[cases->nth(i)->type_decl], next_case_label, s);
+        emit_bgti(T2, classtag_map[cases->nth(i)->type_decl], next_case_label, s);
+        emit_move(S1, ACC, s);
+
+        // Emit code to evaluate the expr
+        cases->nth(i)->expr->code(s, objectST);
+        // ACC has return value
+
+        // Unconditionally branch to the end of the
+        emit_branch(end_case_label, s);
+
+        emit_label_def(next_case_label, s);
+        objectST->exitscope();
+    }
+    // Abort with no matching caset code
+    emit_jal("_case_abort", s);
+
+    emit_label_def(end_case_label, s);
+
+    emit_pop(S1, s);
 }
 
 void block_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
