@@ -1176,7 +1176,7 @@ static void addToScope(Symbol name, char* register_name, int offset, Scopetable*
     pair_container.push_back(pair);
     if(cgen_debug) printf("# SCOPE: adding register %s\n", pair.first);
     if(cgen_debug) printf("# SCOPE: at offset: %d\n", pair.second);
-    objectST->addid(name, &(pair_container.back()));
+    objectST->addid(name, &(pair_container[pair_container.size()-1]));
 }
 
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent_attr){
@@ -1267,8 +1267,6 @@ int method_class::code(ostream &s, int offset, CgenClassTable* cgentable){
         addToScope(formals->nth(i)->get_name(), FP, j, &(cgentable->objectST));
         ++j;
     }
-
-    if(cgen_debug) cgentable->objectST.dump();
 
     // Remember SELF
     emit_move(SELF, ACC, s);
@@ -1811,16 +1809,20 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 }
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
-    if(cgen_debug) printf("# BEGIN resolved address (object)\n");
+    if(cgen_debug) printf("# Object: resolved address (object)\n");
     if(cgen_debug) dump_pair_container();
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);
-        if(cgen_debug) printf("# END resolved address (self)\n");
+        if(cgen_debug) printf("# Object: end resolved address (self)\n");
         return;
     }
+    if(cgen_debug) printf("# Object: looking up %s in Symbol Table\n", name->get_string());
+    if(cgen_debug) cerr << "# Object: looking up "<< name <<" in Symbol Table\n";
+    if(cgen_debug) cgentable->objectST.dump();
+    
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
     emit_load(ACC, lookup->second, lookup->first, s);
-    if(cgen_debug) printf("# END resolved address (object)\n");
+    if(cgen_debug) printf("# Object: end resolved address (object)\n");
 }
