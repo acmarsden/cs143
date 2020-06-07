@@ -1304,26 +1304,37 @@ void static_dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTabl
 }
 
 void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgentable) {
-
-    emit_push(FP, s);
-    // TODO: function arguments here, in reverse order
+    int dispatch_label = GLOBAL_LABEL_CTR++;
     
+    //Create clean AR
+    emit_push(FP, s);
+    
+    // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
     for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
         reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
     }
     for(uint i=0; i<reverse_helper.size(); ++i){
         reverse_helper[i]->code(s, objectST, cgentable);
-        s << JAL;
-        emit_method_ref(Object, _copy, s);
-        s << endl;
+        //s << JAL;
+        //emit_method_ref(Object, _copy, s);
+        //s << endl;
         emit_push(ACC, s); }
+    
     emit_push(SELF, s);
     emit_end_store_AR(s);
+    
+    // Cgen expression calling method dispatch
     expr->code(s, objectST, cgentable);
+    // If expression is void then we call dispatch_abort as in cool runtime manual
+	emit_bne(ACC, ZERO, dispatch_label, s);
+    emit_jal("_dispatch_abort", s);
+
+    // Otherwise we rn the dispatch
+    emit_label_def(dispatch_label, s);
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
-    emit_load(T1, 8, ACC, s);
-    // Now T1 holds the address for the dispatch table
+    // Load the address of the dispatch table into T1
+    emit_load(T1, 2, ACC, s);
     
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
@@ -1335,27 +1346,10 @@ void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgen
         }   
     }
     
-    emit_load(T1, method_offset*4, T1, s);
+    emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
-    // Wait afterwards in the ACC do we have the address where the value of the result is? Or the address of where the layout for the resulting expression is? I think it is the second?
-    //emit_load(T1, ACC, 2*WORD_SIZE);
-    //emit_jalr(T1, s);
-    // Or the accumulator just holds the value evaluated, then we need to get the type info, then use classobjtab
 
     // TODO: make sure expression isn't VOID.
-    //In the acc we have the class tag, we have the method name, now we need the implementation
-
-    // Get the class object table
-    emit_load_address(T1, CLASSOBJTAB, s);
-    // Get the class object tag from ACC
-    emit_load(S1, 0, ACC, s);
-    // Multiply this value by 8 because object table stores 2 words per class
-    emit_sll(S1, S1, 3, s);
-    // Index into the class object table
-    emit_addu(T1, T1, S1, s);
-    //  
-    emit_load(T1, 0, S1, s);
-
 
 }
 
