@@ -885,7 +885,7 @@ void CgenClassTable::code()
     // Add your code to emit
     // - object initializer
     // This handles class attributes
-    uint num_parent_attr = 0;
+    int num_parent_attr = 0;
     code_object_initializers(root(), &num_parent_attr);
 
     // - the class methods
@@ -1092,7 +1092,7 @@ static void emit_restore_AR(int num_formals, ostream& str){
     emit_pop(FP, str); // adds 4 to SP
 }
 
-void CgenClassTable::code_object_initializers(CgenNodeP curr_node, uint* num_parent_attr)
+void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
 {
     // Doing this in DFS order to account for attribute offsetting
     code_object_initializer(curr_node, num_parent_attr);
@@ -1115,7 +1115,7 @@ void CgenClassTable::code_object_initializers(CgenNodeP curr_node, uint* num_par
     }
 }
 
-void CgenClassTable::code_object_initializer(CgenNodeP curr_node, uint* num_parent_attr)
+void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_parent_attr)
 {
     Symbol curr_class = curr_node->name;
     // Label to the class init methdd
@@ -1168,7 +1168,7 @@ static void addToScope(Symbol name, char* register_name, int offset, Scopetable*
     objectST->addid(name, &(pair_container.back()));
 }
 
-void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, uint* num_parent_attr){
+void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent_attr){
     // Doing this in DFS order to account for correct scoping
     objectST.enterscope();
 
@@ -1195,7 +1195,7 @@ void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, uint* num_paren
     objectST.exitscope();
 }
 
-void CgenClassTable::code_class_methods(CgenNodeP curr_node, uint* num_parent_attr){
+void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_attr){
     int offset = DEFAULT_OBJFIELDS + *num_parent_attr;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!curr_node->features->nth(i)->is_attr()){
