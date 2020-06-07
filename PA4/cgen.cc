@@ -959,7 +959,7 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
     emit_disptable_ref(curr_node->name, str); str << LABEL;
     for(auto it=method_order->cbegin(); it!=method_order->cend(); ++it){
         str << WORD; emit_method_ref((*methods)[*it].back(), *it, str); str << endl;
-        dispatch_table[curr_node->name] = *it;
+        dispatch_table[curr_node->name].push_back(*it);
 
     }
     // Recurse on children
@@ -1165,6 +1165,8 @@ static void addToScope(Symbol name, char* register_name, int offset, Scopetable*
     //const char* code_to_emit_ = code_to_emit.c_str();
     std::pair<char*, int> pair(register_name, offset);
     pair_container.push_back(pair);
+    if(cgen_debug) printf("# SCOPE: adding register %s\n", pair.first);
+    if(cgen_debug) printf("# SCOPE: at offset: %d\n", pair.second);
     objectST->addid(name, &(pair_container.back()));
 }
 
@@ -1338,14 +1340,15 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
-    int method_offset;
-    for(int i = 0; i<methods.size(); i++){
+    int method_offset=0;
+    for(uint i=0; i<methods.size(); ++i){
         if(methods[i] == name) {
-            method_offset = i;
             break;
         }
+        ++method_offset;
     }
-
+    if(cgen_debug) printf("# Dispatch: method size: %lu\n", methods.size());
+    if(cgen_debug) printf("# Dispatch: method offset: %i\n", method_offset);
     emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
 
