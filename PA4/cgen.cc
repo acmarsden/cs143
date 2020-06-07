@@ -1332,7 +1332,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
+    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1389,7 +1389,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
     emit_partial_load_address(ACC,s);
-    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
+    stringtable.add_string(gentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_dispatch_abort", s);
 
@@ -1475,9 +1475,8 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
 
     emit_bne(ACC, ZERO, begin_case_label, s);
     // Case abort requires line number in T1 and filename in ACC
-    // TODO: how to get the filename: it is an attr of enclosing class
     emit_partial_load_address(ACC,s);
-    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
+    stringtable.add_string(cgentable->getCurrentClass()->get_filename())->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_case_abort2", s);
 
