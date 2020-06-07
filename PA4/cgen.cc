@@ -1322,7 +1322,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         //s << endl;
         emit_push(ACC, s); }
 
-    emit_push(SELF, s);
+    // Don't push self emit_push(SELF, s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
@@ -1384,7 +1384,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
         //s << endl;
         emit_push(ACC, s); }
 
-    emit_push(SELF, s);
+    // Don't add self emit_push(SELF, s);
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
