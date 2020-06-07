@@ -26,8 +26,6 @@ private:
    int stringclasstag;
    int intclasstag;
    int boolclasstag;
-   std::map<Symbol, uint> classtag_map;
-   Scopetable objectST;
 
    // The following methods emit code for
    // constants and global declarations.
@@ -66,6 +64,8 @@ public:
    void code();
    CgenNodeP root();
    std::map<Symbol, std::vector<Symbol> > dispatch_table;
+   std::map<Symbol, uint> classtag_map;
+   Scopetable objectST;
 };
 
 

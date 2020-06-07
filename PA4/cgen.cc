@@ -1402,13 +1402,14 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_push(S1, s);
 
     // check object for void
-    expr->code(s);
+    expr->code(s, cgentable);
     // Object from the expr is in ACC
 
     emit_bne(ACC, ZERO, begin_case_label, s);
     // Case abort requires line number in T1 and filename in ACC
     // TODO: how to get the filename: it is an attr of enclosing class
-    emit_load_address(stringtable.add_string("<basic class>")->code_ref(s));
+    emit_partial_load_address(ACC,s);
+    stringtable.add_string("<basic class>")->code_ref(s); s << endl;
     emit_load_imm(T1, get_line_number(), s);
     emit_jal("_case_abort2", s);
 
@@ -1419,12 +1420,12 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
         cgentable->objectST.enterscope(); // TODO: do we need to addToScope the ids in the case? Maybe
         next_case_label = GLOBAL_LABEL_CTR++;
-        emit_blti(T2, cgentable->classtag_map[cases->nth(i)->type_decl], next_case_label, s);
-        emit_bgti(T2, cgentable->lasstag_map[cases->nth(i)->type_decl], next_case_label, s);
+        emit_blti(T2, cgentable->classtag_map[((branch_class*)(cases->nth(i)))->type_decl], next_case_label, s);
+        emit_bgti(T2, cgentable->classtag_map[((branch_class*)(cases->nth(i)))->type_decl], next_case_label, s);
         emit_move(S1, ACC, s);
 
         // Emit code to evaluate the expr
-        cases->nth(i)->expr->code(s);
+        ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
         // ACC has return value
 
         // Unconditionally branch to the end of the
