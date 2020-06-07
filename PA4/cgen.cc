@@ -938,19 +938,24 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
         std::map<Symbol, std::vector<Symbol> >* methods,
         std::vector<Symbol>* method_order)
 {
-    // Add this node's methodsi
+    // Add this node's methods
     uint num_new_methods = 0;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!(curr_node->features->nth(i)->is_attr())){
             // NOTE: this will override methods witho most recent class's implementation
             Symbol method_name = curr_node->features->nth(i)->get_name();
+
             if(methods->find(method_name) == methods->end()){
                 method_order->push_back(method_name);
+                dispatch_table[curr_node->name].push_back(method_name);
                 ++num_new_methods;
             }
             (*methods)[method_name].push_back(curr_node->name);
         }
     }
+
+    // Save method order for this class in dispatch_table
+    //dispatch_table[curr_node->name].insert(method_order);
     // Emit the references to the methods
     emit_disptable_ref(curr_node->name, str); str << LABEL;
     for(auto it=method_order->cbegin(); it!=method_order->cend(); ++it){
@@ -1319,8 +1324,18 @@ void dispatch_class::code(ostream &s, Scopetable* objectST, CgenClassTable* cgen
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
     emit_load(T1, 8, ACC, s);
     // Now T1 holds the address for the dispatch table
-    // Compute which method is being used based on the name
-
+    
+    // Compute which method is being used based on the name to get the right offset from T1
+    std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
+    int method_offset;
+    for(uint i = 0; i<methods.size(); i++){
+        if(methods[i] == name) {
+            method_offset = i;
+            break;
+        }   
+    }
+    
+    emit_load(T1, method_offset*4, T1, s);
     emit_jalr(T1,s);
     // Wait afterwards in the ACC do we have the address where the value of the result is? Or the address of where the layout for the resulting expression is? I think it is the second?
     //emit_load(T1, ACC, 2*WORD_SIZE);
