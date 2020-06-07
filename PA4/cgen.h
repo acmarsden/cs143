@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "emit.h"
 #include "cool-tree.h"
+#include "cool-tree.handcode.h"
 #include "symtab.h"
 #include <map>
 #include <vector>
@@ -11,8 +12,8 @@ enum Basicness     {Basic, NotBasic};
 #define TRUE 1
 #define FALSE 0
 
-class CgenClassTable;
-typedef CgenClassTable *CgenClassTableP;
+//class CgenClassTable;
+//typedef CgenClassTable *CgenClassTableP;
 
 class CgenNode;
 typedef CgenNode *CgenNodeP;
@@ -63,6 +64,7 @@ public:
    CgenClassTable(Classes, ostream& str);
    void code();
    CgenNodeP root();
+   std::map<Symbol, std::vector<Symbol> > dispatch_table;
 };
 
 
