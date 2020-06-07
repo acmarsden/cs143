@@ -17,6 +17,7 @@ enum Basicness     {Basic, NotBasic};
 
 class CgenNode;
 typedef CgenNode *CgenNodeP;
+typedef SymbolTable<Symbol, std::pair<char*, int > > Scopetable;
 
 class CgenClassTable : public SymbolTable<Symbol,CgenNode> {
 private:
