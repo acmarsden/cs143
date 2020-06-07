@@ -77,7 +77,7 @@ typedef std::unique_ptr<std::pair<char*, int > > PairPointer ;
 std::vector<PairPointer> pair_container;
 
 static void dump_pair_container(){
-    cout << "[";
+    cout << "# pair_container: [";
     for(auto it=pair_container.cbegin(); it!=pair_container.cend(); ++it){
         cout << "(" << (**it).first << ", " << (**it).second;
         cout << ")";
@@ -1297,7 +1297,7 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
     if(cgen_debug) printf("# Assign: BEGIN resolved address (assign) \n");
-    if(cgen_debug) printf("# "); dump_pair_container();
+    if(cgen_debug) dump_pair_container();
     emit_store(ACC, lookup->second, lookup->first, s);
     if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
@@ -1866,7 +1866,7 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Object: resolved address (object)\n");
-    if(cgen_debug) printf("# "); dump_pair_container();
+    if(cgen_debug) dump_pair_container();
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);
