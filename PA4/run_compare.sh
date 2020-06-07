@@ -1,7 +1,7 @@
 #!/bin/bash
 
 filename=$1
-if [ -z $example ]
+if [ -z $filename ]
 then
     filename="example"
 fi
