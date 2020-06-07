@@ -73,6 +73,15 @@ Symbol
              val;
 
 std::vector<std::pair<char*, int > > pair_container;
+
+static void dump_pair_container(){
+    cout << "[";
+    for(auto it=pair_container.cbegin(); it!=pair_container.cend(); ++it){
+        cout << "(" << it->first << ", " << it->second;
+        cout << ")";
+    }
+    cout << "]\n";
+}
 //
 // Initializing the predefined symbols.
 //
@@ -1290,9 +1299,10 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     // Get adress of Id, store in S1
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
-    printf("# BEGIN resolved address (assign) \n");
+    if(cgen_debug) printf("# BEGIN resolved address (assign) \n");
+    if(cgen_debug) dump_pair_container();
     emit_store(ACC, lookup->second, lookup->first, s);
-    printf("# END resolved address (assign) \n");
+    if(cgen_debug) printf("# END resolved address (assign) \n");
 
 }
 
@@ -1802,6 +1812,7 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# BEGIN resolved address (object)\n");
+    if(cgen_debug) dump_pair_container();
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);
