@@ -661,7 +661,7 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
      enterscope();
      objectST.enterscope();
      if (cgen_debug) objectST.addid(No_class, NULL);
-     if (cgen_debug) cout << "Building CgenClassTable" << endl;
+     if (cgen_debug) cout << "## Building CgenClassTable" << endl;
      install_basic_classes();
      install_classes(classes);
      build_inheritance_tree();
@@ -862,13 +862,13 @@ void CgenNode::set_parentnd(CgenNodeP p)
 
 void CgenClassTable::code()
 {
-    if (cgen_debug) cout << "coding global data" << endl;
+    if (cgen_debug) cout << "## coding global data" << endl;
     code_global_data();
 
-    if (cgen_debug) cout << "choosing gc" << endl;
+    if (cgen_debug) cout << "## choosing gc" << endl;
     code_select_gc();
 
-    if (cgen_debug) cout << "coding constants" << endl;
+    if (cgen_debug) cout << "## coding constants" << endl;
     code_constants();
 
     // Add your code to emit
@@ -890,7 +890,7 @@ void CgenClassTable::code()
     std::vector<std::pair<Symbol, Symbol> > parent_attr;
     code_prototypes(root(), &parent_attr);
 
-    if (cgen_debug) cout << "coding global text" << endl;
+    if (cgen_debug) cout << "## coding global text" << endl;
     code_global_text();
 
     // Add your code to emit
@@ -1181,6 +1181,8 @@ void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent
     objectST.enterscope();
 
     if(!curr_node->basic()){
+        // Set the current class so you can get it at compile time during AST traversal
+        this->current_class = curr_node->name;
         code_class_methods(curr_node, num_parent_attr);
     }
     // Count my attributes as parent attr
@@ -1294,10 +1296,10 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     // Get adress of Id, store in S1
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
-    if(cgen_debug) printf("# BEGIN resolved address (assign) \n");
-    if(cgen_debug) dump_pair_container();
+    if(cgen_debug) printf("# Assign: BEGIN resolved address (assign) \n");
+    if(cgen_debug) printf("# "); dump_pair_container();
     emit_store(ACC, lookup->second, lookup->first, s);
-    if(cgen_debug) printf("# END resolved address (assign) \n");
+    if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
 }
 
@@ -1325,7 +1327,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
-    
+
     // If expression is void then we call dispatch_abort as in cool runtime manual
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
@@ -1342,7 +1344,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // For static dispatch we load the dispatch table of the declared type
     emit_partial_load_address(T1, s);
     s << type_name->get_string() << DISPTAB_SUFFIX << endl;
-    
+
     // Compute which method is being used based on the name to get the right offset from T1
     std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
     int method_offset=0;
@@ -1382,7 +1384,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
-    
+
     // If expression is void then we call dispatch_abort as in cool runtime manual
     // Dispatch abort requires line number in T1 and filename in ACC
     emit_bne(ACC, ZERO, dispatch_label, s);
@@ -1398,7 +1400,13 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_load(T1, 2, ACC, s);
 
     // Compute which method is being used based on the name to get the right offset from T1
-    std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
+    Symbol dispatch_class_type = expr->get_type();
+    if(dispatch_class_type == SELF_TYPE){
+        dispatch_class_type = cgentable->getCurrentClass();
+        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
+    }
+
+    std::vector<Symbol> methods = cgentable->dispatch_table[dispatch_class_type];
     int method_offset=0;
     for(uint i=0; i<methods.size(); ++i){
         if(methods[i] == name) {
@@ -1859,7 +1867,7 @@ void no_expr_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void object_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Object: resolved address (object)\n");
-    if(cgen_debug) dump_pair_container();
+    if(cgen_debug) printf("# "); dump_pair_container();
     if(name == self){
         // TODO: emit code to store ref to self in ACC?
         emit_move(ACC, SELF, s);
@@ -1869,7 +1877,7 @@ void object_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Object: looking up %s in Symbol Table\n", name->get_string());
     if(cgen_debug) cerr << "# Object: looking up "<< name <<" in Symbol Table\n";
     if(cgen_debug) cgentable->objectST.dump();
-    
+
     auto* lookup = cgentable->objectST.lookup(name);
     assert(lookup != NULL);
     emit_load(ACC, lookup->second, lookup->first, s);
