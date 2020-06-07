@@ -947,7 +947,6 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
 
             if(methods->find(method_name) == methods->end()){
                 method_order->push_back(method_name);
-                dispatch_table[curr_node->name].push_back(method_name);
                 ++num_new_methods;
             }
             (*methods)[method_name].push_back(curr_node->name);
@@ -960,6 +959,7 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
     emit_disptable_ref(curr_node->name, str); str << LABEL;
     for(auto it=method_order->cbegin(); it!=method_order->cend(); ++it){
         str << WORD; emit_method_ref((*methods)[*it].back(), *it, str); str << endl;
+        dispatch_table[curr_node->name] = *it;
 
     }
     // Recurse on children
