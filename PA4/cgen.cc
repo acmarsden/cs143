@@ -1338,14 +1338,14 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     // Otherwise we run the dispatch
     emit_label_def(dispatch_label, s);
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
-    // Load the address of the dispatch table into T1
-    //emit_load(T1, 2, ACC, s);
-    // For static dispatch we load the dispatch table of the declared type
-    emit_partial_load_address(T1, s);
-    s << type_name->get_string() << DISPTAB_SUFFIX << endl;
 
     // Compute which method is being used based on the name to get the right offset from T1
-    std::vector<Symbol> methods = cgentable->dispatch_table[expr->get_type()];
+    Symbol dispatch_class_type = type_name;
+    if(dispatch_class_type == SELF_TYPE){
+        dispatch_class_type = cgentable->getCurrentNode()->name;
+        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
+    }
+    std::vector<Symbol> methods = cgentable->dispatch_table[dispatch_class_type];
     int method_offset=0;
     for(uint i=0; i<methods.size(); ++i){
         if(methods[i] == name) {
@@ -1355,6 +1355,12 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     }
     if(cgen_debug) printf("# Dispatch: method size: %lu\n", methods.size());
     if(cgen_debug) printf("# Dispatch: method offset: %i\n", method_offset);
+
+
+
+    // For static dispatch we load the dispatch table of the declared type
+    emit_partial_load_address(T1, s);
+    s << dispatch_class_type->get_string() << DISPTAB_SUFFIX << endl;
     emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
 
