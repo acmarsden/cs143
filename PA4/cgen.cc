@@ -1096,30 +1096,6 @@ static void emit_restore_remember_regs(ostream& str){
     emit_addiu(SP, SP, 12, str);
 }
 
-// This is called by the callee (function def)
-static void emit_end_store_AR(ostream& str){
-    // Make FP point to the point in memory where the RA is stored (one above SP)
-    emit_move(FP, SP, str);
-    emit_push(RA, str);
-    // Reset this offset, which we'll use for new let or case bindings
-    GLOBAL_FP_OFF = 0;
-}
-
-// This is called by the callee, at the end of the function def
-static void emit_restore_AR(int num_formals, ostream& str){
-    emit_pop(RA, str); // adds 4 to SP
-    emit_pop(SELF, str); // adds 4 to SP
-     // pop parameters
-    if(num_formals > 0){
-        emit_addiu(SP, SP, num_formals*WORD_SIZE, str); // adds n to SP
-        // // inefficient implementation of the above
-        // for(int i=0; i<num_formals; ++i){
-        //     emit_pop(FP, str)
-        // }
-    }
-    emit_pop(FP, str); // adds 4 to SP
-}
-
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
 {
     // Doing this in DFS order to account for attribute offsetting
@@ -1229,13 +1205,13 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             // BEGIN method def
             emit_method_ref(curr_node->name, curr_node->features->nth(i)->get_name(), str);
             str << LABEL;
-            emit_end_store_AR(str);
+            emit_remember_regs(str);
 
             int num_formals = curr_node->features->nth(i)->code(str, 0, this);
             // Postcond: result is in ACC
 
             // Restore AR
-            emit_restore_AR(num_formals, str);
+            emit_restore_remember_regs(str);
             emit_return(str);
             // END method def
         }else{
@@ -1324,10 +1300,6 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     int dispatch_label = GLOBAL_LABEL_CTR++;
 
-    //Create clean AR
-    //emit_push(FP, s);
-    emit_remember_regs(s);
-
     // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
     for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
@@ -1386,10 +1358,6 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     int dispatch_label = GLOBAL_LABEL_CTR++;
-
-    //Create clean AR
-    //emit_push(FP, s);
-    emit_remember_regs(s);
 
     // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
