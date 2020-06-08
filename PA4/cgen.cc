@@ -1479,8 +1479,10 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         // TODO: can the type of a branch be SELF_TYPE?
         cgentable->objectST.enterscope();
         emit_push(ACC, s); // Remember ACC for now
-        // Copy the proto for the matching case type onto the stack and add it to the scope
+        // Copy the proto for the matching case type, allocate it (don't init yet)
         emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+        // Push it onto the stack and add it to the scope
         emit_push(ACC, s);
         addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
@@ -1528,10 +1530,8 @@ void let_class::code(ostream &s, CgenClassTable* cgentable) {
         // If there is no initialization then leave default from protobj
         emit_partial_load_address(ACC, s); emit_protobj_ref(type_decl,s); s << endl;
         // Now we have the protobj to copy in ACC
-        // Allocate it:
+        // Allocate it: (not initializing just yet)
         s << JAL; emit_method_ref(Object, _copy, s); s << endl;
-        // Initialize it:
-        s << JAL; emit_init_ref(type_decl, s); s << endl;
         // DONE
     }
 
