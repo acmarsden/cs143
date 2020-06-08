@@ -23,7 +23,7 @@ class D inherits B{
 class Main inherits IO {
   a : A <- new A;
   b : B <- new B;
-  c : C< - new C;
+  c : C <- new C;
   d : D <- new D;
   case_test_1(x: Object): Int {case x of
                           a: A => 56;
