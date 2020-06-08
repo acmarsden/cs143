@@ -336,14 +336,14 @@ static void emit_branch(int l, ostream& s)
 //
 static void emit_push(char *reg, ostream& str)
 {
-    GLOBAL_FP_OFF -= 4;
+    GLOBAL_FP_OFF -= 1; // in words
     emit_store(reg,0,SP,str);
     emit_addiu(SP,SP,-4,str);
 }
 
 static void emit_pop(char *reg, ostream& str)
 {
-    GLOBAL_FP_OFF += 4;
+    GLOBAL_FP_OFF += 1; // in wirds
     emit_load(reg,1,SP,str);
     emit_addiu(SP,SP,4,str);
 }
@@ -1083,7 +1083,7 @@ static void emit_remember_regs(ostream& str){
     emit_store(RA, 1, SP, str);
     emit_addiu(FP, SP, 16, str);
     emit_move(SELF, ACC, str);
-    GLOBAL_FP_OFF = -12;
+    GLOBAL_FP_OFF = -3; // in words
 }
 
 // Aaaaand to restore them
