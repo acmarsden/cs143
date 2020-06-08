@@ -1126,8 +1126,6 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
     emit_init_ref(curr_class, str); str << LABEL;
     // Store the AR header
     emit_remember_regs(str);
-    // Remember self obj in SELF, since ACC is not stored in the AR
-    emit_move(SELF, ACC,  str);
 
     // Call init of parent class
     assert(curr_node != NULL);
@@ -1260,8 +1258,6 @@ int method_class::code(ostream &s, int offset, CgenClassTable* cgentable){
         ++j;
     }
 
-    // Remember SELF
-    emit_move(SELF, ACC, s);
     expr->code(s, cgentable);
     cgentable->objectST.exitscope();
     return j-1;
