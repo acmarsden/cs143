@@ -1083,6 +1083,7 @@ static void emit_remember_regs(ostream& str){
     emit_store(RA, 1, SP, str);
     emit_addiu(FP, SP, 16, str);
     emit_move(SELF, ACC, str);
+    GLOBAL_FP_OFF = -12;
 }
 
 // Aaaaand to restore them
