@@ -102,7 +102,7 @@ ClassTable::ClassTable(Classes classes) : semant_errors(0) , error_stream(cerr) 
         if(children.find(node) == children.end()){
             children[node] = std::vector<Symbol>();
         }
-        if(parent == Bool || parent == Int || parent == String){semant_error(curr_class) << "Class '" << node->get_string() << "' inherits from Int, Bool or String and this is not allowed."<<endl; return;}
+        if(parent == Bool || parent == Int || parent == Str){semant_error(curr_class) << "Class '" << node->get_string() << "' inherits from Int, Bool or String and this is not allowed."<<endl; return;}
         children[parent].push_back(node);
 
         // Take this opportunity to check no class is not defined multiple times
