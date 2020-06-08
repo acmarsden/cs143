@@ -1475,19 +1475,33 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     // Get the classtag into T2
     emit_load(T2, 0, ACC, s);
     for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
-        cgentable->objectST.enterscope(); // TODO: do we need to addToScope the ids in the case? Maybe
+        Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+        // TODO: can the type of a branch be SELF_TYPE?
+        cgentable->objectST.enterscope();
+        emit_push(ACC, s); // Remember ACC for now
+        // Copy the proto for the matching case type onto the stack and add it to the scope
+        emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+        emit_push(ACC, s);
+        addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+
+        emit_pop(ACC, s); // recover the remembered acc value
+
         next_case_label = GLOBAL_LABEL_CTR++;
-        emit_blti(T2, cgentable->classtag_map[((branch_class*)(cases->nth(i)))->type_decl], next_case_label, s);
-        emit_bgti(T2, cgentable->classtag_map[((branch_class*)(cases->nth(i)))->type_decl], next_case_label, s);
+        emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+        emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
         emit_move(S1, ACC, s);
 
         // Emit code to evaluate the expr
         ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
         // ACC has return value
 
+        // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
+        emit_addiu(SP, SP, 4, s);
+
         // Unconditionally branch to the end of the
         emit_branch(end_case_label, s);
 
+        // Finish off
         emit_label_def(next_case_label, s);
         cgentable->objectST.exitscope();
     }
@@ -1512,9 +1526,7 @@ void let_class::code(ostream &s, CgenClassTable* cgentable) {
     if(init->get_type() == NULL) {
         // Put init expr into heap memory
         // If there is no initialization then leave default from protobj
-        emit_partial_load_address(ACC, s);
-        emit_protobj_ref(type_decl,s);
-        s << endl;
+        emit_partial_load_address(ACC, s); emit_protobj_ref(type_decl,s); s << endl;
         // Now we have the protobj to copy in ACC
         // Allocate it:
         s << JAL; emit_method_ref(Object, _copy, s); s << endl;
@@ -1832,9 +1844,7 @@ void new__class::code(ostream &s, CgenClassTable* cgentable) {
         emit_pop(S1, s);
         // DONE
     }else{
-        emit_partial_load_address(ACC, s);
-        emit_protobj_ref(type_name ,s);
-        s << endl;
+        emit_partial_load_address(ACC, s); emit_protobj_ref(type_name ,s); s << endl;
         // Now we have the protobj to copy in ACC
         // Allocate it:
         s << JAL; emit_method_ref(Object, _copy, s); s << endl;
