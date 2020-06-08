@@ -3,7 +3,7 @@
 OUT_DIR=./test_cgen_out
 
 for test_file in /afs/ir.stanford.edu/class/cs143/examples/*.cl; do
-  echo "Running our cgen on $test_file"
+  echo "==================== Running cgen on $test_file"
   filename=$(basename -- "$test_file")
   extension="${filename##*.}"
   filename="${filename%.*}"
@@ -12,7 +12,7 @@ for test_file in /afs/ir.stanford.edu/class/cs143/examples/*.cl; do
 done
 
 for test_file in *.cl; do
-  echo "Running our cgen on $test_file"
+  echo "==================== Running cgen on $test_file"
   filename=$(basename -- "$test_file")
   extension="${filename##*.}"
   filename="${filename%.*}"
