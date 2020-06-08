@@ -86,6 +86,14 @@ Parser out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/exa
 
 
 ==============================================================
+Parser out diff (< : ours, > : theirs) on:  anattributenamedself.cl 
+1c1
+< anattributenamedself.cl:4: Error: Attribute name cannot be 'self'
+---
+> anattributenamedself.cl:4: 'self' cannot be the name of an attribute.
+
+
+==============================================================
 Parser out diff (< : ours, > : theirs) on:  assignmentex.cl 
 
 
@@ -164,7 +172,7 @@ Parser out diff (< : ours, > : theirs) on:  badinherit.cl
 ==============================================================
 Parser out diff (< : ours, > : theirs) on:  bad_isvoid.cl 
 1,2c1,2
-< bad_isvoid.cl:15: Assign error: Variable 's' has not been defined
+< bad_isvoid.cl:15: Assign error: Cannot assign to s'. It is either 'self' or has not been defined.
 < bad_isvoid.cl:14: Method error: 'looper' returns type 'Object' but type 'C' was declared.
 ---
 > bad_isvoid.cl:15: Assignment to undeclared variable s.
@@ -211,6 +219,22 @@ Parser out diff (< : ours, > : theirs) on:  inheritance_cycle.cl
 
 
 ==============================================================
+Parser out diff (< : ours, > : theirs) on:  inheritbasic.cl 
+1c1
+< inheritbasic.cl:1: Class 'Silly' inherits from Int, Bool or String and this is not allowed.
+---
+> inheritbasic.cl:1: Class Silly cannot inherit class Bool.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  letself.cl 
+1c1
+< letself.cl:5: Let error: Cannot bind 'self'
+---
+> letself.cl:5: 'self' cannot be bound in a 'let' expression.
+
+
+==============================================================
 Parser out diff (< : ours, > : theirs) on:  main_params.cl 
 
 
@@ -223,6 +247,21 @@ Parser out diff (< : ours, > : theirs) on:  no_mainMethod.cl
 
 
 ==============================================================
+Parser out diff (< : ours, > : theirs) on:  selfinformalparameter2.cl 
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  selfinformalparameter.cl 
+1,3c1,2
+< selfinformalparameter.cl:3: Formal 'self' was declared to be SELF_TYPE which is not allowed
+< selfinformalparameter.cl:3: Formal 'self' was declared to be SELF_TYPE which is not allowed
+< selfinformalparameter.cl:3: Error: 'self' cannot be the name of a formal parameter.
+---
+> selfinformalparameter.cl:3: Formal parameter self cannot have type SELF_TYPE.
+> selfinformalparameter.cl:3: 'self' cannot be the name of a formal parameter.
+
+
+==============================================================
 Parser out diff (< : ours, > : theirs) on:  selftype1.cl 
 1,5c1
 < selftype1.cl:15: Method formals list or return type does not conform to parent definition
@@ -232,5 +271,29 @@ Parser out diff (< : ours, > : theirs) on:  selftype1.cl
 <     Return type is 'SELF_TYPE'
 ---
 > selftype1.cl:15: In redefined method testfun, return type SELF_TYPE is different from original return type Silly.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  undefined_id.cl 
+1,6c1,2
+< undefined_id.cl:2: Method formals list or return type does not conform to parent definition
+<     Method is 'copy'
+<     Class calling it is 'Silly'
+<     Old signature starts with 'SELF_TYPE'
+<     Return type is 'Object'
+< undefined_id.cl:2: Identifier 'c' is undefinded. 
+---
+> undefined_id.cl:2: In redefined method copy, return type Object is different from original return type SELF_TYPE.
+> undefined_id.cl:2: Undeclared identifier c.
+
+
+==============================================================
+Parser out diff (< : ours, > : theirs) on:  wa3_1.cl 
+28,29c28,29
+<           : A
+<         : A
+---
+>           : SELF_TYPE
+>         : SELF_TYPE
 
 
