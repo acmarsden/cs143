@@ -748,6 +748,7 @@ Symbol method_class::typeCheck(ClassTable* classtable){
 Symbol formal_class::typeCheck(ClassTable* classtable){
     Symbol curr_class = classtable->getCurrentClass();
     // Only checks if the type of the formal was previously defined
+    if(name == self){ ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this); err_stream << "Error: 'self' cannot be the name of a formal parameter." << endl; return type_decl;}
     if(classtable->symb_class_map.find(type_decl) != classtable->symb_class_map.end()){
         return type_decl;
     }else{
@@ -781,8 +782,8 @@ Symbol assign_class::typeCheck(ClassTable* classtable) {
     Symbol* declared_type = classtable->objectST.lookup(name);
     if(declared_type == NULL){
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
-        err_stream << "Assign error: Variable '" << name->get_string();
-        err_stream << "' has not been defined" << endl;
+        err_stream << "Assign error: Cannot assign to " << name->get_string();
+        err_stream << "'. It is either 'self' or has not been defined." << endl;
         set_type(Object);
         return get_type();
     }
