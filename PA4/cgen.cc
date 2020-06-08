@@ -1210,11 +1210,10 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             int num_formals = curr_node->features->nth(i)->code(str, 0, this);
             // Postcond: result is in ACC
 
-            // Pop the method parameters
-            emit_addiu(SP, SP, num_formals*WORD_SIZE, str);
-
             // Restore AR
             emit_restore_remember_regs(str);
+            // Pop the method parameters
+            emit_addiu(SP, SP, num_formals*WORD_SIZE, str);
             emit_return(str);
             // END method def
         }else{
