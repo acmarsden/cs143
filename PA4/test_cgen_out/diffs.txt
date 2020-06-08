@@ -1,0 +1,88 @@
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/arith.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/atoi_test.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/book_list.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cells.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/complex.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/cool.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/graph.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hairyscary.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/hello_world.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/io.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/lam.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/life.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/list.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/new_complex.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/palindrome.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/primes.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examples/sort_list.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  basicexample.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  case_exact.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  case_superclass.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  example.cl 
+
+
