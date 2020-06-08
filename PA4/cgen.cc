@@ -1512,9 +1512,15 @@ void let_class::code(ostream &s, CgenClassTable* cgentable) {
     if(init->get_type() == NULL) {
         // Put init expr into heap memory
         // If there is no initialization then leave default from protobj
-        s << JAL;
-        emit_method_ref(Object, _copy, s);
+        emit_partial_load_address(ACC, s);
+        emit_protobj_ref(type_decl,s);
         s << endl;
+        // Now we have the protobj to copy in ACC
+        // Allocate it:
+        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+        // Initialize it:
+        s << JAL; emit_init_ref(type_decl, s); s << endl;
+        // DONE
     }
 
     // Store address on the stack using GLOBAL_FP_OFF
