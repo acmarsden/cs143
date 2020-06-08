@@ -16,5 +16,5 @@ echo "Running our compiler on $filename.cl"
 echo "Saving to $OUT_DIR/our_$filename.s"
 mv $filename.s $OUT_DIR/our_$filename.s
 
-echo "Executing $OUT_DIR/our_$filename.s on SPIM"
-/afs/ir.stanford.edu/class/cs143/bin/spim $OUT_DIR/our_$filename.s &> $OUT_DIR/our_$filename.out
+#echo "Executing $OUT_DIR/our_$filename.s on SPIM"
+#/afs/ir.stanford.edu/class/cs143/bin/spim $OUT_DIR/our_$filename.s &> $OUT_DIR/our_$filename.out
