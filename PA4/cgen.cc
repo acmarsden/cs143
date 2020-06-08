@@ -1252,7 +1252,7 @@ CgenNode::CgenNode(Class_ nd, Basicness bstatus, CgenClassTableP ct) :
 int method_class::code(ostream &s, int offset, CgenClassTable* cgentable){
     cgentable->objectST.enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
-    int j = 1;
+    int j = 0;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)){
         // TODO: check what happens with nested calls
         addToScope(formals->nth(i)->get_name(), FP, j, &(cgentable->objectST));
@@ -1261,7 +1261,7 @@ int method_class::code(ostream &s, int offset, CgenClassTable* cgentable){
 
     expr->code(s, cgentable);
     cgentable->objectST.exitscope();
-    return j-1;
+    return j;
 }
 
 int attr_class::code(ostream &s, int offset, CgenClassTable* cgentable){
