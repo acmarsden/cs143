@@ -1074,16 +1074,26 @@ void CgenClassTable::code_prototype(CgenNode* curr_node,
 
 // This is to make FP, S0 and RA caller saved
 static void emit_remember_regs(ostream& str){
-    emit_push(FP, str);
-    emit_push(SELF, str);
-    emit_push(RA, str);
+    //emit_push(FP, str);
+    //emit_push(SELF, str);
+    //emit_push(RA, str);
+    emit_addiu(SP, SP, -12, str);
+    emit_store(FP, 3, SP, str);
+    emit_store(SELF, 2, SP, str);
+    emit_store(RA, 1, SP, str);
+    emit_addiu(FP, SP, 16, str);
+    emit_move(SELF, ACC, str);
 }
 
 // Aaaaand to restore them
 static void emit_restore_remember_regs(ostream& str){
-    emit_push(RA, str);
-    emit_push(SELF, str);
-    emit_push(FP, str);
+    //emit_pop(RA, str);
+    //emit_pop(SELF, str);
+    //emit_pop(FP, str);
+    emit_load(FP, 3, SP, str);
+    emit_load(SELF, 2, SP, str);
+    emit_load(RA, 1, SP, str);
+    emit_addiu(SP, SP, 12, str);
 }
 
 // This is called by the callee (function def)
@@ -1315,7 +1325,8 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     int dispatch_label = GLOBAL_LABEL_CTR++;
 
     //Create clean AR
-    emit_push(FP, s);
+    //emit_push(FP, s);
+    emit_remember_regs(s);
 
     // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
@@ -1377,7 +1388,8 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     int dispatch_label = GLOBAL_LABEL_CTR++;
 
     //Create clean AR
-    emit_push(FP, s);
+    //emit_push(FP, s);
+    emit_remember_regs(s);
 
     // Add the arguments in reverse order
     std::vector<Expression> reverse_helper;
@@ -1429,7 +1441,6 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Dispatch: method offset: %i\n", method_offset);
     emit_load(T1, method_offset, T1, s);
     emit_jalr(T1,s);
-
 }
 
 void cond_class::code(ostream &s, CgenClassTable* cgentable) {
