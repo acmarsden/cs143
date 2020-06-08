@@ -1305,6 +1305,7 @@ Symbol object_class::typeCheck(ClassTable* classtable) {
         set_type(*lookup);
         return get_type();
     }else{
+        classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this) << "Identifier '" << name->get_string() <<"' is undefinded. " << endl;
         set_type(Object);
         return get_type();
     }

@@ -4,9 +4,9 @@ to those in the NEW cool.y source file.
 NOTE to us: diff made between the following commit hashes:
 compare/34ab198b67e7215b1bdb62ff4fa34a139ff83954...master
 
-1) L105: Added code to catch inheritance from basic classes Int, Bool and Str. 
-
-
+1) L105: (Test Cases 14 and 27) Added code to catch inheritance from basic classes Int, Bool and Str. 
+2) L751: (Test Case 23) Added code to prevent self from being passed as a formal parameter.
+3) L785-786: (Test Case 22) Only changes the error message (should not count towards line number difference)
 
 We also added some additional test files to reproduce our mistakes and test our fixes.
 
