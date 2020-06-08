@@ -41,8 +41,7 @@ class Main inherits IO {
   dispatch_test2() : Int {plus_test()};
   static_dispatch_test() : Int {b@A.a_dispatch(0, 1)};
   main():SELF_TYPE { 
-    {  out_string("Testing dispatch1 \n"); out_int(dispatch_test1());
-       (*
+    {  --out_string("Testing dispatch1 \n"); out_int(dispatch_test1());
        out_string("\n Testing dispatch2 \n"); out_int(dispatch_test2());
        out_string("\n minus_test \n"); out_int(minus_test()); 
        out_string("\n mult_test \n"); out_int(mult_test());
@@ -58,8 +57,7 @@ class Main inherits IO {
        out_string("\n if_test \n"); out_int(if_test());
        out_string("\n block_test \n"); out_int(block_test());
        out_string("\n let_test \n"); out_int(let_test());
-       out_string("\n case_test \n"); out_int(case_test(0));
-       *) 
+       out_string("\n case_test \n"); out_int(case_test(0)); 
    }
   };
 };

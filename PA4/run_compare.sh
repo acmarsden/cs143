@@ -21,3 +21,10 @@ echo "Running our compiler on $filename.cl"
 echo "Saving to our_$filename.s"
 mv $filename.s our_$filename.s
 
+class_bin=/usr/class/cs143/bin
+echo "=============== Running theirs ==================="
+$class_bin/spim their_$filename.s
+
+echo "================Running ours ================="
+$class_bin/spim our_$filename.s
+
