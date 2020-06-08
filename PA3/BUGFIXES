@@ -4,11 +4,16 @@ to those in the NEW cool.y source file.
 NOTE to us: diff made between the following commit hashes:
 compare/34ab198b67e7215b1bdb62ff4fa34a139ff83954...master
 
-1) L105: (Test cases 14 and 27) Added code to catch inheritance from basic classes Int, Bool and Str. 
-2) L751: (Test case 23) Added code to prevent self from being passed as a formal parameter.
-3) L785-786: (Test case 22) Only changes the error message (should not count towards line number difference).
-4) L1056: (Test case 16) Adds code to prevent self from being bound in a let expression.
-5) L1307: (Test case 18) Adds code to throw an error when you have an undefined ID.
+1) L105: (Test cases 14 and 27 [inheritsbool.cl, inherit-bool.cl]) Added code to catch inheritance from basic classes Int, Bool and Str. 
+2) L540: (Test case 2 [attributenamedself.cl]) Added code to catch atttribute names being self. 
+3) L752: (Test case 23 [selfinformalparameter.cl]) Added code to prevent self from being passed as a formal parameter.
+4) L786-787: (Test case 22 [self-assignment.cl]) Only changes the error message (should not count towards line number difference).
+5) L1057: (Test case 16 [letself.cl]) Adds code to prevent self from being bound in a let expression.
+6) L1309: (Test case 18 [outofscope.cl]) Adds code to throw an error when you have an undefined ID.
+
+Additionally, we submitted a regrade on Gradescope, since we think our test case 25 [selfparameterposition.cl] is 
+correct, and the error meddage is similar enough to the sample output. Further, on that error we report more
+messages, since they are bubbled up the tree, as the type check returns Object for id 'x'. 
 
 We also added some additional test files to reproduce our mistakes and test our fixes.
 
