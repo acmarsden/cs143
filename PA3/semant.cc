@@ -1053,6 +1053,7 @@ Symbol let_class::typeCheck(ClassTable* classtable) {
     if(var_type == SELF_TYPE){
         var_type = curr_class;
     }
+    if(identifier==self){ ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this); err_stream << "Let error: Cannot bind 'self'" << endl; }
     if(classtable->children.find(var_type) == classtable->children.end()) {
         ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this);
         err_stream << "Let error: Declared type of variable: '" << type_decl->get_string();
