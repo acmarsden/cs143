@@ -537,6 +537,7 @@ void method_class::collectSignature(ClassTable* classtable) {
 void attr_class::addToScope(ClassTable* classtable) {
     // Don´t do this for base classes
     Symbol curr_class = classtable->getCurrentClass();
+    if(name==self){ostream& err_stream = classtable->semant_error(classtable->symb_class_map[curr_class]->get_filename(), this); err_stream << "Error: Attribute name cannot be 'self'" << endl;}
     if(curr_class != Object && curr_class != Str && curr_class != Int &&
            curr_class != IO && curr_class != Bool){
         // Check that the attribute type has been defined.
