@@ -1211,7 +1211,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             // Postcond: result is in ACC
 
             // Pop the method parameters
-            emit_addiu(SP, SP, num_formals*WORD_SIZE, s);
+            emit_addiu(SP, SP, num_formals*WORD_SIZE, str);
 
             // Restore AR
             emit_restore_remember_regs(str);
