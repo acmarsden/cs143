@@ -1476,6 +1476,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_load(T2, 0, ACC, s);
     for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
         Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+        Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
         // TODO: can the type of a branch be SELF_TYPE?
         cgentable->objectST.enterscope();
         emit_push(ACC, s); // Remember ACC for now
@@ -1484,7 +1485,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         s << JAL; emit_method_ref(Object, _copy, s); s << endl;
         // Push it onto the stack and add it to the scope
         emit_push(ACC, s);
-        addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+        addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
         emit_pop(ACC, s); // recover the remembered acc value
 
