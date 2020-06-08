@@ -1077,11 +1077,12 @@ static void emit_remember_regs(ostream& str){
     //emit_push(FP, str);
     //emit_push(SELF, str);
     //emit_push(RA, str);
-    emit_addiu(SP, SP, -12, str);
+    emit_addiu(SP, SP, -3*WORD_SIZE, str);
     emit_store(FP, 3, SP, str);
     emit_store(SELF, 2, SP, str);
     emit_store(RA, 1, SP, str);
-    emit_addiu(FP, SP, 16, str);
+    // Put frame pointer 4 words above: at the top of the AR
+    emit_addiu(FP, SP, 4*WORD_SIZE, str);
     emit_move(SELF, ACC, str);
     GLOBAL_FP_OFF = -3; // in words
 }
@@ -1094,7 +1095,7 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(FP, 3, SP, str);
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
-    emit_addiu(SP, SP, 12, str);
+    emit_addiu(SP, SP, 3*WORD_SIZE, str);
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
@@ -1208,6 +1209,9 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
 
             int num_formals = curr_node->features->nth(i)->code(str, 0, this);
             // Postcond: result is in ACC
+
+            // Pop the method parameters
+            emit_addiu(SP, SP, num_formals*WORD_SIZE, s);
 
             // Restore AR
             emit_restore_remember_regs(str);
