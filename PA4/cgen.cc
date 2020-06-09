@@ -1600,9 +1600,9 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             cgentable->objectST.enterscope();
 
             recurse_loop_label = GLOBAL_LABEL_CTR++;
-            next_case_label = GLOBAL_LABEL_CTR++;
             recurse_label = GLOBAL_LABEL_CTR++;
             emit_label_def(next_case_label, s);
+            next_case_label = GLOBAL_LABEL_CTR++;
             emit_move(T2, T3, s);
 
             emit_label_def(recurse_loop_label, s);
