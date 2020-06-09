@@ -1512,7 +1512,8 @@ void loop_class::code(ostream &s, CgenClassTable* cgentable) {
 void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     int begin_case_label = GLOBAL_LABEL_CTR++;
     int end_case_label = GLOBAL_LABEL_CTR++;
-    int next_case_label;
+    int next_case_label = GLOBAL_LABEL_CTR++;
+    int recurse_label;
 
     emit_push(S1, s); // PUSH 1
         // check object for void
@@ -1532,60 +1533,51 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_load(T2, 0, ACC, s);
 
         // This is to take care of the closest ancestor thing
-        // Let's do if with the satic type for now.
-        // TODO: ideally this should be done using the dynamic type at runtime
-        Symbol expr_static_type = expr->get_type();
-        // Get the list of the valid classes that are ancestors of expr_static_type
-        std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
-        // Sort the cases from largest to smallest and make sure they are in the ancestor map
+        // with the dynamic type of the expr which is in T2
+        // Sort the cases from largest to smallest according to their classtags
         std::vector<int> sorted_branch_tags;
         std::vector<branch_class*> sorted_branches;
         for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
             Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
-            Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
-            Expression case_expr = ((branch_class*)(cases->nth(i)))->expr;
             branch_class* branch = ((branch_class*)(cases->nth(i)));
 
             int case_tag = cgentable->classtag_map[case_type];
             if(cgen_debug) printf("Case_tag: %d\n", case_tag);
-            if(cgen_debug) printf("Valid_tag size: %lu\n", valid_tags.size());
-            if(valid_tags.find(case_tag) != valid_tags.end()){
-                // insert case_tag so that vector remains in largest->smallest order
+            // insert case_tag so that vector remains in largest->smallest order
 
-                if(sorted_branch_tags.size() == 0){
-                    if(cgen_debug) printf("Performed intial insert into sorted_branch_tags \n");
+            if(sorted_branch_tags.size() == 0){
+                if(cgen_debug) printf("Performed intial insert into sorted_branch_tags \n");
+                sorted_branch_tags.push_back(case_tag);
+                sorted_branches.push_back(branch);
+            }else{
+                int j = 0;
+                for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
+                    if(case_tag>*it){
+                        if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
+                        sorted_branch_tags.insert(it, case_tag);
+                        break;
+                    }
+                    ++j;
+                }
+                int k = 0;
+                for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
+                    if(k==j){
+                        if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
+                        sorted_branches.insert(it, branch);
+                        break;
+                    }
+                    ++k;
+                }
+                // We might want to insert at the end
+                if(j == (int) sorted_branch_tags.size()){
                     sorted_branch_tags.push_back(case_tag);
                     sorted_branches.push_back(branch);
-                }else{
-                    int j = 0;
-                    for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
-                        if(case_tag>*it){
-                            if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
-                            sorted_branch_tags.insert(it, case_tag);
-                            break;
-                        }
-                        ++j;
-                    }
-                    int k = 0;
-                    for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
-                        if(k==j){
-                            if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
-                            sorted_branches.insert(it, branch);
-                            break;
-                        }
-                        ++k;
-                    }
-                    // We might want to insert at the end
-                    if(j == (int) sorted_branch_tags.size()){
-                        sorted_branch_tags.push_back(case_tag);
-                        sorted_branches.push_back(branch);
-                    }
                 }
             }
         }
         if(cgen_debug) printf("Size of sorted_branches list: %lu\n", sorted_branches.size());
 
-        // Now iterate over ONLY the matching branches, in desc order
+        // Now emit the branches, in desc order
         for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it){
             Symbol case_type = (*it)->type_decl;
             Symbol case_name = (*it)->name;
@@ -1593,35 +1585,50 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
 
-            next_case_label = GLOBAL_LABEL_CTR++;
-            emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-            //emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-
-            // Once you matched on a case,
-            emit_push(ACC, s); // PUSH 2: Remember ACC for now
-            emit_move(S1, ACC, s);
-
-            // copy the proto for the matching case type, allocate it (don't init yet)
-            emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
-            s << JAL; emit_method_ref(Object, _copy, s); s << endl;
-            // Push it onto the stack and add it to the scope
-            emit_push(ACC, s); // PUSH 3
-            addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
-
-            // Emit code to evaluate the expr
-            case_expr->code(s, cgentable);
-            // ACC has return value
-
-            // Pop the proto object from the stack
-            emit_pop_null(1, s); // POP 3
-
-            // Unconditionally branch to the end of the case
-            emit_branch(end_case_label, s);
-
-            // Finish off
             emit_label_def(next_case_label, s);
+            next_case_label = GLOBAL_LABEL_CTR++;
+            recurse_label = GLOBAL_LABEL_CTR++;
+
+            emit_blt(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            emit_bgt(T2, cgentable->classtag_map[case_type], recurse_label, s);
+            // BEGIN: code for correct branch
+                // Once you matched on a case,
+                emit_push(ACC, s); // PUSH 2: Remember ACC for now
+                emit_move(S1, ACC, s);
+
+                // copy the proto for the matching case type, allocate it (don't init yet)
+                emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+                s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+                // Push it onto the stack and add it to the scope
+                emit_push(ACC, s); // PUSH 3
+                addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+
+                // Emit code to evaluate the expr
+                case_expr->code(s, cgentable);
+                // ACC has return value
+
+                // Pop the proto object from the stack
+                emit_pop_null(1, s); // POP 3
+
+                // Unconditionally branch to the end of the case
+                emit_branch(end_case_label, s);
+
+            // Recurse Label
+            emit_label_def(recurse_label, s);
+            // Get the address of the parent table
+            emit_load_address(T1, CLASSPARENTTAB, s);
+            // Offset from the begining of the class parent table
+            // to the corresponding location
+            emit_addu(T1, T1, T2 s);
+            // Get the parent tag into T2
+            emit_move(T2, T1, s);
+            // Unconditionally branch back to the begining of this case
+            // must have classtag in T2
+            emit_branch(next_case_label-2, s);
             cgentable->objectST.exitscope();
         }
+        // Finish off
+        emit_label_def(next_case_label, s);
         // Abort with no matching caset code
         emit_jal("_case_abort", s);
 
