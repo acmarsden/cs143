@@ -1544,7 +1544,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_label_def(begin_case_label, s);
         // Get the classtag into T2: this is the dynamic type
         emit_load(T2, 0, ACC, s);
-        emit_move(T2, T3, s);
+        emit_move(T3, T2, s);
 
         // This is to take care of the closest ancestor thing
         // with the dynamic type of the expr which is in T2
