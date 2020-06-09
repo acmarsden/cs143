@@ -71,6 +71,14 @@ SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examp
 
 
 ==============================================================
+SPIM out diff (< : ours, > : theirs) on:  annietest.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  arithexample1.cl 
+
+
+==============================================================
 SPIM out diff (< : ours, > : theirs) on:  basicexample.cl 
 
 
@@ -79,10 +87,26 @@ SPIM out diff (< : ours, > : theirs) on:  case_exact.cl
 
 
 ==============================================================
+SPIM out diff (< : ours, > : theirs) on:  caseexample.cl 
+
+
+==============================================================
 SPIM out diff (< : ours, > : theirs) on:  case_superclass.cl 
 
 
 ==============================================================
 SPIM out diff (< : ours, > : theirs) on:  example.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  let_nestedcalls.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  let_noinit.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  let_selftype.cl 
 
 

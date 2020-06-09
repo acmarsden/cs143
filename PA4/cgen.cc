@@ -916,9 +916,11 @@ CgenNodeP CgenClassTable::root()
 void CgenClassTable::build_classtag_map(CgenNode* curr_node, uint* curr_classtag)
 {
     classtag_map[curr_node->name] = *curr_classtag;
+    classtag_ancestor_map[curr_node->name].insert(*curr_classtag);
     ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
+        classtag_ancestor_map[curr_child->name].insert(*curr_classtag-1);
         build_classtag_map(curr_child, curr_classtag);
     }
 
@@ -1474,6 +1476,34 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_label_def(begin_case_label, s);
     // Get the classtag into T2
     emit_load(T2, 0, ACC, s);
+
+    // Get expr static type
+    Symbol expr_static_type = expr->get_type();
+    // Get the list of the valid classes that are ancestors of expr_static_type
+    std::set<uint> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
+    // Sort the cases from largest to smallest and make sure they are in the ancestor map
+    std::vector<uint> sorted_tags;
+    std::vector<Symbol> sorted_branches;
+    for(uint i = cases->first(); cases->more(i); i = cases->next(i)) {
+        Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+        Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+        uint case_tag = cgentable->classtag_map[case_type];
+        if(valid_tags.find(case_tag) != valid_tags.end()){
+            // insert case_tag so that vector remains in largest->smallest order
+            for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter ++) {
+                if(case_tag>sorted_tags[*iter]){
+                    sorted_tags.insert(iter, case_tag);
+                    //sorted_branches.insert(iter, case_name);
+                    break;
+                }
+            }
+        }
+    }
+
+    //for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter++){
+        
+    //}
+
     for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
         Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
         Symbol case_name = ((branch_class*)(cases->nth(i)))->name;

@@ -4,6 +4,7 @@
 #include "cool-tree.h"
 #include "cool-tree.handcode.h"
 #include "symtab.h"
+#include <set>
 #include <map>
 #include <vector>
 #include <utility> // for std::pair
@@ -67,6 +68,7 @@ public:
    CgenNodeP getCurrentNode(){return current_node;}
    std::map<Symbol, std::vector<Symbol> > dispatch_table;
    std::map<Symbol, uint> classtag_map;
+   std::map<Symbol, std::set<uint> > classtag_ancestor_map;
    Scopetable objectST;
 };
 
