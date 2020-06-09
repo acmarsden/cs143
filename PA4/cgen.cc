@@ -1519,14 +1519,15 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
-            emit_push(ACC, s); // PUSH 2: Remember ACC for now
 
             next_case_label = GLOBAL_LABEL_CTR++;
             emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
             emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-            emit_move(S1, ACC, s);
 
             // Once you matched on a case,
+            emit_push(ACC, s); // PUSH 2: Remember ACC for now
+            emit_move(S1, ACC, s);
+
             // copy the proto for the matching case type, allocate it (don't init yet)
             emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
             s << JAL; emit_method_ref(Object, _copy, s); s << endl;
