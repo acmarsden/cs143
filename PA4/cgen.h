@@ -55,7 +55,7 @@ private:
    // a list of classes.  The graph is implemented as
    // a tree of `CgenNode', and class names are placed
    // in the base class symbol table.
-   void build_classtag_map(CgenNodeP, uint*);
+   void build_classtag_map(CgenNodeP, int*, std::vector<int>*);
    void install_basic_classes();
    void install_class(CgenNodeP nd);
    void install_classes(Classes cs);
@@ -67,8 +67,8 @@ public:
    CgenNodeP root();
    CgenNodeP getCurrentNode(){return current_node;}
    std::map<Symbol, std::vector<Symbol> > dispatch_table;
-   std::map<Symbol, uint> classtag_map;
-   std::map<Symbol, std::set<uint> > classtag_ancestor_map;
+   std::map<Symbol, int> classtag_map;
+   std::map<Symbol, std::set<int> > classtag_ancestor_map;
    Scopetable objectST;
 };
 
