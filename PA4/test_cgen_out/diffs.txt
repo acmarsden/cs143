@@ -79,7 +79,7 @@ SPIM out diff (< : ours, > : theirs) on:  basicexample.cl
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  book_list1.cl 
+SPIM out diff (< : ours, > : theirs) on:  book_list_simple.cl 
 
 
 ==============================================================
