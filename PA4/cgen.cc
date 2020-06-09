@@ -1496,60 +1496,59 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     int next_case_label;
 
     emit_push(S1, s);
+        // check object for void
+        expr->code(s, cgentable);
+        // Object from the expr is in ACC
 
-    // check object for void
-    expr->code(s, cgentable);
-    // Object from the expr is in ACC
+        emit_bne(ACC, ZERO, begin_case_label, s);
+        // Case abort requires line number in T1 and filename in ACC
+        emit_partial_load_address(ACC,s);
+        stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
+        emit_load_imm(T1, get_line_number(), s);
+        emit_jal("_case_abort2", s);
 
-    emit_bne(ACC, ZERO, begin_case_label, s);
-    // Case abort requires line number in T1 and filename in ACC
-    emit_partial_load_address(ACC,s);
-    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
-    emit_load_imm(T1, get_line_number(), s);
-    emit_jal("_case_abort2", s);
+        // Begn the case
+        emit_label_def(begin_case_label, s);
+        // Get the classtag into T2
+        emit_load(T2, 0, ACC, s);
+        for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
+            Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+            Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+            // TODO: can the type of a branch be SELF_TYPE?
+            cgentable->objectST.enterscope();
+            emit_push(ACC, s); // Remember ACC for now
+                // Copy the proto for the matching case type, allocate it (don't init yet)
+                emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+                s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+                // Push it onto the stack and add it to the scope
+                emit_push(ACC, s);
+                    addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
-    // Begn the case
-    emit_label_def(begin_case_label, s);
-    // Get the classtag into T2
-    emit_load(T2, 0, ACC, s);
-    for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
-        Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
-        Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
-        // TODO: can the type of a branch be SELF_TYPE?
-        cgentable->objectST.enterscope();
-        emit_push(ACC, s); // Remember ACC for now
-        // Copy the proto for the matching case type, allocate it (don't init yet)
-        emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
-        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
-        // Push it onto the stack and add it to the scope
-        emit_push(ACC, s);
-        addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+                    next_case_label = GLOBAL_LABEL_CTR++;
+                    emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+                    emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+                    emit_move(S1, ACC, s);
 
-        emit_pop(ACC, s); // recover the remembered acc value
+                    // Emit code to evaluate the expr
+                    ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
+                    // ACC has return value
 
-        next_case_label = GLOBAL_LABEL_CTR++;
-        emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-        emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-        emit_move(S1, ACC, s);
+                // Pop the proto object from the stack
+                emit_pop_null(1, s);
 
-        // Emit code to evaluate the expr
-        ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
-        // ACC has return value
+            emit_pop_null(1, s); // pop the remembered acc value
 
-        // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
-        emit_pop_null(1, s);
+            // Unconditionally branch to the end of the
+            emit_branch(end_case_label, s);
 
-        // Unconditionally branch to the end of the
-        emit_branch(end_case_label, s);
+            // Finish off
+            emit_label_def(next_case_label, s);
+            cgentable->objectST.exitscope();
+        }
+        // Abort with no matching caset code
+        emit_jal("_case_abort", s);
 
-        // Finish off
-        emit_label_def(next_case_label, s);
-        cgentable->objectST.exitscope();
-    }
-    // Abort with no matching caset code
-    emit_jal("_case_abort", s);
-
-    emit_label_def(end_case_label, s);
+        emit_label_def(end_case_label, s);
 
     emit_pop(S1, s);
 }
