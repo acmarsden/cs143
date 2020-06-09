@@ -973,7 +973,12 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
 }
 
 void CgenClassTable::code_class_parentTab(CgenNode* curr_node){
-    // ANNIE
+    str << WORD << classtag_map[curr_node->name] << endl;
+
+    for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
+        CgenNode* curr_child = l->hd();
+        code_class_parentTab(curr_child);
+    }
 }
 
 void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
