@@ -1528,11 +1528,12 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
 
         // Begn the case
         emit_label_def(begin_case_label, s);
-        // Get the classtag into T2
+        // Get the classtag into T2: this is the dynamic type
         emit_load(T2, 0, ACC, s);
 
         // This is to take care of the closest ancestor thing
-        // Get expr static type
+        // Let's do if with the satic type for now.
+        // TODO: ideally this should be done using the dynamic type at runtime
         Symbol expr_static_type = expr->get_type();
         // Get the list of the valid classes that are ancestors of expr_static_type
         std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
@@ -1577,7 +1578,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
 
             next_case_label = GLOBAL_LABEL_CTR++;
             emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-            emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            //emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
 
             // Once you matched on a case,
             emit_push(ACC, s); // PUSH 2: Remember ACC for now
