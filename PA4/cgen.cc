@@ -673,8 +673,9 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
      install_classes(classes);
      build_inheritance_tree();
      //  build classtag_map
-     uint curr_classtag = 0;
-     build_classtag_map(root(), &curr_classtag);
+     int curr_classtag = 0;
+     std::vector<int> curr_ancestors;
+     build_classtag_map(root(), &curr_classtag, &curr_ancestors);
 
      stringclasstag = classtag_map[Str];
      intclasstag =    classtag_map[Int];
@@ -920,14 +921,29 @@ CgenNodeP CgenClassTable::root()
      return probe(Object);
 }
 
-void CgenClassTable::build_classtag_map(CgenNode* curr_node, uint* curr_classtag)
+void CgenClassTable::build_classtag_map(CgenNode* curr_node, int* curr_classtag,
+    std::vector<int>* curr_ancestors)
 {
     classtag_map[curr_node->name] = *curr_classtag;
+
+    classtag_ancestor_map[curr_node->name].insert(*curr_classtag);
+
+    // Remember myself as my ancestor
+    curr_ancestors->push_back(*curr_classtag);
+
     ++ *curr_classtag;
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
-        build_classtag_map(curr_child, curr_classtag);
+        // insert my ancestors (includes myself) into my child's
+        for(auto it=curr_ancestors->cbegin(); it!=curr_ancestors->cend(); ++it){
+            classtag_ancestor_map[curr_child->name].insert(*it);
+        }
+        build_classtag_map(curr_child, curr_classtag, curr_ancestors);
+
     }
+
+    // Forget myself as my ancestor
+    curr_ancestors->pop_back();
 
 }
 
@@ -957,7 +973,7 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
         std::vector<Symbol>* method_order)
 {
     // Add this node's methods
-    uint num_new_methods = 0;
+    int num_new_methods = 0;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(!(curr_node->features->nth(i)->is_attr())){
             // NOTE: this will override methods witho most recent class's implementation
@@ -995,7 +1011,7 @@ void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
             }
         }
     }
-    for(uint i=0; i<num_new_methods; ++i)
+    for(int i=0; i<num_new_methods; ++i)
         method_order->pop_back();
 }
 
@@ -1043,7 +1059,7 @@ static void emit_default_for_class(ostream& str, Symbol curr_class){
 void CgenClassTable::code_prototype(CgenNode* curr_node,
         std::vector<std::pair<Symbol, Symbol> >* parent_attr)
 {
-    uint num_slots = 0;
+    int num_slots = 0;
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
         if(curr_node->features->nth(i)->is_attr()){
             num_slots += 1;
@@ -1056,7 +1072,7 @@ void CgenClassTable::code_prototype(CgenNode* curr_node,
     // tag
     str << WORD << classtag_map[curr_node->name] << endl;
     // size
-    uint num_parent_attr = parent_attr->size();
+    int num_parent_attr = parent_attr->size();
     str << WORD << (DEFAULT_OBJFIELDS + num_slots + num_parent_attr) << endl;
     // dispatch table
     str << WORD; emit_disptable_ref(curr_node->name, str); str << endl;
@@ -1514,6 +1530,44 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_label_def(begin_case_label, s);
         // Get the classtag into T2
         emit_load(T2, 0, ACC, s);
+
+        // This is to take care of the closest ancestor thing
+        // Get expr static type
+        Symbol expr_static_type = expr->get_type();
+        // Get the list of the valid classes that are ancestors of expr_static_type
+        std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
+        // Sort the cases from largest to smallest and make sure they are in the ancestor map
+        std::vector<int> sorted_branch_tags;
+        std::vector<branch_class*> sorted_branches;
+        for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
+            Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+            Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+            Expression case_expr = ((branch_class*)(cases->nth(i)))->expr;
+            branch_class* branch = ((branch_class*)(cases->nth(i)));
+
+            int case_tag = cgentable->classtag_map[case_type];
+            if(valid_tags.find(case_tag) != valid_tags.end()){
+                // insert case_tag so that vector remains in largest->smallest order
+                int j = 0;
+                for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
+                    if(case_tag>*it){
+                        sorted_branch_tags.insert(it, case_tag);
+                        break;
+                    }
+                    ++j;
+                }
+                int k = 0;
+                for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
+                    if(k==j){
+                        sorted_branches.insert(it, branch);
+                        break;
+                    }
+                    ++k;
+                }
+            }
+        }
+
+        // Now iterate over the branches
         for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
             Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
             Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
