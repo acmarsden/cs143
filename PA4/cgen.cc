@@ -1544,6 +1544,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_label_def(begin_case_label, s);
         // Get the classtag into T2: this is the dynamic type
         emit_load(T2, 0, ACC, s);
+        emit_move(T2, T3, s);
 
         // This is to take care of the closest ancestor thing
         // with the dynamic type of the expr which is in T2
@@ -1598,10 +1599,13 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
 
-            emit_label_def(next_case_label, s);
+            recurse_loop_label = GLOBAL_LABEL_CTR++;
             next_case_label = GLOBAL_LABEL_CTR++;
             recurse_label = GLOBAL_LABEL_CTR++;
+            emit_label_def(next_case_label, s);
+            emit_move(T2, T3, s);
 
+            emit_label_def(recurse_loop_label, s);
             emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
             emit_bgti(T2, cgentable->classtag_map[case_type], recurse_label, s);
             // BEGIN: code for correct branch
@@ -1637,7 +1641,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             emit_move(T2, T1, s);
             // Unconditionally branch back to the begining of this case
             // must have classtag in T2
-            emit_branch(next_case_label-2, s);
+            emit_branch(recurse_loop_label, s);
             cgentable->objectST.exitscope();
         }
         // Finish off
