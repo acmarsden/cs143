@@ -41,6 +41,7 @@ private:
    // rest of the compiler
    void code_class_nameTab(CgenNodeP);
    void code_class_objTab(CgenNodeP);
+   void code_class_parentTab(CgenNodeP);
    void code_dispatch_tables(CgenNodeP,
                              std::map<Symbol, std::vector<Symbol> >*,
                              std::vector<Symbol>*);

@@ -21,6 +21,7 @@
 // Global names
 #define CLASSNAMETAB         "class_nameTab"
 #define CLASSOBJTAB          "class_objTab"
+#define CLASSPARENTTAB       "class_parentTab"
 #define INTTAG               "_int_tag"
 #define BOOLTAG              "_bool_tag"
 #define STRINGTAG            "_string_tag"

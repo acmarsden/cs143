@@ -562,6 +562,7 @@ void CgenClassTable::code_global_data()
     str << GLOBAL << MAXTAG << endl;
     str << GLOBAL << CLASSNAMETAB << endl;
     str << GLOBAL << CLASSOBJTAB << endl;
+    str << GLOBAL << CLASSPARENTTAB << endl;
 
     // Now define the global labels to proto and inits
     for(auto it=classtag_map.begin(); it!=classtag_map.end(); ++it){
@@ -886,6 +887,9 @@ void CgenClassTable::code()
     // - class_objTab
     str << CLASSOBJTAB << LABEL;
     code_class_objTab(root());
+    // - class_parentTab
+    str << CLASSPARENTTAB << LABEL;
+    code_class_parentTab(root());
 
     str << MAXTAG << LABEL;
     str << WORD << (classtag_map.size()-1) << endl;
@@ -966,6 +970,10 @@ void CgenClassTable::code_class_objTab(CgenNode* curr_node)
         CgenNode* curr_child = l->hd();
         code_class_objTab(curr_child);
     }
+}
+
+void CgenClassTable::code_class_parentTab(CgenNode* curr_node){
+    // ANNIE
 }
 
 void CgenClassTable::code_dispatch_tables(CgenNode* curr_node,
