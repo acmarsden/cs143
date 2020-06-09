@@ -1105,7 +1105,7 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 3*WORD_SIZE, str);
     GLOBAL_FP_OFF = FP_OFF_SCOPE.back(); // Reset it to the last one you remember
-    FP_OFF_SCOPE.pop_back()
+    FP_OFF_SCOPE.pop_back();
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
