@@ -343,9 +343,15 @@ static void emit_push(char *reg, ostream& str)
 
 static void emit_pop(char *reg, ostream& str)
 {
-    GLOBAL_FP_OFF += 1; // in wirds
+    GLOBAL_FP_OFF += 1; // in words
     emit_load(reg,1,SP,str);
     emit_addiu(SP,SP,4,str);
+}
+
+static void emit_pop_null(int num_words, ostream& str)
+{
+    GLOBAL_FP_OFF += num_words;
+    emit_addiu(SP, SP, num_words*WORD_SIZE, str);
 }
 
 //
@@ -370,7 +376,7 @@ static void emit_test_collector(ostream &s)
     emit_move(ACC, SP, s); // stack end
     emit_move(A1, ZERO, s); // allocate nothing
     s << JAL << gc_collect_names[cgen_Memmgr] << endl;
-    emit_addiu(SP,SP,4,s);
+    emit_addiu(SP,SP,4,s); // TODO: might this offset the GLOBALFPOFF? probably
     emit_load(ACC,0,SP,s);
 }
 
@@ -1084,7 +1090,7 @@ static void emit_remember_regs(ostream& str){
     // Put frame pointer 4 words above: at the top of the AR
     emit_addiu(FP, SP, 4*WORD_SIZE, str);
     emit_move(SELF, ACC, str);
-    GLOBAL_FP_OFF = -3; // in words
+    GLOBAL_FP_OFF = -3; // Reset this: in words
 }
 
 // Aaaaand to restore them
@@ -1096,6 +1102,7 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 3*WORD_SIZE, str);
+    GLOBAL_FP_OFF += 3; // Keep it consistent. It is probably about to be reset anyway
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
@@ -1213,7 +1220,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             // Restore AR
             emit_restore_remember_regs(str);
             // Pop the method parameters
-            emit_addiu(SP, SP, num_formals*WORD_SIZE, str);
+            emit_pop_null(num_formals, str);
             emit_return(str);
             // END method def
         }else{
@@ -1499,7 +1506,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         // ACC has return value
 
         // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
-        emit_addiu(SP, SP, 4, s);
+        emit_pop_null(1, s)
 
         // Unconditionally branch to the end of the
         emit_branch(end_case_label, s);
