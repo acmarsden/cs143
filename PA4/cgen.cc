@@ -1575,6 +1575,11 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                         }
                         ++k;
                     }
+                    // We might want to insert at the end
+                    if(j == sorted_branch_tags.size()){
+                        sorted_branch_tags.push_back(case_tag);
+                        sorted_branches.push_back(branch);
+                    }
                 }
             }
         }
