@@ -1498,7 +1498,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     int end_case_label = GLOBAL_LABEL_CTR++;
     int next_case_label;
 
-    emit_push(S1, s);
+    emit_push(S1, s); // PUSH 1
         // check object for void
         expr->code(s, cgentable);
         // Object from the expr is in ACC
@@ -1519,29 +1519,27 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
-            emit_push(ACC, s); // Remember ACC for now
+            emit_push(ACC, s); // PUSH 2: Remember ACC for now
 
-                next_case_label = GLOBAL_LABEL_CTR++;
-                emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-                emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-                emit_move(S1, ACC, s);
+            next_case_label = GLOBAL_LABEL_CTR++;
+            emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            emit_move(S1, ACC, s);
 
-                // Once you matched on a case,
-                // copy the proto for the matching case type, allocate it (don't init yet)
-                emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
-                s << JAL; emit_method_ref(Object, _copy, s); s << endl;
-                // Push it onto the stack and add it to the scope
-                emit_push(ACC, s);
-                    addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+            // Once you matched on a case,
+            // copy the proto for the matching case type, allocate it (don't init yet)
+            emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+            s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+            // Push it onto the stack and add it to the scope
+            emit_push(ACC, s); // PUSH 3
+            addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
-                    // Emit code to evaluate the expr
-                    ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
-                    // ACC has return value
+            // Emit code to evaluate the expr
+            ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
+            // ACC has return value
 
-                // Pop the proto object from the stack
-                emit_pop_null(1, s);
-
-            emit_pop_null(1, s); // pop the remembered acc value: don't need it
+            // Pop the proto object from the stack
+            emit_pop_null(1, s); // POP 3
 
             // Unconditionally branch to the end of the case
             emit_branch(end_case_label, s);
@@ -1554,8 +1552,9 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         emit_jal("_case_abort", s);
 
         emit_label_def(end_case_label, s);
+        emit_pop_null(1, s); // POP 2
 
-    emit_pop(S1, s);
+    emit_pop(S1, s); // POP 1
 }
 
 void block_class::code(ostream &s, CgenClassTable* cgentable) {
