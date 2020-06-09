@@ -1506,7 +1506,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         // ACC has return value
 
         // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
-        emit_pop_null(1, s)
+        emit_pop_null(1, s);
 
         // Unconditionally branch to the end of the
         emit_branch(end_case_label, s);
