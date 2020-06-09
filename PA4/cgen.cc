@@ -1597,8 +1597,8 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             next_case_label = GLOBAL_LABEL_CTR++;
             recurse_label = GLOBAL_LABEL_CTR++;
 
-            emit_blt(T2, cgentable->classtag_map[case_type], next_case_label, s);
-            emit_bgt(T2, cgentable->classtag_map[case_type], recurse_label, s);
+            emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            emit_bgti(T2, cgentable->classtag_map[case_type], recurse_label, s);
             // BEGIN: code for correct branch
                 // Once you matched on a case,
                 emit_push(ACC, s); // PUSH 2: Remember ACC for now
@@ -1627,7 +1627,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             emit_load_address(T1, CLASSPARENTTAB, s);
             // Offset from the begining of the class parent table
             // to the corresponding location
-            emit_addu(T1, T1, T2 s);
+            emit_addu(T1, T1, T2, s);
             // Get the parent tag into T2
             emit_move(T2, T1, s);
             // Unconditionally branch back to the begining of this case
