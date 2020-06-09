@@ -673,7 +673,7 @@ CgenClassTable::CgenClassTable(Classes classes, ostream& s) : nds(NULL) , str(s)
      build_inheritance_tree();
      //  build classtag_map
      int curr_classtag = 0;
-     std::vector<int>* curr_ancestors;
+     std::vector<int> curr_ancestors;
      build_classtag_map(root(), &curr_classtag, &curr_ancestors);
 
      stringclasstag = classtag_map[Str];
@@ -934,7 +934,7 @@ void CgenClassTable::build_classtag_map(CgenNode* curr_node, int* curr_classtag,
     for(List<CgenNode> *l = curr_node->get_children(); l; l=l->tl()){
         CgenNode* curr_child = l->hd();
         // insert my ancestors (includes myself) into my child's
-        for(auto it=curr_ancestors->cbegin(); it!=curr_ancestors.cend(); ++it){
+        for(auto it=curr_ancestors->cbegin(); it!=curr_ancestors->cend(); ++it){
             classtag_ancestor_map[curr_child->name].insert(*it);
         }
         build_classtag_map(curr_child, curr_classtag, curr_ancestors);
@@ -1536,22 +1536,31 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
     // Sort the cases from largest to smallest and make sure they are in the ancestor map
     std::vector<int> sorted_branch_tags;
-    std::vector<std::vector<Symbol> > sorted_branches;
+    std::vector<branch_class*> sorted_branches;
     for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
         Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
         Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
-        Symbol case_expr = ((branch_class*)(cases->nth(i)))->expr
+        Expression case_expr = ((branch_class*)(cases->nth(i)))->expr;
+        branch_class* branch = ((branch_class*)(cases->nth(i)));
 
         int case_tag = cgentable->classtag_map[case_type];
         if(valid_tags.find(case_tag) != valid_tags.end()){
             // insert case_tag so that vector remains in largest->smallest order
-            for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter ++) {
-                if(case_tag>sorted_tags[*iter]){
-                    sorted_tags.insert(iter, case_tag);
-                    std::vector<Symbol> branch_def(case_type, case_name, case_expr);
-                    sorted_branches.insert(iter, branch_def);
+            int j = 0;
+            for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
+                if(case_tag>*it){
+                    sorted_branch_tags.insert(it, case_tag);
                     break;
                 }
+                ++j;
+            }
+            int k = 0;
+            for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
+                if(k==j){
+                    sorted_branches.insert(it, branch);
+                    break;
+                }
+                ++k;
             }
         }
     }
