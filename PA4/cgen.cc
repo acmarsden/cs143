@@ -128,6 +128,7 @@ static char *gc_collect_names[] =
 // A global label counter to generate labels on the fly for branching code
 static int GLOBAL_LABEL_CTR = 0;
 static int GLOBAL_FP_OFF = 0;
+static std::vector<int> FP_OFF_SCOPE;
 
 //  BoolConst is a class that implements code generation for operations
 //  on the two booleans, which are given global names here.
@@ -1106,6 +1107,7 @@ static void emit_remember_regs(ostream& str){
     // Put frame pointer 4 words above: at the top of the AR
     emit_addiu(FP, SP, 4*WORD_SIZE, str);
     emit_move(SELF, ACC, str);
+    FP_OFF_SCOPE.push_back(GLOBAL_FP_OFF);
     GLOBAL_FP_OFF = -3; // Reset this: in words
 }
 
@@ -1118,7 +1120,8 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 3*WORD_SIZE, str);
-    GLOBAL_FP_OFF += 3; // Keep it consistent. It is probably about to be reset anyway
+    GLOBAL_FP_OFF = FP_OFF_SCOPE.back(); // Reset it to the last one you remember
+    FP_OFF_SCOPE.pop_back();
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
@@ -1511,106 +1514,121 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     int end_case_label = GLOBAL_LABEL_CTR++;
     int next_case_label;
 
-    emit_push(S1, s);
+    emit_push(S1, s); // PUSH 1
+        // check object for void
+        expr->code(s, cgentable);
+        // Object from the expr is in ACC
 
-    // check object for void
-    expr->code(s, cgentable);
-    // Object from the expr is in ACC
+        emit_bne(ACC, ZERO, begin_case_label, s);
+        // Case abort requires line number in T1 and filename in ACC
+        emit_partial_load_address(ACC,s);
+        stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
+        emit_load_imm(T1, get_line_number(), s);
+        emit_jal("_case_abort2", s);
 
-    emit_bne(ACC, ZERO, begin_case_label, s);
-    // Case abort requires line number in T1 and filename in ACC
-    emit_partial_load_address(ACC,s);
-    stringtable.add_string(cgentable->getCurrentNode()->get_filename()->get_string())->code_ref(s); s << endl;
-    emit_load_imm(T1, get_line_number(), s);
-    emit_jal("_case_abort2", s);
+        // Begn the case
+        emit_label_def(begin_case_label, s);
+        // Get the classtag into T2: this is the dynamic type
+        emit_load(T2, 0, ACC, s);
 
-    // Begn the case
-    emit_label_def(begin_case_label, s);
-    // Get the classtag into T2
-    emit_load(T2, 0, ACC, s);
+        // This is to take care of the closest ancestor thing
+        // Let's do if with the satic type for now.
+        // TODO: ideally this should be done using the dynamic type at runtime
+        Symbol expr_static_type = expr->get_type();
+        // Get the list of the valid classes that are ancestors of expr_static_type
+        std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
+        // Sort the cases from largest to smallest and make sure they are in the ancestor map
+        std::vector<int> sorted_branch_tags;
+        std::vector<branch_class*> sorted_branches;
+        for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
+            Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
+            Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+            Expression case_expr = ((branch_class*)(cases->nth(i)))->expr;
+            branch_class* branch = ((branch_class*)(cases->nth(i)));
 
-    // This is to take care of the closest ancestor thing
-    // Get expr static type
-    Symbol expr_static_type = expr->get_type();
-    // Get the list of the valid classes that are ancestors of expr_static_type
-    std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
-    // Sort the cases from largest to smallest and make sure they are in the ancestor map
-    std::vector<int> sorted_branch_tags;
-    std::vector<branch_class*> sorted_branches;
-    for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
-        Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
-        Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
-        Expression case_expr = ((branch_class*)(cases->nth(i)))->expr;
-        branch_class* branch = ((branch_class*)(cases->nth(i)));
+            int case_tag = cgentable->classtag_map[case_type];
+            if(cgen_debug) printf("Case_tag: %d\n", case_tag);
+            if(cgen_debug) printf("Valid_tag size: %lu\n", valid_tags.size());
+            if(valid_tags.find(case_tag) != valid_tags.end()){
+                // insert case_tag so that vector remains in largest->smallest order
 
-        int case_tag = cgentable->classtag_map[case_type];
-        if(valid_tags.find(case_tag) != valid_tags.end()){
-            // insert case_tag so that vector remains in largest->smallest order
-            int j = 0;
-            for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
-                if(case_tag>*it){
-                    sorted_branch_tags.insert(it, case_tag);
-                    break;
+                if(sorted_branch_tags.size() == 0){
+                    if(cgen_debug) printf("Performed intial insert into sorted_branch_tags \n");
+                    sorted_branch_tags.push_back(case_tag);
+                    sorted_branches.push_back(branch);
+                }else{
+                    int j = 0;
+                    for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
+                        if(case_tag>*it){
+                            if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
+                            sorted_branch_tags.insert(it, case_tag);
+                            break;
+                        }
+                        ++j;
+                    }
+                    int k = 0;
+                    for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
+                        if(k==j){
+                            if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
+                            sorted_branches.insert(it, branch);
+                            break;
+                        }
+                        ++k;
+                    }
+                    // We might want to insert at the end
+                    if(j == (int) sorted_branch_tags.size()){
+                        sorted_branch_tags.push_back(case_tag);
+                        sorted_branches.push_back(branch);
+                    }
                 }
-                ++j;
-            }
-            int k = 0;
-            for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
-                if(k==j){
-                    sorted_branches.insert(it, branch);
-                    break;
-                }
-                ++k;
             }
         }
-    }
+        if(cgen_debug) printf("Size of sorted_branches list: %lu\n", sorted_branches.size());
 
-    // TODO: from here, we want to only emit code for the sorted_branches
+        // Now iterate over ONLY the matching branches, in desc order
+        for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it){
+            Symbol case_type = (*it)->type_decl;
+            Symbol case_name = (*it)->name;
+            Expression case_expr = (*it)->expr;
+            // TODO: can the type of a branch be SELF_TYPE?
+            cgentable->objectST.enterscope();
 
-    //for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter++){
+            next_case_label = GLOBAL_LABEL_CTR++;
+            emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+            //emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
 
-    //}
+            // Once you matched on a case,
+            emit_push(ACC, s); // PUSH 2: Remember ACC for now
+            emit_move(S1, ACC, s);
 
-    for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
-        Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
-        Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
-        // TODO: can the type of a branch be SELF_TYPE?
-        cgentable->objectST.enterscope();
-        emit_push(ACC, s); // Remember ACC for now
-        // Copy the proto for the matching case type, allocate it (don't init yet)
-        emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
-        s << JAL; emit_method_ref(Object, _copy, s); s << endl;
-        // Push it onto the stack and add it to the scope
-        emit_push(ACC, s);
-        addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+            // copy the proto for the matching case type, allocate it (don't init yet)
+            emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+            s << JAL; emit_method_ref(Object, _copy, s); s << endl;
+            // Push it onto the stack and add it to the scope
+            emit_push(ACC, s); // PUSH 3
+            addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
-        emit_pop(ACC, s); // recover the remembered acc value
+            // Emit code to evaluate the expr
+            case_expr->code(s, cgentable);
+            // ACC has return value
 
-        next_case_label = GLOBAL_LABEL_CTR++;
-        emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-        emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-        emit_move(S1, ACC, s);
+            // Pop the proto object from the stack
+            emit_pop_null(1, s); // POP 3
 
-        // Emit code to evaluate the expr
-        ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
-        // ACC has return value
+            // Unconditionally branch to the end of the case
+            emit_branch(end_case_label, s);
 
-        // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
-        emit_pop_null(1, s);
+            // Finish off
+            emit_label_def(next_case_label, s);
+            cgentable->objectST.exitscope();
+        }
+        // Abort with no matching caset code
+        emit_jal("_case_abort", s);
 
-        // Unconditionally branch to the end of the
-        emit_branch(end_case_label, s);
+        emit_label_def(end_case_label, s);
+        emit_pop_null(1, s); // POP 2
 
-        // Finish off
-        emit_label_def(next_case_label, s);
-        cgentable->objectST.exitscope();
-    }
-    // Abort with no matching caset code
-    emit_jal("_case_abort", s);
-
-    emit_label_def(end_case_label, s);
-
-    emit_pop(S1, s);
+    emit_pop(S1, s); // POP 1
 }
 
 void block_class::code(ostream &s, CgenClassTable* cgentable) {
@@ -1636,14 +1654,15 @@ void let_class::code(ostream &s, CgenClassTable* cgentable) {
     // Store address on the stack using GLOBAL_FP_OFF
     emit_push(ACC, s);
 
-    // add it to objectST
-    addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+        // add it to objectST
+        addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
-    // Eval body
-    body -> code(s, cgentable);
+        // Eval body
+        body -> code(s, cgentable);
+        // ACC has return value
 
-    // Now we restore the stack, we don't care about saving their values, T0 isn't important to preserve
-    emit_pop(T0, s);
+    // Now we restore the stack,
+    emit_pop_null(1, s);
 
 }
 
