@@ -1551,23 +1551,30 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             if(cgen_debug) printf("Valid_tag size: %lu\n", valid_tags.size());
             if(valid_tags.find(case_tag) != valid_tags.end()){
                 // insert case_tag so that vector remains in largest->smallest order
-                int j = 0;
-                for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
-                    if(case_tag>*it){
-                        if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
-                        sorted_branch_tags.insert(it, case_tag);
-                        break;
+
+                if(sorted_branch_tags.size() == 0){
+                    if(cgen_debug) printf("Performed intial insert into sorted_branch_tags \n");
+                    sorted_branch_tags.push_back(case_tag);
+                    sorted_branches.push_back(branch);
+                }else{
+                    int j = 0;
+                    for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
+                        if(case_tag>*it){
+                            if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
+                            sorted_branch_tags.insert(it, case_tag);
+                            break;
+                        }
+                        ++j;
                     }
-                    ++j;
-                }
-                int k = 0;
-                for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
-                    if(k==j){
-                        if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
-                        sorted_branches.insert(it, branch);
-                        break;
+                    int k = 0;
+                    for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
+                        if(k==j){
+                            if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
+                            sorted_branches.insert(it, branch);
+                            break;
+                        }
+                        ++k;
                     }
-                    ++k;
                 }
             }
         }
