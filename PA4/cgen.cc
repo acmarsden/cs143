@@ -1569,9 +1569,9 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
 
         // Now iterate over ONLY the matching branches, in desc order
         for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it){
-            Symbol case_type = it->type_decl;
-            Symbol case_name = it->name;
-            Expression case_expr = it->expr;
+            Symbol case_type = (*it)->type_decl;
+            Symbol case_name = (*it)->name;
+            Expression case_expr = (*it)->expr;
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
 
