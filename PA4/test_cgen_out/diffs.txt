@@ -87,6 +87,10 @@ SPIM out diff (< : ours, > : theirs) on:  case_exact.cl
 
 
 ==============================================================
+SPIM out diff (< : ours, > : theirs) on:  case_superclass2.cl 
+
+
+==============================================================
 SPIM out diff (< : ours, > : theirs) on:  case_superclass.cl 
 
 
