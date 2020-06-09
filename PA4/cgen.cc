@@ -343,9 +343,15 @@ static void emit_push(char *reg, ostream& str)
 
 static void emit_pop(char *reg, ostream& str)
 {
-    GLOBAL_FP_OFF += 1; // in wirds
+    GLOBAL_FP_OFF += 1; // in words
     emit_load(reg,1,SP,str);
     emit_addiu(SP,SP,4,str);
+}
+
+static void emit_pop_null(int num_words, ostream& str)
+{
+    GLOBAL_FP_OFF += num_words;
+    emit_addiu(SP, SP, num_words*WORD_SIZE, str);
 }
 
 //
@@ -370,7 +376,7 @@ static void emit_test_collector(ostream &s)
     emit_move(ACC, SP, s); // stack end
     emit_move(A1, ZERO, s); // allocate nothing
     s << JAL << gc_collect_names[cgen_Memmgr] << endl;
-    emit_addiu(SP,SP,4,s);
+    emit_addiu(SP,SP,4,s); // TODO: might this offset the GLOBALFPOFF? probably
     emit_load(ACC,0,SP,s);
 }
 
@@ -1086,7 +1092,7 @@ static void emit_remember_regs(ostream& str){
     // Put frame pointer 4 words above: at the top of the AR
     emit_addiu(FP, SP, 4*WORD_SIZE, str);
     emit_move(SELF, ACC, str);
-    GLOBAL_FP_OFF = -3; // in words
+    GLOBAL_FP_OFF = -3; // Reset this: in words
 }
 
 // Aaaaand to restore them
@@ -1098,6 +1104,7 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 3*WORD_SIZE, str);
+    GLOBAL_FP_OFF += 3; // Keep it consistent. It is probably about to be reset anyway
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
@@ -1215,7 +1222,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             // Restore AR
             emit_restore_remember_regs(str);
             // Pop the method parameters
-            emit_addiu(SP, SP, num_formals*WORD_SIZE, str);
+            emit_pop_null(num_formals, str);
             emit_return(str);
             // END method def
         }else{
@@ -1299,20 +1306,41 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
 }
 
 void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
-
     int dispatch_label = GLOBAL_LABEL_CTR++;
-
-    // Add the arguments in reverse order
-    std::vector<Expression> reverse_helper;
-    for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
-        reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
+    // Compute which method is being used based on the name to get the right offset from T1
+    Symbol dispatch_class_type = type_name;
+    if(dispatch_class_type == SELF_TYPE){
+        dispatch_class_type = cgentable->getCurrentNode()->name;
+        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
     }
-    for(uint i=0; i<reverse_helper.size(); ++i){
-        reverse_helper[i]->code(s, cgentable);
-        //s << JAL;
-        //emit_method_ref(Object, _copy, s);
-        //s << endl;
-        emit_push(ACC, s); }
+
+    // Special handling of basic class dispatches
+    if((dispatch_class_type == Str) ||
+       //(isDescendantOf(IO, dispatch_class_type) && (name == out_string || name == out_int))){
+       ((name == out_string || name == out_int))){
+        // For some reason, the runtime expects these arguments the other way
+        // around in the stack :/
+        for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+            actual->nth(i)->code(s, cgentable);
+            emit_push(ACC, s);
+            // Also, let's correct the GLOBAL_FP_OFFSET, since that is not maintained
+            // by the runtime-defined methods for String
+            GLOBAL_FP_OFF += 1;
+        }
+    }else{
+        // Add the arguments in reverse order
+        std::vector<Expression> reverse_helper;
+        for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+            reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
+        }
+        for(uint i=0; i<reverse_helper.size(); ++i){
+            reverse_helper[i]->code(s, cgentable);
+            //s << JAL;
+            //emit_method_ref(Object, _copy, s);
+            //s << endl;
+            emit_push(ACC, s);
+        }
+    }
 
     // Don't push self emit_push(SELF, s);
 
@@ -1331,12 +1359,6 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_label_def(dispatch_label, s);
     // The ACC now holds the address to the resulting object in memory after evaluationg expr
 
-    // Compute which method is being used based on the name to get the right offset from T1
-    Symbol dispatch_class_type = type_name;
-    if(dispatch_class_type == SELF_TYPE){
-        dispatch_class_type = cgentable->getCurrentNode()->name;
-        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
-    }
     std::vector<Symbol> methods = cgentable->dispatch_table[dispatch_class_type];
     int method_offset=0;
     for(uint i=0; i<methods.size(); ++i){
@@ -1360,18 +1382,41 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
 void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     int dispatch_label = GLOBAL_LABEL_CTR++;
-
-    // Add the arguments in reverse order
-    std::vector<Expression> reverse_helper;
-    for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
-        reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
+    Symbol dispatch_class_type = expr->get_type();
+    // Compute which method is being used based on the name to get the right offset from T1
+    if(dispatch_class_type == SELF_TYPE){
+        dispatch_class_type = cgentable->getCurrentNode()->name;
+        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
     }
-    for(uint i=0; i<reverse_helper.size(); ++i){
-        reverse_helper[i]->code(s, cgentable);
-        //s << JAL;
-        //emit_method_ref(Object, _copy, s);
-        //s << endl;
-        emit_push(ACC, s); }
+
+    // Special handling of basic class dispatches
+    if((dispatch_class_type == Str) ||
+       //(isDescendantOf(IO, dispatch_class_type) && (name == out_string || name == out_int))){
+       ((name == out_string || name == out_int))){
+        // For some reason, the runtime expects these arguments the other way
+        // around in the stack :/
+        for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+            actual->nth(i)->code(s, cgentable);
+            emit_push(ACC, s);
+            // Also, let's correct the GLOBAL_FP_OFFSET, since that is not maintained
+            // by the runtime-defined methods for String
+            GLOBAL_FP_OFF += 1;
+        }
+    }else{
+        // Normal dispatch case
+        // Add the arguments in reverse order
+        std::vector<Expression> reverse_helper;
+        for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {
+            reverse_helper.insert(reverse_helper.begin(),actual->nth(i));
+        }
+        for(uint i=0; i<reverse_helper.size(); ++i){
+            reverse_helper[i]->code(s, cgentable);
+            //s << JAL;
+            //emit_method_ref(Object, _copy, s);
+            //s << endl;
+            emit_push(ACC, s);
+        }
+    }
 
     // Don't add self emit_push(SELF, s);
 
@@ -1388,16 +1433,9 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Otherwise we run the dispatch
     emit_label_def(dispatch_label, s);
-    // The ACC now holds the address to the resulting object in memory after evaluationg expr
+    // The ACC now holds the address to the resulting object in memory after evaluating expr
     // Load the address of the dispatch table into T1
     emit_load(T1, 2, ACC, s);
-
-    // Compute which method is being used based on the name to get the right offset from T1
-    Symbol dispatch_class_type = expr->get_type();
-    if(dispatch_class_type == SELF_TYPE){
-        dispatch_class_type = cgentable->getCurrentNode()->name;
-        if(cgen_debug) printf("# Dispatch Resolving SELF TYPE to %s\n ", dispatch_class_type->get_string());
-    }
 
     std::vector<Symbol> methods = cgentable->dispatch_table[dispatch_class_type];
     int method_offset=0;
@@ -1529,7 +1567,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
         // ACC has return value
 
         // Pop the proto object from the stack TODO: this might mess up the GLOBAL_FP_OFF
-        emit_addiu(SP, SP, 4, s);
+        emit_pop_null(1, s);
 
         // Unconditionally branch to the end of the
         emit_branch(end_case_label, s);
