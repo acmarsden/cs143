@@ -1526,7 +1526,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     int begin_case_label = GLOBAL_LABEL_CTR++;
     int end_case_label = GLOBAL_LABEL_CTR++;
     int next_case_label = GLOBAL_LABEL_CTR++;
-    int recurse_label;
+    int recurse_label, recurse_loop_label;
 
     emit_push(S1, s); // PUSH 1
         // check object for void
