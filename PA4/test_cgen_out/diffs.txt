@@ -71,11 +71,7 @@ SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examp
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  annietest.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  arithexample1.cl 
+SPIM out diff (< : ours, > : theirs) on:  arith_us.cl 
 
 
 ==============================================================
@@ -83,11 +79,11 @@ SPIM out diff (< : ours, > : theirs) on:  basicexample.cl
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  case_exact.cl 
+SPIM out diff (< : ours, > : theirs) on:  book_list1.cl 
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  caseexample.cl 
+SPIM out diff (< : ours, > : theirs) on:  case_exact.cl 
 
 
 ==============================================================
