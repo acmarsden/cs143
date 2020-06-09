@@ -128,6 +128,7 @@ static char *gc_collect_names[] =
 // A global label counter to generate labels on the fly for branching code
 static int GLOBAL_LABEL_CTR = 0;
 static int GLOBAL_FP_OFF = 0;
+static std::vector<int> FP_OFF_SCOPE;
 
 //  BoolConst is a class that implements code generation for operations
 //  on the two booleans, which are given global names here.
@@ -1090,6 +1091,7 @@ static void emit_remember_regs(ostream& str){
     // Put frame pointer 4 words above: at the top of the AR
     emit_addiu(FP, SP, 4*WORD_SIZE, str);
     emit_move(SELF, ACC, str);
+    FP_OFF_SCOPE.push_back(GLOBAL_FP_OFF);
     GLOBAL_FP_OFF = -3; // Reset this: in words
 }
 
@@ -1102,7 +1104,8 @@ static void emit_restore_remember_regs(ostream& str){
     emit_load(SELF, 2, SP, str);
     emit_load(RA, 1, SP, str);
     emit_addiu(SP, SP, 3*WORD_SIZE, str);
-    GLOBAL_FP_OFF += 3; // Keep it consistent. It is probably about to be reset anyway
+    GLOBAL_FP_OFF = FP_OFF_SCOPE.back(); // Reset it to the last one you remember
+    FP_OFF_SCOPE.pop_back()
 }
 
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
