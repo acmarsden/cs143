@@ -1535,19 +1535,28 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
     // Get the list of the valid classes that are ancestors of expr_static_type
     std::set<int> valid_tags = cgentable->classtag_ancestor_map[expr_static_type];
     // Sort the cases from largest to smallest and make sure they are in the ancestor map
-    std::set<int> sorted_branch_tags;
-    std::vector<Symbol> sorted_branches;
+    std::vector<int> sorted_branch_tags;
+    std::vector<std::vector<Symbol> > sorted_branches;
     for(int i = cases->first(); cases->more(i); i = cases->next(i)) {
         Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
         Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+        Symbol case_expr = ((branch_class*)(cases->nth(i)))->expr
+
         int case_tag = cgentable->classtag_map[case_type];
         if(valid_tags.find(case_tag) != valid_tags.end()){
-            // Recall: set containers in std library are sorted (yay)
-            sorted_branch_tags.insert(case_tag);
+            // insert case_tag so that vector remains in largest->smallest order
+            for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter ++) {
+                if(case_tag>sorted_tags[*iter]){
+                    sorted_tags.insert(iter, case_tag);
+                    std::vector<Symbol> branch_def(case_type, case_name, case_expr);
+                    sorted_branches.insert(iter, branch_def);
+                    break;
+                }
+            }
         }
     }
 
-    // TODO: from here, we want to only emit code for the sorted_branch_tags in order. Needs more work
+    // TODO: from here, we want to only emit code for the sorted_branches
 
     //for(auto iter = sorted_tags.begin(); iter < sorted_tags.end(); iter++){
 
