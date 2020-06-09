@@ -21,15 +21,23 @@ class Main inherits IO {
   b : B <- new B;
   c : C <- new C;
   d : D <- new D;
-  case_test_1(x: Object): Int {case x of
+  case_test_DT(x: Object): Int {case x of
                           a: A => 56;
                           b: B => 67;
                        esac};
 
+  case_test_ST(x: D): Int {case x of
+                          a: A => 56;
+                          b: B => 67;
+                       esac};
   main():SELF_TYPE {
     {
-       out_string("\n case_test_1\n");
-       out_int(case_test_1(d));
+       out_string("\n case_test_ST\n");
+       out_int(case_test_ST(d));
+       out_string("\n");
+       out_string("\n case_test_DT\n");
+       out_int(case_test_DT(d));
+       out_string("\n");
    }
   };
 };

@@ -1547,11 +1547,14 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             branch_class* branch = ((branch_class*)(cases->nth(i)));
 
             int case_tag = cgentable->classtag_map[case_type];
+            if(cgen_debug) printf("Case_tag: %d\n", case_tag);
+            if(cgen_debug) printf("Valid_tag size: %lu\n", valid_tags.size());
             if(valid_tags.find(case_tag) != valid_tags.end()){
                 // insert case_tag so that vector remains in largest->smallest order
                 int j = 0;
                 for(auto it=sorted_branch_tags.cbegin(); it!=sorted_branch_tags.cend(); ++it) {
                     if(case_tag>*it){
+                        if(cgen_debug) printf("Inserted into sorted_branch_tags at index %d\n", j);
                         sorted_branch_tags.insert(it, case_tag);
                         break;
                     }
@@ -1560,6 +1563,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 int k = 0;
                 for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it) {
                     if(k==j){
+                        if(cgen_debug) printf("Inserted into sorted_branches at index %d\n", k);
                         sorted_branches.insert(it, branch);
                         break;
                     }
@@ -1567,6 +1571,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 }
             }
         }
+        if(cgen_debug) printf("Size of sorted_branches list: %lu\n", sorted_branches.size());
 
         // Now iterate over ONLY the matching branches, in desc order
         for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it){
