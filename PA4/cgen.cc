@@ -1520,17 +1520,19 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
             emit_push(ACC, s); // Remember ACC for now
-                // Copy the proto for the matching case type, allocate it (don't init yet)
+
+                next_case_label = GLOBAL_LABEL_CTR++;
+                emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+                emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
+                emit_move(S1, ACC, s);
+
+                // Once you matched on a case,
+                // copy the proto for the matching case type, allocate it (don't init yet)
                 emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
                 s << JAL; emit_method_ref(Object, _copy, s); s << endl;
                 // Push it onto the stack and add it to the scope
                 emit_push(ACC, s);
                     addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
-
-                    next_case_label = GLOBAL_LABEL_CTR++;
-                    emit_blti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-                    emit_bgti(T2, cgentable->classtag_map[case_type], next_case_label, s);
-                    emit_move(S1, ACC, s);
 
                     // Emit code to evaluate the expr
                     ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
@@ -1539,9 +1541,9 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 // Pop the proto object from the stack
                 emit_pop_null(1, s);
 
-            emit_pop_null(1, s); // pop the remembered acc value
+            emit_pop_null(1, s); // pop the remembered acc value: don't need it
 
-            // Unconditionally branch to the end of the
+            // Unconditionally branch to the end of the case
             emit_branch(end_case_label, s);
 
             // Finish off
@@ -1579,14 +1581,15 @@ void let_class::code(ostream &s, CgenClassTable* cgentable) {
     // Store address on the stack using GLOBAL_FP_OFF
     emit_push(ACC, s);
 
-    // add it to objectST
-    addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+        // add it to objectST
+        addToScope(identifier, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
-    // Eval body
-    body -> code(s, cgentable);
+        // Eval body
+        body -> code(s, cgentable);
+        // ACC has return value
 
-    // Now we restore the stack, we don't care about saving their values, T0 isn't important to preserve
-    emit_pop(T0, s);
+    // Now we restore the stack,
+    emit_pop_null(1, s);
 
 }
 
