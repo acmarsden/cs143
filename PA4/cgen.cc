@@ -1567,10 +1567,11 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             }
         }
 
-        // Now iterate over the branches
-        for(int i=cases->first(); cases->more(i); i=cases->next(i)) {
-            Symbol case_type = ((branch_class*)(cases->nth(i)))->type_decl;
-            Symbol case_name = ((branch_class*)(cases->nth(i)))->name;
+        // Now iterate over ONLY the matching branches, in desc order
+        for(auto it=sorted_branches.cbegin(); it!=sorted_branches.cend(); ++it){
+            Symbol case_type = it->type_decl;
+            Symbol case_name = it->name;
+            Expression case_expr = it->expr;
             // TODO: can the type of a branch be SELF_TYPE?
             cgentable->objectST.enterscope();
 
@@ -1590,7 +1591,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
 
             // Emit code to evaluate the expr
-            ((branch_class*)(cases->nth(i)))->expr->code(s, cgentable);
+            case_expr->code(s, cgentable);
             // ACC has return value
 
             // Pop the proto object from the stack
