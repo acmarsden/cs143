@@ -1911,10 +1911,12 @@ void eq_class::code(ostream &s, CgenClassTable* cgentable) {
 
     e1->code(s, cgentable);
     emit_move(T1, ACC, s);
+    emit_push(T1,s);
     // T1 has the addr of the first argument
 
     e2->code(s, cgentable);
     emit_move(T2, ACC, s);
+    emit_pop(T1,s);
     // T2 has the addr of the second argument
 
     // Compute beq
