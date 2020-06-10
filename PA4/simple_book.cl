@@ -24,8 +24,9 @@ Class B inherits IO {
 Class Main {
     b_main : B;
     main() : Object {
-        (let a_main : A <- (new A).initA("Initial A ") in 
-          { b_main <- new B.init(a_main); b_main.printB(); })
+        
+         -- (let a_main : A <- (new A ).initA("Initial A ") in { b_main <- new B.init(a_main); b_main.printB(); } )
+        (let a_main : A <- (new A) in { a_main.initA("Initial A "); b_main <- new B.init(a_main); b_main.printB(); } )
     };
 
 };
