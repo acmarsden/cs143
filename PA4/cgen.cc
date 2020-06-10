@@ -25,6 +25,7 @@
 #include "cgen.h"
 #include "cgen_gc.h"
 #include <memory>
+#include <cstring>
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
@@ -364,6 +365,11 @@ static void emit_pop_null(int num_words, ostream& str)
 static void emit_fetch_int(char *dest, char *source, ostream& s)
 { emit_load(dest, DEFAULT_OBJFIELDS, source, s); }
 
+static void emit_gc(int offset, char* reg, ostream& s){
+    emit_addiu(A1, reg, offset, s);
+    emit_gc_assign(s);
+}
+
 //
 // Emits code to store the integer value contained in register source
 // into the Integer object pointed to by dest.
@@ -388,11 +394,6 @@ static void emit_gc_check(char *source, ostream &s)
 {
     if (source != (char*)A1) emit_move(A1, source, s);
     s << JAL << "_gc_check" << endl;
-}
-
-static void emit_gc(int offset, char* reg, ostream& s){
-    emit_move(A1, offset, reg, s);
-    emit_gc_assign(s);
 }
 
 
@@ -1354,7 +1355,7 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_store(ACC, lookup->second, lookup->first, s);
     if(GC_ENABLED){
         // Other option for lookup_first would be FP
-        if(lookup->first == SELF) emit_gc(lookup->second, lookup->first, s);
+        if(std::strcmp(lookup->first,SELF)) emit_gc(lookup->second, lookup->first, s);
     }
     if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
