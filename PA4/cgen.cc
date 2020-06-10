@@ -1636,9 +1636,10 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
             emit_load_address(T1, CLASSPARENTTAB, s);
             // Offset from the begining of the class parent table
             // to the corresponding location
+            emit_sll(T2, T2, 2, s);
             emit_addu(T1, T1, T2, s);
-            // Get the parent tag into T2
-            emit_move(T2, T1, s);
+            // Load the parent tag from the address
+            emit_load(T2, 0, T1,s);
             // Unconditionally branch back to the begining of this case
             // must have classtag in T2
             emit_branch(recurse_loop_label, s);
