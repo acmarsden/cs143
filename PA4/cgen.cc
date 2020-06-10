@@ -1161,6 +1161,7 @@ static void emit_restore_remember_regs(ostream& str){
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
 {
     // Doing this in DFS order to account for attribute offsetting
+    this->current_node = curr_node;
     code_object_initializer(curr_node, num_parent_attr);
     // Count my attributes as parent attr
     for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
@@ -1207,7 +1208,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
         int offset = DEFAULT_OBJFIELDS + *num_parent_attr;
         for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
             if(curr_node->features->nth(i)->is_attr()){
-                // Precond: SELF has self object, ACC can be discarded
+                // Precond: SELF ha:wqs self object, ACC can be discarded
                 curr_node->features->nth(i)->code(str, offset, this);
                 ++offset;
             }
