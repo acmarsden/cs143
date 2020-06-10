@@ -1,6 +1,6 @@
 Class A  {
     a_fun() : Int {5};
-    get_self(s : String) : SELF_TYPE { {s; self; } };
+    get_self(a : String) : A { { self; } };
 };
 
 
