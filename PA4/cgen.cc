@@ -597,6 +597,16 @@ void CgenClassTable::code_global_text()
             << WORD << 0 << endl
             << "\t.text" << endl;
 
+    str << GLOBAL;
+    emit_init_ref(idtable.add_string("Main"), str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("Int"),str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("String"),str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("Bool"),str);
+    str << endl;
+
     // Emit global labels for all methods
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         Symbol curr_class = it->first;
