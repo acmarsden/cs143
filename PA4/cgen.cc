@@ -75,6 +75,7 @@ Symbol
 
 typedef std::unique_ptr<std::pair<char*, int > > PairPointer ;
 std::vector<PairPointer> pair_container;
+bool GC_ENABLED = false;
 
 static void dump_pair_container(){
     cout << "# pair_container: [";
@@ -597,6 +598,16 @@ void CgenClassTable::code_global_text()
             << WORD << 0 << endl
             << "\t.text" << endl;
 
+    str << GLOBAL;
+    emit_init_ref(idtable.add_string("Main"), str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("Int"),str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("String"),str);
+    str << endl << GLOBAL;
+    emit_init_ref(idtable.add_string("Bool"),str);
+    str << endl;
+
     // Emit global labels for all methods
     for(auto it=classtag_map.cbegin(); it!=classtag_map.cend(); ++it){
         Symbol curr_class = it->first;
@@ -634,6 +645,8 @@ void CgenClassTable::code_select_gc()
     str << GLOBAL << "_MemMgr_TEST" << endl;
     str << "_MemMgr_TEST:" << endl;
     str << WORD << (cgen_Memmgr_Test == GC_TEST) << endl;
+    GC_ENABLED = ((cgen_Memmgr!=GC_NOGC)||(cgen_Memmgr_Test==GC_TEST));
+    if(cgen_debug) printf("GC_ENABLED is set to %d\n", GC_ENABLED);
 }
 
 
