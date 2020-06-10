@@ -1,7 +1,8 @@
-class A {
+class A inherits IO {
     get_self() : SELF_TYPE { self };
     ret_int() : Int { 3 };
     computenum() : Int {3 + 4};
+    print() : Object { out_string("\n This didn't cause an error! \n") };
 };
 
 class Main inherits IO {
@@ -10,8 +11,7 @@ class Main inherits IO {
 
     let_test1() : Int {  3 + let b : Int <- 0 in b };
     let_test2() : Int { -- 
-                let an : Int <- (new A).ret_int() in 
-                            let b : Int <- a.ret_int() in b + let c : Bool <- lt_test_true() in if c then a.computenum() else 0 fi};
+                let an : Object <- (new A).print() in let b : Int <- a.ret_int() in  b + let c : Bool <- lt_test_true() in if c then a.computenum() else 0 fi};
     main():SELF_TYPE { 
         { out_string("\n Testing nested lets \n"); out_int(let_test1());
           out_string("\n Testing nested lets 2 \n"); out_int(let_test2());

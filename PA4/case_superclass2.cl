@@ -1,49 +1,32 @@
 (*  Tests type case on matching superclasses and not exact matches
  *)
 class One {
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 class Two {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 class Three {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 
 class Four inherits One {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 class Seven inherits Four {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 
 class Five inherits Three {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 class Six inherits Three {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 Class Eight inherits Five {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 Class Nine inherits Six {
-
-    a_dispatch(x : Int, y : Int) : Int {x + y};
 };
 
 class Main inherits IO {
