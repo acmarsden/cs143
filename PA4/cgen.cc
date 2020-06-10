@@ -366,7 +366,7 @@ static void emit_fetch_int(char *dest, char *source, ostream& s)
 { emit_load(dest, DEFAULT_OBJFIELDS, source, s); }
 
 static void emit_gc(int offset, char* reg, ostream& s){
-    emit_addiu(A1, reg, offset, s);
+    emit_addiu(A1, reg, offset*WORD_SIZE, s);
     emit_gc_assign(s);
 }
 
@@ -1355,7 +1355,7 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     emit_store(ACC, lookup->second, lookup->first, s);
     if(GC_ENABLED){
         // Other option for lookup_first would be FP
-        if(std::strcmp(lookup->first,SELF)) emit_gc(lookup->second, lookup->first, s);
+        if(lookup->first[0] == SELF[0]) emit_gc(lookup->second, lookup->first, s);
     }
     if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
