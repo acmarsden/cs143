@@ -99,6 +99,10 @@ SPIM out diff (< : ours, > : theirs) on:  example.cl
 
 
 ==============================================================
+SPIM out diff (< : ours, > : theirs) on:  hairyscary0.cl 
+
+
+==============================================================
 SPIM out diff (< : ours, > : theirs) on:  let_nestedcalls.cl 
 
 
@@ -108,5 +112,17 @@ SPIM out diff (< : ours, > : theirs) on:  let_noinit.cl
 
 ==============================================================
 SPIM out diff (< : ours, > : theirs) on:  let_selftype.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  life.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  nested_calls.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  simple_book.cl 
 
 
