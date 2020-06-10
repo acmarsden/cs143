@@ -644,7 +644,7 @@ void CgenClassTable::code_select_gc()
     str << WORD << gc_collect_names[cgen_Memmgr] << endl;
     str << GLOBAL << "_MemMgr_TEST" << endl;
     str << "_MemMgr_TEST:" << endl;
-    str << WORD << (cgen_Memmgr_Test == GC_TEST) << endl
+    str << WORD << (cgen_Memmgr_Test == GC_TEST) << endl;
     GC_ENABLED = ((cgen_Memmgr!=GC_NOGC)||(cgen_Memmgr_Test==GC_TEST));
     if(cgen_debug) printf("GC_ENABLED is set to %d\n", GC_ENABLED);
 }
