@@ -1282,6 +1282,7 @@ void CgenClassTable::code_class_methods(CgenNodeP curr_node, int* num_parent_att
             // For attributes, just add them to the scope. This means they
             // will be loaded from the class object, not from the AR
             // TODO: what regiser are we offsetting from? Self?
+            if(cgen_debug) printf("# Adding %s to the scope! \n", curr_node->features->nth(i)->get_name()->get_string());
             addToScope(curr_node->features->nth(i)->get_name(), SELF, offset, &objectST);
             ++offset;
         }
