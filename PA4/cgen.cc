@@ -25,6 +25,7 @@
 #include "cgen.h"
 #include "cgen_gc.h"
 #include <memory>
+#include <cstring>
 
 extern void emit_string_constant(ostream& str, char *s);
 extern int cgen_debug;
@@ -364,12 +365,20 @@ static void emit_pop_null(int num_words, ostream& str)
 static void emit_fetch_int(char *dest, char *source, ostream& s)
 { emit_load(dest, DEFAULT_OBJFIELDS, source, s); }
 
+static void emit_gc(int offset, char* reg, ostream& s){
+    emit_addiu(A1, reg, offset*WORD_SIZE, s);
+    emit_gc_assign(s);
+}
+
 //
 // Emits code to store the integer value contained in register source
 // into the Integer object pointed to by dest.
 //
 static void emit_store_int(char *source, char *dest, ostream& s)
-{ emit_store(source, DEFAULT_OBJFIELDS, dest, s); }
+{
+    emit_store(source, DEFAULT_OBJFIELDS, dest, s);
+    if(GC_ENABLED) emit_gc(DEFAULT_OBJFIELDS, dest, s);
+}
 
 
 static void emit_test_collector(ostream &s)
@@ -378,8 +387,7 @@ static void emit_test_collector(ostream &s)
     emit_move(ACC, SP, s); // stack end
     emit_move(A1, ZERO, s); // allocate nothing
     s << JAL << gc_collect_names[cgen_Memmgr] << endl;
-    emit_addiu(SP,SP,4,s); // TODO: might this offset the GLOBALFPOFF? probably
-    emit_load(ACC,0,SP,s);
+    emit_pop(ACC, s);
 }
 
 static void emit_gc_check(char *source, ostream &s)
@@ -1329,6 +1337,7 @@ int attr_class::code(ostream &s, int offset, CgenClassTable* cgentable){
         // Otherwise, leave default value from protobj
         // Precond: SELF has self object, ACC has value to store
         emit_store(ACC, offset, SELF, s);
+        if(GC_ENABLED) emit_gc(offset, SELF, s);
     }
     return 0;
 }
@@ -1344,6 +1353,10 @@ void assign_class::code(ostream &s, CgenClassTable* cgentable) {
     if(cgen_debug) printf("# Assign: BEGIN resolved address (assign) \n");
     if(cgen_debug) dump_pair_container();
     emit_store(ACC, lookup->second, lookup->first, s);
+    if(GC_ENABLED){
+        // Other option for lookup_first would be FP
+        if(lookup->first[0] == SELF[0]) emit_gc(lookup->second, lookup->first, s);
+    }
     if(cgen_debug) printf("# Assign: END resolved address (assign) \n");
 
 }
