@@ -1209,6 +1209,7 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
         for(int i=curr_node->features->first(); curr_node->features->more(i); i=curr_node->features->next(i)){
             if(curr_node->features->nth(i)->is_attr()){
                 // Precond: SELF ha:wqs self object, ACC can be discarded
+                addToScope(curr_node->features->nth(i)->get_name(), SELF, offset, &objectST);
                 curr_node->features->nth(i)->code(str, offset, this);
                 ++offset;
             }
