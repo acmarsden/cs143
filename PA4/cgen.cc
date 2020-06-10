@@ -1471,6 +1471,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
             //emit_method_ref(Object, _copy, s);
             //s << endl;
             emit_push(ACC, s);
+            GLOBAL_FP_OFF += 1;
         }
     }
 
