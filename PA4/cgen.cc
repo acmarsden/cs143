@@ -1158,6 +1158,13 @@ static void emit_restore_remember_regs(ostream& str){
     FP_OFF_SCOPE.pop_back();
 }
 
+static void addToScope(Symbol name, char* register_name, int offset, Scopetable* objectST){
+    pair_container.push_back(std::make_unique<std::pair<char*, int> >(register_name, offset));
+    if(cgen_debug) printf("# SCOPE: adding register %s\n", register_name);
+    if(cgen_debug) printf("# SCOPE: at offset: %d\n", offset);
+    objectST->addid(name, (pair_container.back().get()));
+}
+
 void CgenClassTable::code_object_initializers(CgenNodeP curr_node, int* num_parent_attr)
 {
     // Doing this in DFS order to account for attribute offsetting
@@ -1222,13 +1229,6 @@ void CgenClassTable::code_object_initializer(CgenNodeP curr_node, int* num_paren
     // Restore AR header
     emit_restore_remember_regs(str);
     emit_return(str);
-}
-
-static void addToScope(Symbol name, char* register_name, int offset, Scopetable* objectST){
-    pair_container.push_back(std::make_unique<std::pair<char*, int> >(register_name, offset));
-    if(cgen_debug) printf("# SCOPE: adding register %s\n", register_name);
-    if(cgen_debug) printf("# SCOPE: at offset: %d\n", offset);
-    objectST->addid(name, (pair_container.back().get()));
 }
 
 void CgenClassTable::code_all_class_methods(CgenNodeP curr_node, int* num_parent_attr){
