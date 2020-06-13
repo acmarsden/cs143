@@ -1462,7 +1462,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
             emit_push(ACC, s);
             // Also, let's correct the GLOBAL_FP_OFFSET, since that is not maintained
             // by the runtime-defined methods for String
-            GLOBAL_FP_OFF += 1;
+            //GLOBAL_FP_OFF += 1;
         }
     }else{
         // Normal dispatch case
@@ -1485,6 +1485,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
+    if((dispatch_class_type == Str) || (name == out_string || name == out_int)){for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {GLOBAL_FP_OFF += 1;}}
 
     // If expression is void then we call dispatch_abort as in cool runtime manual
     // Dispatch abort requires line number in T1 and filename in ACC
