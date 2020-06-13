@@ -11,7 +11,7 @@ rm -f our_$filename.s
 rm -f $OUT_DIR/our_$filename.out
 
 echo "Running our compiler on $filename.cl"
-./mycoolc $1
+./mycoolc -gt $1
 
 echo "Saving to $OUT_DIR/our_$filename.s"
 mv $filename.s $OUT_DIR/our_$filename.s
