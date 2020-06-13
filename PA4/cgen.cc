@@ -1319,9 +1319,10 @@ int method_class::code(ostream &s, int offset, CgenClassTable* cgentable){
     cgentable->objectST.enterscope();
     // Handle arguments (formals) passed: make space in the AR for them
     int j = 0;
+    for(int i=formals->first(); formals->more(i); i=formals->next(i)){++j;}; int k=j-1; j=0;
     for(int i=formals->first(); formals->more(i); i=formals->next(i)){
         // TODO: check what happens with nested calls
-        addToScope(formals->nth(i)->get_name(), FP, j, &(cgentable->objectST));
+        addToScope(formals->nth(i)->get_name(), FP, k-j, &(cgentable->objectST));
         ++j;
     }
 
@@ -1374,7 +1375,7 @@ void static_dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     }
 
     // Special handling of basic class dispatches
-    if((dispatch_class_type == Str) ||
+    if(true || (dispatch_class_type == Str) ||
        //(isDescendantOf(IO, dispatch_class_type) && (name == out_string || name == out_int))){
        ((name == out_string || name == out_int))){
         // For some reason, the runtime expects these arguments the other way
@@ -1451,7 +1452,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
     }
 
     // Special handling of basic class dispatches
-    if((dispatch_class_type == Str) ||
+    if(true || (dispatch_class_type == Str) ||
        //(isDescendantOf(IO, dispatch_class_type) && (name == out_string || name == out_int))){
        ((name == out_string || name == out_int))){
         // For some reason, the runtime expects these arguments the other way
