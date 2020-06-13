@@ -14,8 +14,14 @@ echo "Executing $OUT_DIR/our_$filename.s on SPIM"
 echo "Executing $OUT_DIR/their_$filename.s on SPIM"
 /afs/ir.stanford.edu/class/cs143/bin/spim $OUT_DIR/their_$filename.s &> $OUT_DIR/their_$filename.out
 
-echo "============== Number of times we Garbage Collected "
+echo "=============="
+echo "Number of times we Garbage Collected "
 grep -c "Garbage" $OUT_DIR/our_$filename.out
-echo "============== Number of times they Garbage Collected "
+echo "Number of times we call GC ASSIGN "
+grep -c "_GenGC_Assign" $OUT_DIR/our_$filename.s
+echo "=============="
+echo "Number of times they Garbage Collected "
 grep -c "Garbage" $OUT_DIR/their_$filename.out
+echo "Number of times they call GC ASSIGN "
+grep -c "_GenGC_Assign" $OUT_DIR/their_$filename.s
 
