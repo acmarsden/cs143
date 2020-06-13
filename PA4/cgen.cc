@@ -1647,7 +1647,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 emit_move(S1, ACC, s);
 
                 // copy the proto for the matching case type, allocate it (don't init yet)
-                emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
+                //emit_partial_load_address(ACC, s); emit_protobj_ref(case_type ,s); s << endl;
                 s << JAL; emit_method_ref(Object, _copy, s); s << endl;
                 // Push it onto the stack and add it to the scope
                 emit_push(ACC, s); // PUSH 3
