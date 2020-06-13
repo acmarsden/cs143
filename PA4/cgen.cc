@@ -377,7 +377,7 @@ static void emit_gc(int offset, char* reg, ostream& s){
 static void emit_store_int(char *source, char *dest, ostream& s)
 {
     emit_store(source, DEFAULT_OBJFIELDS, dest, s);
-    if(GC_ENABLED) emit_gc(DEFAULT_OBJFIELDS, dest, s);
+    //if(GC_ENABLED) emit_gc(DEFAULT_OBJFIELDS, dest, s);
 }
 
 
