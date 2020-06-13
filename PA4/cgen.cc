@@ -1462,7 +1462,7 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
             emit_push(ACC, s);
             // Also, let's correct the GLOBAL_FP_OFFSET, since that is not maintained
             // by the runtime-defined methods for String
-            //GLOBAL_FP_OFF += 1;
+            GLOBAL_FP_OFF += 1;
         }
     }else{
         // Normal dispatch case
@@ -1485,7 +1485,6 @@ void dispatch_class::code(ostream &s, CgenClassTable* cgentable) {
 
     // Cgen expression calling method dispatch
     expr->code(s, cgentable);
-    if((dispatch_class_type == Str) || (name == out_string || name == out_int)){for(int i = actual->first(); actual ->more(i); i = actual->next(i)) {GLOBAL_FP_OFF += 1;}}
 
     // If expression is void then we call dispatch_abort as in cool runtime manual
     // Dispatch abort requires line number in T1 and filename in ACC
@@ -1653,13 +1652,13 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 // Push it onto the stack and add it to the scope
                 emit_push(ACC, s); // PUSH 3
                 addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
-
                 // Emit code to evaluate the expr
                 case_expr->code(s, cgentable);
                 // ACC has return value
-
+                
                 // Pop the proto object from the stack
                 emit_pop_null(1, s); // POP 3
+                GLOBAL_FP_OFF += 1;
 
                 // Unconditionally branch to the end of the case
                 emit_branch(end_case_label, s);
@@ -1686,6 +1685,7 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
 
         emit_label_def(end_case_label, s);
         emit_pop_null(1, s); // POP 2
+        GLOBAL_FP_OFF -= 1; 
 
     emit_pop(S1, s); // POP 1
 }
