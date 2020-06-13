@@ -1652,10 +1652,11 @@ void typcase_class::code(ostream &s, CgenClassTable* cgentable) {
                 // Push it onto the stack and add it to the scope
                 emit_push(ACC, s); // PUSH 3
                 addToScope(case_name, FP, GLOBAL_FP_OFF, &(cgentable->objectST));
+
                 // Emit code to evaluate the expr
                 case_expr->code(s, cgentable);
                 // ACC has return value
-                
+
                 // Pop the proto object from the stack
                 emit_pop_null(1, s); // POP 3
                 GLOBAL_FP_OFF += 1;
