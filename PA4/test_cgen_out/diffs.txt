@@ -71,35 +71,11 @@ SPIM out diff (< : ours, > : theirs) on:  /afs/ir.stanford.edu/class/cs143/examp
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  abortexample.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  annieexample.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  annietest.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  arith0.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  arithexample1.cl 
-
-
-==============================================================
 SPIM out diff (< : ours, > : theirs) on:  arith_us.cl 
 
 
 ==============================================================
 SPIM out diff (< : ours, > : theirs) on:  basicexample.cl 
-
-
-==============================================================
-SPIM out diff (< : ours, > : theirs) on:  book_list0.cl 
 
 
 ==============================================================
@@ -111,10 +87,6 @@ SPIM out diff (< : ours, > : theirs) on:  case_exact.cl
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  caseexample.cl 
-
-
-==============================================================
 SPIM out diff (< : ours, > : theirs) on:  case_superclass2.cl 
 
 
@@ -123,11 +95,15 @@ SPIM out diff (< : ours, > : theirs) on:  case_superclass.cl
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  cells0.cl 
+SPIM out diff (< : ours, > : theirs) on:  eq-obj.cl 
 
 
 ==============================================================
 SPIM out diff (< : ours, > : theirs) on:  example.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  fib.cl 
 
 
 ==============================================================
@@ -147,11 +123,15 @@ SPIM out diff (< : ours, > : theirs) on:  let_selftype.cl
 
 
 ==============================================================
-PIM out diff (< : ours, > : theirs) on:  simple_book.cl 
+SPIM out diff (< : ours, > : theirs) on:  life0.cl 
 
 
-=======
-SPIM out diff (< : ours, > : theirs) on:  primes0.cl 
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  life.cl 
+
+
+==============================================================
+SPIM out diff (< : ours, > : theirs) on:  nested_calls.cl 
 
 
 ==============================================================
@@ -159,7 +139,6 @@ SPIM out diff (< : ours, > : theirs) on:  simple_book.cl
 
 
 ==============================================================
-SPIM out diff (< : ours, > : theirs) on:  simple.cl 
+SPIM out diff (< : ours, > : theirs) on:  void_example.cl 
 
 
->>>>>>> Stashed changes
